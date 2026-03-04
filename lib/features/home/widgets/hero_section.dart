@@ -166,7 +166,7 @@ class _HeroSectionState extends State<HeroSection>
                           ? CrossAxisAlignment.start
                           : CrossAxisAlignment.center,
                       children: [
-                        _buildName(theme, isDesktop),
+                        _buildNameRow(theme, isDesktop, offset),
                         const SizedBox(height: 20),
                         _buildTypewriter(theme, isDesktop),
                         const SizedBox(height: 12),
@@ -179,6 +179,96 @@ class _HeroSectionState extends State<HeroSection>
                 ),
               );
             },
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Row or Column of 3D profile image + name (desktop: side-by-side, mobile: stacked).
+  Widget _buildNameRow(ThemeData theme, bool isDesktop, Offset mouseOffset) {
+    final imageWidget = _buildProfileImage(theme, isDesktop, mouseOffset);
+    final nameWidget = _buildName(theme, isDesktop);
+    if (isDesktop) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          imageWidget,
+          const SizedBox(width: 40),
+          nameWidget,
+        ],
+      );
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        imageWidget,
+        const SizedBox(height: 24),
+        nameWidget,
+      ],
+    );
+  }
+
+  /// Sample profile image with 3D tilt following mouse.
+  Widget _buildProfileImage(ThemeData theme, bool isDesktop, Offset mouseOffset) {
+    const double size = 140;
+    final rotateY = mouseOffset.dx * 0.08;
+    final rotateX = -mouseOffset.dy * 0.08;
+    return AnimatedBuilder(
+      animation: _nameController,
+      builder: (context, child) => Opacity(
+        opacity: CurvedAnimation(
+          parent: _nameController,
+          curve: const Cubic(0.16, 1, 0.3, 1),
+        ).value.clamp(0.0, 1.0),
+        child: Transform.translate(
+          offset: Offset(0, 40 * (1 - CurvedAnimation(
+            parent: _nameController,
+            curve: const Cubic(0.16, 1, 0.3, 1),
+          ).value)),
+          child: child,
+        ),
+      ),
+      child: Transform(
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 0.002)
+          ..rotateX(rotateX)
+          ..rotateY(rotateY),
+        alignment: Alignment.center,
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(size / 2),
+            boxShadow: [
+              BoxShadow(
+                color: theme.colorScheme.primary.withValues(alpha: 0.35),
+                blurRadius: 24,
+                spreadRadius: 2,
+                offset: const Offset(0, 12),
+              ),
+              BoxShadow(
+                color: theme.colorScheme.scrim.withValues(alpha: 0.25),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Image.network(
+            'https://picsum.photos/seed/portrait/400/400',
+            fit: BoxFit.cover,
+            width: size,
+            height: size,
+            errorBuilder: (_, __, ___) => Container(
+              color: theme.colorScheme.surfaceContainerHighest,
+              child: Icon(
+                Icons.person_rounded,
+                size: size * 0.5,
+                color: theme.colorScheme.primary,
+              ),
+            ),
           ),
         ),
       ),
