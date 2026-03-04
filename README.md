@@ -1,6 +1,6 @@
-# portoflio
+# portfolio
 
-A new Flutter project.
+A Flutter project.
 
 ## Building for Production
 
