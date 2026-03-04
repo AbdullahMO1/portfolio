@@ -1,5 +1,5 @@
 name: portoflio
-description: "A new Flutter project."
+description: "Senior Flutter Developer Portfolio — showcasing advanced Flutter engineering."
 publish_to: 'none'
 version: 0.1.0
 
@@ -10,10 +10,46 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # State Management
+  flutter_riverpod: ^3.1.0
+  riverpod_annotation: ^4.0.0
+
+  # Routing
+  go_router: ^17.1.0
+
+  # Data Models
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.9.0
+
+  # Networking
+  http: ^1.3.0
+
+  # Markdown rendering
+  flutter_markdown: ^0.7.6+2
+
+  # URL launcher (contact links)
+  url_launcher: ^6.3.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
 
+  # Code generation
+  build_runner: any
+  freezed: any
+  json_serializable: any
+  riverpod_generator: any
+  riverpod_lint: any
+
+  # Golden tests
+  alchemist: any
+
 flutter:
   uses-material-design: true
+
+  shaders:
+    - assets/shaders/hero_bg.frag
+
+  assets:
+    - assets/fonts/
