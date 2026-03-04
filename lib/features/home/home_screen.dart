@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:portoflio/features/about/about_screen.dart';
-import 'package:portoflio/features/contact/contact_screen.dart';
-import 'package:portoflio/features/experience/experience_screen.dart';
-import 'package:portoflio/features/home/widgets/hero_section.dart';
+import 'package:portoflio/features/home/widgets/about_teaser_section.dart';
+import 'package:portoflio/features/home/widgets/curated_portfolio_section.dart';
 import 'package:portoflio/features/home/widgets/footer.dart';
+import 'package:portoflio/features/home/widgets/hero_section.dart';
+import 'package:portoflio/features/home/widgets/skillset_section.dart';
 import 'package:portoflio/features/home/widgets/floating_back_to_top.dart';
-import 'package:portoflio/features/projects/projects_screen.dart';
-import 'package:portoflio/features/skills/skills_screen.dart';
 import 'package:portoflio/shared/widgets/three_d_scroll_wrapper.dart';
 
 /// Home screen — full-page 3D scroll experience.
@@ -40,38 +38,33 @@ class _HomeScreenState extends State<HomeScreen> {
         CustomScrollView(
           controller: _scrollController,
           slivers: [
-            // Hero Section (Start)
+            // Hero Section
             const SliverToBoxAdapter(
               child: RepaintBoundary(child: HeroSection()),
             ),
 
+            // The Skillset (4 cards)
             const SliverToBoxAdapter(
               child: RepaintBoundary(
-                child: ThreeDScrollWrapper(child: AboutScreen()),
-              ),
-            ),
-            const SliverToBoxAdapter(
-              child: RepaintBoundary(
-                child: ThreeDScrollWrapper(child: SkillsScreen()),
-              ),
-            ),
-            const SliverToBoxAdapter(
-              child: RepaintBoundary(
-                child: ThreeDScrollWrapper(child: ExperienceScreen()),
-              ),
-            ),
-            const SliverToBoxAdapter(
-              child: RepaintBoundary(
-                child: ThreeDScrollWrapper(child: ProjectsScreen()),
-              ),
-            ),
-            const SliverToBoxAdapter(
-              child: RepaintBoundary(
-                child: ThreeDScrollWrapper(child: ContactScreen()),
+                child: ThreeDScrollWrapper(child: SkillsetSection()),
               ),
             ),
 
-            // Footer Section
+            // Curated Portfolio (2–3 featured projects)
+            const SliverToBoxAdapter(
+              child: RepaintBoundary(
+                child: ThreeDScrollWrapper(child: CuratedPortfolioSection()),
+              ),
+            ),
+
+            // About teaser
+            const SliverToBoxAdapter(
+              child: RepaintBoundary(
+                child: ThreeDScrollWrapper(child: AboutTeaserSection()),
+              ),
+            ),
+
+            // Footer (Contact CTA inside)
             SliverToBoxAdapter(
               child: Footer(scrollController: _scrollController),
             ),

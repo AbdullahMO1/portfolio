@@ -27,6 +27,9 @@ dependencies:
   # Markdown rendering
   flutter_markdown: ^0.7.6+2
 
+  # Fonts (Stitch project: Newsreader)
+  google_fonts: ^6.2.1
+
   # URL launcher (contact links)
   url_launcher: ^6.3.1
 

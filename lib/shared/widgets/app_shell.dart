@@ -1,3 +1,6 @@
+import 'dart:ui' as ui;
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portoflio/shared/widgets/custom_cursor.dart';
@@ -60,12 +63,14 @@ class _AppShellState extends State<AppShell> {
               ),
               // Main content area
               widget.child,
-              // Global Header (Top Navigation) — compact on small screens
+              // Global Header (Top Navigation) — 3D blur + mouse-driven tilt
               Positioned(
                 top: 0,
                 left: 0,
                 right: 0,
-                child: _GlobalHeader(
+                child: _AnimatedBlurHeader(
+                  mousePosition: _mousePosition,
+                  viewportSize: MediaQuery.sizeOf(context),
                   compact: isSmallScreen,
                   hideClickCursor: isDesktop,
                 ),
@@ -123,93 +128,190 @@ class _AppShellState extends State<AppShell> {
   }
 }
 
-/// A floating glassmorphism header for global navigation.
+/// Header with 3D blur (glassmorphism) and mouse-driven 3D tilt.
 /// When [compact] is true (small screens), only the logo is shown; nav is in bottom bar.
-class _GlobalHeader extends StatelessWidget {
-  const _GlobalHeader({this.compact = false, this.hideClickCursor = false});
+class _AnimatedBlurHeader extends StatelessWidget {
+  const _AnimatedBlurHeader({
+    required this.mousePosition,
+    required this.viewportSize,
+    this.compact = false,
+    this.hideClickCursor = false,
+  });
+  final ValueListenable<Offset> mousePosition;
+  final Size viewportSize;
   final bool compact;
   final bool hideClickCursor;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final padding = compact
-        ? const EdgeInsets.symmetric(horizontal: 20, vertical: 12)
-        : const EdgeInsets.symmetric(horizontal: 40, vertical: 20);
-    return Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            theme.colorScheme.surface.withValues(alpha: 0.8),
-            theme.colorScheme.surface.withValues(alpha: 0.0),
-          ],
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          GestureDetector(
-            onTap: () => _navigateTo(context, '/'),
-            child: hideClickCursor
-                ? MouseRegion(
-                    cursor: SystemMouseCursors.none,
-                    child: Text(
-                      'AM.',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 2.0,
-                      ),
-                    ),
-                  )
-                : Text(
-                    'AM.',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      color: theme.colorScheme.primary,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 2.0,
-                    ),
+
+    return ListenableBuilder(
+      listenable: mousePosition,
+      builder: (context, _) {
+        final pos = mousePosition.value;
+        final cx = viewportSize.width / 2;
+        final cy = viewportSize.height / 2;
+        final nx = cx > 0 ? (pos.dx - cx) / cx : 0.0;
+        final ny = cy > 0 ? (pos.dy - cy) / cy : 0.0;
+        const tiltStrength = 0.03;
+        final rotateY = nx.clamp(-1.0, 1.0) * tiltStrength;
+        final rotateX = -ny.clamp(-1.0, 1.0) * tiltStrength;
+
+        return Transform(
+          alignment: Alignment.topCenter,
+          transform: Matrix4.identity()
+            ..setEntry(3, 2, 0.001)
+            ..rotateX(rotateX)
+            ..rotateY(rotateY),
+          child: ClipRect(
+            child: BackdropFilter(
+              filter: ui.ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surface.withValues(alpha: 0.7),
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.15),
                   ),
-          ),
-          if (!compact)
-            Row(
-              children: [
-                _HeaderLink(
-                  label: 'ABOUT',
-                  onTap: () => _navigateTo(context, '/about'),
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                      blurRadius: 30,
+                    ),
+                  ],
                 ),
-                _HeaderLink(
-                  label: 'SKILLS',
-                  onTap: () => _navigateTo(context, '/skills'),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () => _navigateTo(context, '/'),
+                      child: hideClickCursor
+                          ? MouseRegion(
+                              cursor: SystemMouseCursors.none,
+                              child: _HeaderLogo(theme: theme),
+                            )
+                          : _HeaderLogo(theme: theme),
+                    ),
+                    if (!compact)
+                      Row(
+                        children: [
+                          _HeaderLink(
+                            label: 'Expertise',
+                            onTap: () => _scrollToSection(context, 'skillset'),
+                          ),
+                          _HeaderLink(
+                            label: 'Masterpieces',
+                            onTap: () => _scrollToSection(context, 'portfolio'),
+                          ),
+                          _HeaderLink(
+                            label: 'About',
+                            onTap: () => _navigateTo(context, '/about'),
+                          ),
+                          const SizedBox(width: 16),
+                          _HireMeButton(theme: theme),
+                        ],
+                      ),
+                  ],
                 ),
-                _HeaderLink(
-                  label: 'EXPERIENCE',
-                  onTap: () => _navigateTo(context, '/experience'),
-                ),
-                _HeaderLink(
-                  label: 'PROJECTS',
-                  onTap: () => _navigateTo(context, '/projects'),
-                ),
-                _HeaderLink(
-                  label: 'CONTACT',
-                  onTap: () => _navigateTo(context, '/contact'),
-                ),
-              ],
+              ),
             ),
-        ],
-      ),
+          ),
+        );
+      },
     );
   }
 
   void _navigateTo(BuildContext context, String location) {
-    // Only navigate if we're not already there
     final currentPath = GoRouterState.of(context).uri.path;
-    if (currentPath != location) {
-      context.go(location);
+    if (currentPath != location) context.go(location);
+  }
+
+  void _scrollToSection(BuildContext context, String section) {
+    final currentPath = GoRouterState.of(context).uri.path;
+    if (currentPath != '/') {
+      context.go('/?section=$section');
+    } else {
+      context.go('/?section=$section&t=${DateTime.now().millisecondsSinceEpoch}');
     }
+  }
+}
+
+class _HeaderLogo extends StatelessWidget {
+  const _HeaderLogo({required this.theme});
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primary,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.star_rounded,
+            size: 18,
+            color: theme.colorScheme.onPrimary,
+          ),
+        ),
+        const SizedBox(width: 12),
+        ShaderMask(
+          shaderCallback: (bounds) => LinearGradient(
+            colors: [
+              theme.colorScheme.primary,
+              theme.colorScheme.tertiary,
+            ],
+          ).createShader(bounds),
+          child: Text(
+            'AM',
+            style: theme.textTheme.titleLarge?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.0,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _HireMeButton extends StatelessWidget {
+  const _HireMeButton({required this.theme});
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.go('/contact'),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.primary,
+          borderRadius: BorderRadius.circular(999),
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.primary.withValues(alpha: 0.3),
+              blurRadius: 12,
+            ),
+          ],
+        ),
+        child: Text(
+          'Hire Me',
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.colorScheme.onPrimary,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ),
+    );
   }
 }
 

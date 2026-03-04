@@ -159,22 +159,33 @@ class _HeroSectionState extends State<HeroSection>
                   ),
                   child: SingleChildScrollView(
                     physics: const ClampingScrollPhysics(),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: isDesktop
-                          ? CrossAxisAlignment.start
-                          : CrossAxisAlignment.center,
-                      children: [
-                        _buildNameRow(theme, isDesktop, offset),
-                        const SizedBox(height: 20),
-                        _buildTypewriter(theme, isDesktop),
-                        const SizedBox(height: 12),
-                        _buildSubtitle(theme, isDesktop),
-                        const SizedBox(height: 48),
-                        _buildCTA(theme),
-                      ],
-                    ),
+                    child: isDesktop
+                        ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                flex: 7,
+                                child: _buildLeftColumn(theme, isDesktop),
+                              ),
+                              const SizedBox(width: 48),
+                              Expanded(
+                                flex: 5,
+                                child: _buildPortraitCard(theme, offset),
+                              ),
+                            ],
+                          )
+                        : Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _buildPillTag(theme),
+                              const SizedBox(height: 24),
+                              _buildPortraitCard(theme, offset),
+                              const SizedBox(height: 24),
+                              _buildLeftColumn(theme, isDesktop),
+                            ],
+                          ),
                   ),
                 ),
               );
@@ -185,32 +196,7 @@ class _HeroSectionState extends State<HeroSection>
     );
   }
 
-  /// Row or Column of 3D profile image + name (desktop: side-by-side, mobile: stacked).
-  Widget _buildNameRow(ThemeData theme, bool isDesktop, Offset mouseOffset) {
-    final imageWidget = _buildProfileImage(theme, isDesktop, mouseOffset);
-    final nameWidget = _buildName(theme, isDesktop);
-    if (isDesktop) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [imageWidget, const SizedBox(width: 40), nameWidget],
-      );
-    }
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [imageWidget, const SizedBox(height: 24), nameWidget],
-    );
-  }
-
-  /// Sample profile image with 3D tilt following mouse.
-  Widget _buildProfileImage(
-    ThemeData theme,
-    bool isDesktop,
-    Offset mouseOffset,
-  ) {
-    const double size = 140;
-    final rotateY = mouseOffset.dx * 0.08;
-    final rotateX = -mouseOffset.dy * 0.08;
+  Widget _buildPillTag(ThemeData theme) {
     return AnimatedBuilder(
       animation: _nameController,
       builder: (context, child) => Opacity(
@@ -218,18 +204,72 @@ class _HeroSectionState extends State<HeroSection>
           parent: _nameController,
           curve: const Cubic(0.16, 1, 0.3, 1),
         ).value.clamp(0.0, 1.0),
-        child: Transform.translate(
-          offset: Offset(
-            0,
-            40 *
-                (1 -
-                    CurvedAnimation(
-                      parent: _nameController,
-                      curve: const Cubic(0.16, 1, 0.3, 1),
-                    ).value),
+        child: child,
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.primary.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(
+            color: theme.colorScheme.primary.withValues(alpha: 0.3),
           ),
-          child: child,
         ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'OPEN FOR GLOBAL COLLABORATIONS',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLeftColumn(ThemeData theme, bool isDesktop) {
+    return Column(
+      crossAxisAlignment:
+          isDesktop ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildPillTag(theme),
+        const SizedBox(height: 24),
+        _buildName(theme, isDesktop),
+        const SizedBox(height: 20),
+        _buildSubtitle(theme, isDesktop),
+        const SizedBox(height: 32),
+        _buildCTA(theme, isDesktop),
+      ],
+    );
+  }
+
+  Widget _buildPortraitCard(ThemeData theme, Offset mouseOffset) {
+    const double size = 320;
+    final rotateY = mouseOffset.dx * 0.05;
+    final rotateX = -mouseOffset.dy * 0.05;
+    return AnimatedBuilder(
+      animation: _nameController,
+      builder: (context, child) => Opacity(
+        opacity: CurvedAnimation(
+          parent: _nameController,
+          curve: const Cubic(0.16, 1, 0.3, 1),
+        ).value.clamp(0.0, 1.0),
+        child: child,
       ),
       child: Transform(
         transform: Matrix4.identity()
@@ -237,40 +277,112 @@ class _HeroSectionState extends State<HeroSection>
           ..rotateX(rotateX)
           ..rotateY(rotateY),
         alignment: Alignment.center,
-        child: Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(size / 2),
-            boxShadow: [
-              BoxShadow(
-                color: theme.colorScheme.primary.withValues(alpha: 0.35),
-                blurRadius: 24,
-                spreadRadius: 2,
-                offset: const Offset(0, 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: size,
+              height: size * 1.25,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.2),
+                    blurRadius: 40,
+                    spreadRadius: 2,
+                  ),
+                  BoxShadow(
+                    color: theme.colorScheme.scrim.withValues(alpha: 0.3),
+                    blurRadius: 24,
+                    offset: const Offset(0, 12),
+                  ),
+                ],
               ),
-              BoxShadow(
-                color: theme.colorScheme.scrim.withValues(alpha: 0.25),
-                blurRadius: 16,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Image.network(
-            'https://picsum.photos/seed/portrait/400/400',
-            fit: BoxFit.cover,
-            width: size,
-            height: size,
-            errorBuilder: (_, _, _) => Container(
-              color: theme.colorScheme.surfaceContainerHighest,
-              child: Icon(
-                Icons.person_rounded,
-                size: size * 0.5,
-                color: theme.colorScheme.primary,
+              clipBehavior: Clip.antiAlias,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  ColorFiltered(
+                    colorFilter: const ColorFilter.mode(
+                      Colors.grey,
+                      BlendMode.saturation,
+                    ),
+                    child: Image.network(
+                      'https://lh3.googleusercontent.com/aida-public/AB6AXuCHBE7N4VxYN66S_gf5pUkIoDN5UJYjGj5Iq1CuOXzrGmbTKG6JBsIvtf_Js5R5Vdl3_fH2maP83XPfyRUne3yJD2OC-ymOvo34Hh2btD4W96bECMJYIJG-nN7QqUvsh0b5uDTcdMd1NkCE0g6vEQvXrtSIn-AYhTfoRTvogCdhnxfTzSun3GYFZRRBbIfE05XBogRxiz7TciDLsPQFicTbGD9ILssX9gtGQA4fUgyQyeJxTMKajOf_S8eKDQ7MzJ028U65nUQYncps',
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: theme.colorScheme.surfaceContainerHighest,
+                        child: Icon(
+                          Icons.person_rounded,
+                          size: size * 0.4,
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.transparent,
+                            Color(0xE6050A15),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 24,
+                    right: 24,
+                    bottom: 24,
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface.withValues(alpha: 0.7),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: theme.colorScheme.primary.withValues(alpha: 0.15),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'CURRENT FOCUS',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.primary,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Scalable Fintech Systems',
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: theme.colorScheme.onSurface,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -354,42 +466,6 @@ class _HeroSectionState extends State<HeroSection>
     );
   }
 
-  Widget _buildTypewriter(ThemeData theme, bool isDesktop) {
-    return ListenableBuilder(
-      listenable: Listenable.merge([_displayedTagline, _showCursor]),
-      builder: (context, _) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: isDesktop
-              ? MainAxisAlignment.start
-              : MainAxisAlignment.center,
-          children: [
-            Text(
-              _displayedTagline.value,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 1.0,
-                fontFamily: 'monospace',
-              ),
-            ),
-            AnimatedOpacity(
-              opacity: _showCursor.value ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 100),
-              child: Text(
-                '|',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Widget _buildSubtitle(ThemeData theme, bool isDesktop) {
     final animation = CurvedAnimation(
       parent: _taglineController,
@@ -415,7 +491,7 @@ class _HeroSectionState extends State<HeroSection>
     );
   }
 
-  Widget _buildCTA(ThemeData theme) {
+  Widget _buildCTA(ThemeData theme, bool isDesktop) {
     final animation = CurvedAnimation(
       parent: _ctaController,
       curve: Curves.elasticOut,
@@ -429,48 +505,72 @@ class _HeroSectionState extends State<HeroSection>
           child: child,
         ),
       ),
-      child: _MagneticButton(
-        onTap: () => context.go('/projects'),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 18),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [theme.colorScheme.primary, theme.colorScheme.tertiary],
+      child: Wrap(
+        spacing: 16,
+        runSpacing: 12,
+        alignment: isDesktop ? WrapAlignment.start : WrapAlignment.center,
+        children: [
+          _MagneticButton(
+            onTap: () => context.go('/projects'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    theme.colorScheme.primary,
+                    theme.colorScheme.tertiary,
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(999),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                    blurRadius: 30,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Explore My Work',
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(
+                    Icons.arrow_forward_rounded,
+                    color: theme.colorScheme.onPrimary,
+                    size: 18,
+                  ),
+                ],
+              ),
             ),
-            borderRadius: BorderRadius.circular(14),
-            boxShadow: [
-              BoxShadow(
-                color: theme.colorScheme.primary.withValues(alpha: 0.3),
-                blurRadius: 30,
-                offset: const Offset(0, 10),
-              ),
-              BoxShadow(
-                color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                blurRadius: 60,
-                spreadRadius: 10,
-              ),
-            ],
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'EXPLORE MY WORK',
-                style: theme.textTheme.labelLarge?.copyWith(
-                  color: theme.colorScheme.onPrimary,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 2.0,
+          _MagneticButton(
+            onTap: () => context.go('/about'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface.withValues(alpha: 0.7),
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.2),
                 ),
               ),
-              const SizedBox(width: 10),
-              Icon(
-                Icons.arrow_forward_rounded,
-                color: theme.colorScheme.onPrimary,
-                size: 18,
+              child: Text(
+                'View Resume',
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.onSurface,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

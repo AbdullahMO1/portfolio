@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Royal palette and Material 3 theming for the portfolio.
 /// Colors: Imperial Navy, Gold, and Deep Slate.
@@ -28,40 +29,42 @@ class AppTheme {
       ),
       scaffoldBackgroundColor: navyBase,
 
-      // Modern Typography
-      textTheme: const TextTheme(
-        headlineLarge: TextStyle(
-          fontSize: 48,
-          fontWeight: FontWeight.w900,
-          color: Colors.white,
-          letterSpacing: -1.0,
-        ),
-        headlineMedium: TextStyle(
-          fontSize: 32,
-          fontWeight: FontWeight.w800,
-          color: gold,
-          letterSpacing: -0.5,
-        ),
-        titleLarge: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
-          color: Colors.white,
-        ),
-        bodyLarge: TextStyle(
-          fontSize: 18,
-          height: 1.6,
-          color: Color(0xFFBDC3C7),
-        ),
-        bodyMedium: TextStyle(
-          fontSize: 16,
-          height: 1.5,
-          color: Color(0xFFBDC3C7),
-        ),
-        labelLarge: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 1.2,
-          color: gold,
+      // Modern Typography — Newsreader (Stitch project font)
+      textTheme: GoogleFonts.newsreaderTextTheme(
+        const TextTheme(
+          headlineLarge: TextStyle(
+            fontSize: 48,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+            letterSpacing: -1.0,
+          ),
+          headlineMedium: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.w800,
+            color: gold,
+            letterSpacing: -0.5,
+          ),
+          titleLarge: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+          ),
+          bodyLarge: TextStyle(
+            fontSize: 18,
+            height: 1.6,
+            color: Color(0xFFBDC3C7),
+          ),
+          bodyMedium: TextStyle(
+            fontSize: 16,
+            height: 1.5,
+            color: Color(0xFFBDC3C7),
+          ),
+          labelLarge: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.2,
+            color: gold,
+          ),
         ),
       ),
 

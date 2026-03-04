@@ -18,7 +18,7 @@ class Footer extends StatelessWidget {
         width: double.infinity,
         padding: EdgeInsets.symmetric(
           horizontal: isDesktop ? 120 : 24,
-          vertical: 80,
+          vertical: 48,
         ),
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -26,253 +26,94 @@ class Footer extends StatelessWidget {
             end: Alignment.bottomCenter,
             colors: [
               theme.colorScheme.surface.withValues(alpha: 0.0),
-              theme.colorScheme.surface.withValues(alpha: 0.8),
+              theme.colorScheme.surface.withValues(alpha: 0.6),
               theme.colorScheme.surface,
             ],
           ),
         ),
         child: Column(
           children: [
-            // 1. "Get in Touch" Project Widget/Card
-            _buildProjectWidget(theme, isDesktop),
-            const SizedBox(height: 100),
-
-            // 2. Main Footer Content
-            if (isDesktop)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildBrand(theme),
-                  _buildLinks(theme),
-                  _buildSocials(theme),
-                ],
-              )
-            else
-              Column(
-                children: [
-                  _buildBrand(theme),
-                  const SizedBox(height: 48),
-                  _buildSocials(theme),
-                  const SizedBox(height: 48),
-                  _buildLinks(theme),
-                ],
-              ),
-
-            const SizedBox(height: 100),
-            const Divider(color: Colors.white10),
-            const SizedBox(height: 40),
-
-            // 3. Copyright and Back to Top
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '© ${DateTime.now().year} Abdullah Mohammed. All rights reserved.',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant.withValues(
-                      alpha: 0.6,
-                    ),
-                  ),
-                ),
-                _buildBackToTop(theme),
-              ],
+            Divider(
+              color: theme.colorScheme.primary.withValues(alpha: 0.1),
+              thickness: 1,
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProjectWidget(ThemeData theme, bool isDesktop) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(isDesktop ? 60 : 32),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(32),
-        border: Border.all(
-          color: theme.colorScheme.primary.withValues(alpha: 0.2),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.primary.withValues(alpha: 0.05),
-            blurRadius: 50,
-            spreadRadius: 10,
-          ),
-        ],
-      ),
-      child: isDesktop
-          ? Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(height: 40),
+            isDesktop
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'HAVE A PROJECT IN MIND?',
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: theme.colorScheme.primary,
-                          letterSpacing: 4,
-                          fontWeight: FontWeight.w800,
+                        '© ${DateTime.now().year} Abdullah Mohammed. All rights reserved.',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant
+                              .withValues(alpha: 0.7),
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          _FooterLink(
+                            label: 'Privacy',
+                            onTap: () {},
+                            inline: true,
+                          ),
+                          const SizedBox(width: 32),
+                          _FooterLink(
+                            label: 'Terms',
+                            onTap: () {},
+                            inline: true,
+                          ),
+                          const SizedBox(width: 32),
+                          _FooterLink(
+                            label: 'LinkedIn',
+                            onTap: () =>
+                                launchUrl(Uri.parse('https://linkedin.com')),
+                            inline: true,
+                          ),
+                        ],
+                      ),
+                      _buildBackToTop(theme),
+                    ],
+                  )
+                : Column(
+                    children: [
                       Text(
-                        "Let's create something\nlegendary together.",
-                        style: theme.textTheme.displaySmall?.copyWith(
-                          fontWeight: FontWeight.w900,
+                        '© ${DateTime.now().year} Abdullah Mohammed. All rights reserved.',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant
+                              .withValues(alpha: 0.7),
                         ),
+                        textAlign: TextAlign.center,
                       ),
+                      const SizedBox(height: 16),
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 24,
+                        children: [
+                          _FooterLink(
+                            label: 'Privacy',
+                            onTap: () {},
+                            inline: true,
+                          ),
+                          _FooterLink(
+                            label: 'Terms',
+                            onTap: () {},
+                            inline: true,
+                          ),
+                          _FooterLink(
+                            label: 'LinkedIn',
+                            onTap: () =>
+                                launchUrl(Uri.parse('https://linkedin.com')),
+                            inline: true,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      _buildBackToTop(theme),
                     ],
                   ),
-                ),
-                _buildContactCTA(theme),
-              ],
-            )
-          : Column(
-              children: [
-                Text(
-                  'HAVE A PROJECT IN MIND?',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: theme.colorScheme.primary,
-                    letterSpacing: 4,
-                    fontWeight: FontWeight.w800,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  "Let's create something\nlegendary together.",
-                  style: theme.textTheme.headlineLarge?.copyWith(
-                    fontWeight: FontWeight.w900,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 40),
-                _buildContactCTA(theme),
-              ],
-            ),
-    );
-  }
-
-  Widget _buildContactCTA(ThemeData theme) {
-    return _MagneticWrapper(
-      onTap: () => launchUrl(Uri.parse('mailto:your.email@example.com')),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.primary,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: theme.colorScheme.primary.withValues(alpha: 0.3),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'GET IN TOUCH',
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: theme.colorScheme.onPrimary,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.2,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Icon(
-              Icons.send_rounded,
-              color: theme.colorScheme.onPrimary,
-              size: 18,
-            ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildBrand(ThemeData theme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'AM.',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            color: theme.colorScheme.primary,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 2.0,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'Senior Flutter Developer specialized in\nbuilding premium digital experiences.',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-            height: 1.6,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLinks(ThemeData theme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'NAVIGATION',
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: theme.colorScheme.primary,
-            letterSpacing: 2,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 24),
-        _FooterLink(label: 'About', onTap: () {}),
-        _FooterLink(label: 'Skills', onTap: () {}),
-        _FooterLink(label: 'Experience', onTap: () {}),
-        _FooterLink(label: 'Projects', onTap: () {}),
-        _FooterLink(label: 'Contact', onTap: () {}),
-      ],
-    );
-  }
-
-  Widget _buildSocials(ThemeData theme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'SOCIALS',
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: theme.colorScheme.primary,
-            letterSpacing: 2,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 24),
-        const Row(
-          children: [
-            _SocialIcon(
-              icon: Icons.code_rounded,
-              url: 'https://github.com/yourusername',
-            ),
-            SizedBox(width: 16),
-            _SocialIcon(
-              icon: Icons.work_rounded,
-              url: 'https://linkedin.com/in/yourusername',
-            ),
-            SizedBox(width: 16),
-            _SocialIcon(
-              icon: Icons.alternate_email_rounded,
-              url: 'https://twitter.com/yourusername',
-            ),
-          ],
-        ),
-      ],
     );
   }
 
@@ -303,9 +144,14 @@ class Footer extends StatelessWidget {
 }
 
 class _FooterLink extends StatefulWidget {
-  const _FooterLink({required this.label, required this.onTap});
+  const _FooterLink({
+    required this.label,
+    required this.onTap,
+    this.inline = false,
+  });
   final String label;
   final VoidCallback onTap;
+  final bool inline;
 
   @override
   State<_FooterLink> createState() => _FooterLinkState();
@@ -318,7 +164,7 @@ class _FooterLinkState extends State<_FooterLink> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: widget.inline ? EdgeInsets.zero : const EdgeInsets.only(bottom: 12),
       child: MouseRegion(
         onEnter: (_) => setState(() => _isHovered = true),
         onExit: (_) => setState(() => _isHovered = false),
@@ -326,10 +172,10 @@ class _FooterLinkState extends State<_FooterLink> {
           onTap: widget.onTap,
           child: AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 200),
-            style: theme.textTheme.bodyLarge!.copyWith(
+            style: theme.textTheme.bodySmall!.copyWith(
               color: _isHovered
                   ? theme.colorScheme.primary
-                  : theme.colorScheme.onSurfaceVariant,
+                  : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
               fontWeight: _isHovered ? FontWeight.w600 : FontWeight.w400,
             ),
             child: Text(widget.label),
