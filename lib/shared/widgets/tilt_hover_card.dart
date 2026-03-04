@@ -4,10 +4,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-typedef TiltHoverBuilder = Widget Function(
-  BuildContext context,
-  bool isHovered,
-);
+typedef TiltHoverBuilder =
+    Widget Function(BuildContext context, bool isHovered);
 
 /// Reusable "floating weighted card" hover effect:
 /// - Tracks mouse position within the widget (normalized -1..1)
@@ -61,9 +59,10 @@ class _TiltHoverCardState extends State<TiltHoverCard>
       duration: widget.resetDuration,
       vsync: this,
     );
-    _resetAnimation = Tween<Offset>(begin: Offset.zero, end: Offset.zero).animate(
-      CurvedAnimation(parent: _resetController, curve: widget.resetCurve),
-    );
+    _resetAnimation = Tween<Offset>(begin: Offset.zero, end: Offset.zero)
+        .animate(
+          CurvedAnimation(parent: _resetController, curve: widget.resetCurve),
+        );
     _resetController.addListener(() {
       setState(() {
         _targetOffset = _resetAnimation.value;
@@ -93,13 +92,15 @@ class _TiltHoverCardState extends State<TiltHoverCard>
     final alpha = 1 - math.exp(-widget.followSpeed * dtSeconds);
     final next = Offset.lerp(_displayOffset, _targetOffset, alpha)!;
 
-    final changed = (next.dx - _displayOffset.dx).abs() > 0.0001 ||
+    final changed =
+        (next.dx - _displayOffset.dx).abs() > 0.0001 ||
         (next.dy - _displayOffset.dy).abs() > 0.0001;
     if (changed) {
       setState(() => _displayOffset = next);
     }
 
-    final close = (next.dx - _targetOffset.dx).abs() < 0.002 &&
+    final close =
+        (next.dx - _targetOffset.dx).abs() < 0.002 &&
         (next.dy - _targetOffset.dy).abs() < 0.002;
     if (close) {
       _ticker.stop();
@@ -133,10 +134,10 @@ class _TiltHoverCardState extends State<TiltHoverCard>
     _lastTick = null;
 
     _targetOffset = _displayOffset;
-    _resetAnimation =
-        Tween<Offset>(begin: _displayOffset, end: Offset.zero).animate(
-      CurvedAnimation(parent: _resetController, curve: widget.resetCurve),
-    );
+    _resetAnimation = Tween<Offset>(begin: _displayOffset, end: Offset.zero)
+        .animate(
+          CurvedAnimation(parent: _resetController, curve: widget.resetCurve),
+        );
     _resetController
       ..reset()
       ..forward();
@@ -144,9 +145,11 @@ class _TiltHoverCardState extends State<TiltHoverCard>
 
   @override
   Widget build(BuildContext context) {
-    final rotateY = (widget.invertTilt ? -_displayOffset.dx : _displayOffset.dx) *
+    final rotateY =
+        (widget.invertTilt ? -_displayOffset.dx : _displayOffset.dx) *
         widget.tiltStrength;
-    final rotateX = (widget.invertTilt ? _displayOffset.dy : -_displayOffset.dy) *
+    final rotateX =
+        (widget.invertTilt ? _displayOffset.dy : -_displayOffset.dy) *
         widget.tiltStrength;
 
     return MouseRegion(
@@ -165,4 +168,3 @@ class _TiltHoverCardState extends State<TiltHoverCard>
     );
   }
 }
-

@@ -31,7 +31,8 @@ class ShaderBackground extends StatefulWidget {
   State<ShaderBackground> createState() => _ShaderBackgroundState();
 }
 
-class _ShaderBackgroundState extends State<ShaderBackground> with SingleTickerProviderStateMixin {
+class _ShaderBackgroundState extends State<ShaderBackground>
+    with SingleTickerProviderStateMixin {
   ui.FragmentShader? _shader;
   late Ticker _ticker;
   final ValueNotifier<double> _time = ValueNotifier(0.0);
@@ -91,14 +92,19 @@ class _ShaderBackgroundState extends State<ShaderBackground> with SingleTickerPr
         widget.scrollController!.positions.isNotEmpty) {
       final pos = widget.scrollController!.position;
       if (pos.hasContentDimensions && pos.maxScrollExtent > 0) {
-        _scrollProgress.value = (pos.pixels / pos.maxScrollExtent).clamp(0.0, 1.0);
+        _scrollProgress.value = (pos.pixels / pos.maxScrollExtent).clamp(
+          0.0,
+          1.0,
+        );
       }
     }
   }
 
   Future<void> _loadShader() async {
     try {
-      final program = await ui.FragmentProgram.fromAsset('assets/shaders/hero_bg.frag');
+      final program = await ui.FragmentProgram.fromAsset(
+        'assets/shaders/hero_bg.frag',
+      );
       if (mounted) {
         setState(() {
           _shader = program.fragmentShader();
@@ -201,7 +207,12 @@ class _ShaderBackgroundState extends State<ShaderBackground> with SingleTickerPr
 }
 
 class _ShaderPainter extends CustomPainter {
-  _ShaderPainter({required this.shader, required this.time, required this.mousePosition, required this.scrollProgress});
+  _ShaderPainter({
+    required this.shader,
+    required this.time,
+    required this.mousePosition,
+    required this.scrollProgress,
+  });
 
   final ui.FragmentShader shader;
   final double time;
@@ -218,7 +229,10 @@ class _ShaderPainter extends CustomPainter {
       ..setFloat(4, mousePosition.dy)
       ..setFloat(5, scrollProgress);
 
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), Paint()..shader = shader);
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      Paint()..shader = shader,
+    );
   }
 
   @override

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -93,8 +92,9 @@ class _HeroSectionState extends State<HeroSection>
   }
 
   void _startTypewriter() {
-    _typewriterTimer = Timer.periodic(const Duration(milliseconds: 55),
-        (timer) {
+    _typewriterTimer = Timer.periodic(const Duration(milliseconds: 55), (
+      timer,
+    ) {
       if (!mounted) {
         timer.cancel();
         return;
@@ -154,7 +154,9 @@ class _HeroSectionState extends State<HeroSection>
                   ..rotateY(rotateY),
                 transformAlignment: Alignment.center,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: isDesktop ? 120 : 28),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isDesktop ? 120 : 28,
+                  ),
                   child: SingleChildScrollView(
                     physics: const ClampingScrollPhysics(),
                     child: Column(
@@ -267,8 +269,9 @@ class _HeroSectionState extends State<HeroSection>
       builder: (context, _) {
         return Row(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment:
-              isDesktop ? MainAxisAlignment.start : MainAxisAlignment.center,
+          mainAxisAlignment: isDesktop
+              ? MainAxisAlignment.start
+              : MainAxisAlignment.center,
           children: [
             Text(
               _displayedTagline.value,

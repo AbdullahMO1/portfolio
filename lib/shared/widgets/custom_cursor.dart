@@ -1,6 +1,5 @@
 import 'dart:ui' as ui;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// Custom cursor effect overlay for desktop.
@@ -118,10 +117,13 @@ class _CursorRipplePainter extends CustomPainter {
       final fade = (1.0 - phase).clamp(0.0, 1.0);
 
       // 1. Outer shadow — dark, blurred, offset (depth below)
-      final shadowOffset = Offset(2, 2);
+      const shadowOffset = Offset(2, 2);
       final shadowPaint = Paint()
-        ..color = Color.lerp(goldColor, Colors.black, 0.6)!
-            .withValues(alpha: fade * 0.35)
+        ..color = Color.lerp(
+          goldColor,
+          Colors.black,
+          0.6,
+        )!.withValues(alpha: fade * 0.35)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3.0
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
@@ -171,11 +173,7 @@ class _CursorRipplePainter extends CustomPainter {
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
     );
     // Core fill
-    canvas.drawCircle(
-      center,
-      _dotRadius,
-      Paint()..color = goldColor,
-    );
+    canvas.drawCircle(center, _dotRadius, Paint()..color = goldColor);
     // Inner highlight
     canvas.drawCircle(
       center - const Offset(0.5, 0.5),

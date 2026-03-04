@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class FloatingBackToTop extends StatefulWidget {
@@ -87,35 +86,37 @@ class _FloatingBackToTopState extends State<FloatingBackToTop> {
                     ..translate(_mouseOffset.value.dx, _mouseOffset.value.dy)
                     ..scale(_isHovered.value ? 1.1 : 1.0),
                   transformAlignment: Alignment.center,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    theme.colorScheme.primary,
-                    theme.colorScheme.tertiary,
-                  ],
-                ),
-                shape: BoxShape.circle,
-                boxShadow: [
-                BoxShadow(
-                  color: theme.colorScheme.primary.withValues(alpha: 0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-              if (_isHovered.value)
-                BoxShadow(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.2),
-                      blurRadius: 30,
-                      spreadRadius: 5,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        theme.colorScheme.primary,
+                        theme.colorScheme.tertiary,
+                      ],
                     ),
-                ],
-              ),
-              child: Icon(
-                Icons.keyboard_arrow_up_rounded,
-                color: theme.colorScheme.onPrimary,
-                size: 28,
-              ),
-            );
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                      if (_isHovered.value)
+                        BoxShadow(
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: 0.2,
+                          ),
+                          blurRadius: 30,
+                          spreadRadius: 5,
+                        ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.keyboard_arrow_up_rounded,
+                    color: theme.colorScheme.onPrimary,
+                    size: 28,
+                  ),
+                );
               },
             ),
           ),

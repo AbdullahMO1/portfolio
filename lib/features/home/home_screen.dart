@@ -35,49 +35,65 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Stack(
-        children: [
-          // Scrollable content with 3D transitions
-          CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              // Hero Section (Start)
-              const SliverToBoxAdapter(child: RepaintBoundary(child: HeroSection())),
+      children: [
+        // Scrollable content with 3D transitions
+        CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            // Hero Section (Start)
+            const SliverToBoxAdapter(
+              child: RepaintBoundary(child: HeroSection()),
+            ),
 
-              const SliverToBoxAdapter(
-                child: RepaintBoundary(child: ThreeDScrollWrapper(child: AboutScreen())),
+            const SliverToBoxAdapter(
+              child: RepaintBoundary(
+                child: ThreeDScrollWrapper(child: AboutScreen()),
               ),
-              const SliverToBoxAdapter(
-                child: RepaintBoundary(child: ThreeDScrollWrapper(child: SkillsScreen())),
+            ),
+            const SliverToBoxAdapter(
+              child: RepaintBoundary(
+                child: ThreeDScrollWrapper(child: SkillsScreen()),
               ),
-              const SliverToBoxAdapter(
-                child: RepaintBoundary(child: ThreeDScrollWrapper(child: ExperienceScreen())),
+            ),
+            const SliverToBoxAdapter(
+              child: RepaintBoundary(
+                child: ThreeDScrollWrapper(child: ExperienceScreen()),
               ),
-              const SliverToBoxAdapter(
-                child: RepaintBoundary(child: ThreeDScrollWrapper(child: ProjectsScreen())),
+            ),
+            const SliverToBoxAdapter(
+              child: RepaintBoundary(
+                child: ThreeDScrollWrapper(child: ProjectsScreen()),
               ),
-              const SliverToBoxAdapter(
-                child: RepaintBoundary(child: ThreeDScrollWrapper(child: ContactScreen())),
-              ),
-
-              // Footer Section
-              SliverToBoxAdapter(child: Footer(scrollController: _scrollController)),
-            ],
-          ),
-
-          // 3. Scroll Progress Indicator (Right) — hidden on small screens to avoid clutter
-          if (MediaQuery.sizeOf(context).width > 600)
-            Positioned(
-              right: 20,
-              top: 0,
-              bottom: 0,
-              child: Center(
-                child: RepaintBoundary(child: _ScrollProgressIndicator(controller: _scrollController)),
+            ),
+            const SliverToBoxAdapter(
+              child: RepaintBoundary(
+                child: ThreeDScrollWrapper(child: ContactScreen()),
               ),
             ),
 
-          // 4. Floating Back to Top (Bottom Right)
-          FloatingBackToTop(scrollController: _scrollController),
-        ],
+            // Footer Section
+            SliverToBoxAdapter(
+              child: Footer(scrollController: _scrollController),
+            ),
+          ],
+        ),
+
+        // 3. Scroll Progress Indicator (Right) — hidden on small screens to avoid clutter
+        if (MediaQuery.sizeOf(context).width > 600)
+          Positioned(
+            right: 20,
+            top: 0,
+            bottom: 0,
+            child: Center(
+              child: RepaintBoundary(
+                child: _ScrollProgressIndicator(controller: _scrollController),
+              ),
+            ),
+          ),
+
+        // 4. Floating Back to Top (Bottom Right)
+        FloatingBackToTop(scrollController: _scrollController),
+      ],
     );
   }
 }
@@ -122,7 +138,12 @@ class _ScrollProgressIndicator extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: theme.colorScheme.primary,
                     borderRadius: BorderRadius.circular(1),
-                    boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.5), blurRadius: 4)],
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.colorScheme.primary.withValues(alpha: 0.5),
+                        blurRadius: 4,
+                      ),
+                    ],
                   ),
                 ),
               ),

@@ -40,7 +40,8 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    final isSmallScreen = MediaQuery.sizeOf(context).width <= _kSmallScreenBreakpoint;
+    final isSmallScreen =
+        MediaQuery.sizeOf(context).width <= _kSmallScreenBreakpoint;
     final isDesktop = MediaQuery.sizeOf(context).width >= _kDesktopBreakpoint;
     final bottomNavHeight = isSmallScreen ? 80.0 : 0.0;
 
@@ -64,7 +65,10 @@ class _AppShellState extends State<AppShell> {
                 top: 0,
                 left: 0,
                 right: 0,
-                child: _GlobalHeader(compact: isSmallScreen, hideClickCursor: isDesktop),
+                child: _GlobalHeader(
+                  compact: isSmallScreen,
+                  hideClickCursor: isDesktop,
+                ),
               ),
             ],
           ),

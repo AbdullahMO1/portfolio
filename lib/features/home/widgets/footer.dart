@@ -254,18 +254,18 @@ class Footer extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-        Row(
+        const Row(
           children: [
             _SocialIcon(
               icon: Icons.code_rounded,
               url: 'https://github.com/yourusername',
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16),
             _SocialIcon(
               icon: Icons.work_rounded,
               url: 'https://linkedin.com/in/yourusername',
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16),
             _SocialIcon(
               icon: Icons.alternate_email_rounded,
               url: 'https://twitter.com/yourusername',

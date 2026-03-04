@@ -182,8 +182,7 @@ class _Glass3DProjectCard extends StatelessWidget {
                     spreadRadius: 2,
                   ),
                 BoxShadow(
-                  color:
-                      Colors.black.withValues(alpha: isHovered ? 0.3 : 0.15),
+                  color: Colors.black.withValues(alpha: isHovered ? 0.3 : 0.15),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -201,11 +200,7 @@ class _Glass3DProjectCard extends StatelessWidget {
                       color: theme.colorScheme.primary.withValues(alpha: 0.2),
                     ),
                   ),
-                  child: Icon(
-                    icon,
-                    color: theme.colorScheme.primary,
-                    size: 26,
-                  ),
+                  child: Icon(icon, color: theme.colorScheme.primary, size: 26),
                 ),
                 const SizedBox(height: 20),
                 Text(
@@ -238,8 +233,9 @@ class _Glass3DProjectCard extends StatelessWidget {
                             vertical: 5,
                           ),
                           decoration: BoxDecoration(
-                            color:
-                                theme.colorScheme.primary.withValues(alpha: 0.08),
+                            color: theme.colorScheme.primary.withValues(
+                              alpha: 0.08,
+                            ),
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
                               color: theme.colorScheme.primary.withValues(
