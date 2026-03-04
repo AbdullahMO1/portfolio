@@ -83,8 +83,13 @@ class _FloatingBackToTopState extends State<FloatingBackToTop> {
                   duration: const Duration(milliseconds: 200),
                   curve: Curves.easeOutCubic,
                   transform: Matrix4.identity()
-                    ..translate(_mouseOffset.value.dx, _mouseOffset.value.dy)
-                    ..scale(_isHovered.value ? 1.1 : 1.0),
+                    ..translateByDouble(
+                        _mouseOffset.value.dx, _mouseOffset.value.dy, 0, 1)
+                    ..scaleByDouble(
+                        _isHovered.value ? 1.1 : 1.0,
+                        _isHovered.value ? 1.1 : 1.0,
+                        1,
+                        1),
                   transformAlignment: Alignment.center,
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(

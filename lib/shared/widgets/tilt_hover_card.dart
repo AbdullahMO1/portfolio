@@ -162,7 +162,8 @@ class _TiltHoverCardState extends State<TiltHoverCard>
           ..setEntry(3, 2, widget.perspective)
           ..rotateX(rotateX)
           ..rotateY(rotateY)
-          ..translate(0.0, 0.0, _isHovered ? widget.hoverLift : 0.0),
+          ..translateByDouble(
+            0.0, 0.0, _isHovered ? widget.hoverLift : 0.0, 1),
         child: widget.builder(context, _isHovered),
       ),
     );

@@ -50,6 +50,3 @@ flutter:
 
   shaders:
     - assets/shaders/hero_bg.frag
-
-  assets:
-    - assets/fonts/

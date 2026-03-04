@@ -425,8 +425,9 @@ class _MagneticWrapperState extends State<_MagneticWrapper> {
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeOutCubic,
           transform: Matrix4.identity()
-            ..translate(_offset.dx, _offset.dy)
-            ..scale(_isHovered ? 1.05 : 1.0),
+            ..translateByDouble(_offset.dx, _offset.dy, 0, 1)
+            ..scaleByDouble(
+                _isHovered ? 1.05 : 1.0, _isHovered ? 1.05 : 1.0, 1, 1),
           transformAlignment: Alignment.center,
           child: widget.child,
         ),

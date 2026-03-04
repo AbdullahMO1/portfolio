@@ -261,7 +261,7 @@ class _HeroSectionState extends State<HeroSection>
             fit: BoxFit.cover,
             width: size,
             height: size,
-            errorBuilder: (_, __, ___) => Container(
+            errorBuilder: (_, _, _) => Container(
               color: theme.colorScheme.surfaceContainerHighest,
               child: Icon(
                 Icons.person_rounded,
