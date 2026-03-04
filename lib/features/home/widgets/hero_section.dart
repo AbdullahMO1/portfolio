@@ -193,25 +193,21 @@ class _HeroSectionState extends State<HeroSection>
       return Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          imageWidget,
-          const SizedBox(width: 40),
-          nameWidget,
-        ],
+        children: [imageWidget, const SizedBox(width: 40), nameWidget],
       );
     }
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: [
-        imageWidget,
-        const SizedBox(height: 24),
-        nameWidget,
-      ],
+      children: [imageWidget, const SizedBox(height: 24), nameWidget],
     );
   }
 
   /// Sample profile image with 3D tilt following mouse.
-  Widget _buildProfileImage(ThemeData theme, bool isDesktop, Offset mouseOffset) {
+  Widget _buildProfileImage(
+    ThemeData theme,
+    bool isDesktop,
+    Offset mouseOffset,
+  ) {
     const double size = 140;
     final rotateY = mouseOffset.dx * 0.08;
     final rotateX = -mouseOffset.dy * 0.08;
@@ -223,10 +219,15 @@ class _HeroSectionState extends State<HeroSection>
           curve: const Cubic(0.16, 1, 0.3, 1),
         ).value.clamp(0.0, 1.0),
         child: Transform.translate(
-          offset: Offset(0, 40 * (1 - CurvedAnimation(
-            parent: _nameController,
-            curve: const Cubic(0.16, 1, 0.3, 1),
-          ).value)),
+          offset: Offset(
+            0,
+            40 *
+                (1 -
+                    CurvedAnimation(
+                      parent: _nameController,
+                      curve: const Cubic(0.16, 1, 0.3, 1),
+                    ).value),
+          ),
           child: child,
         ),
       ),

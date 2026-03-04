@@ -427,7 +427,11 @@ class _MagneticWrapperState extends State<_MagneticWrapper> {
           transform: Matrix4.identity()
             ..translateByDouble(_offset.dx, _offset.dy, 0, 1)
             ..scaleByDouble(
-                _isHovered ? 1.05 : 1.0, _isHovered ? 1.05 : 1.0, 1, 1),
+              _isHovered ? 1.05 : 1.0,
+              _isHovered ? 1.05 : 1.0,
+              1,
+              1,
+            ),
           transformAlignment: Alignment.center,
           child: widget.child,
         ),
