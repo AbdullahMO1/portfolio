@@ -97,11 +97,9 @@ class _AppShellState extends State<AppShell> {
     final bodyContent = CustomCursorOverlay(
       child: Listener(
         onPointerDown: (_) {
-          // Silent attempt to start audio on interaction
+          // Attempt to unlock audio on interaction only if explicitly unmuted
           final audio = AudioService.instance;
-          if (audio.isMuted) {
-            audio.setMuted(false);
-          } else {
+          if (!audio.isMuted) {
             audio.tryUnlock();
           }
         },
