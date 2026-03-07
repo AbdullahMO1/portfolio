@@ -1,48 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:portoflio/core/providers/portfolio_provider.dart';
+import 'package:portoflio/core/providers/story_config_provider.dart';
+import 'package:portoflio/core/config/story_config.dart';
 import 'package:portoflio/shared/widgets/scroll_reveal.dart';
+import 'package:portoflio/theme/app_theme.dart';
 
-/// Skills screen with:
-/// - Radial reveal staggered chips
-/// - 3D flip on hover (front: skill name, back: glow effect)
-/// - Scroll-triggered entrance per category
-/// - Glassmorphism chip styling
-class SkillsScreen extends StatelessWidget {
+/// Skills screen with data from resume (Gist/local).
+class SkillsScreen extends ConsumerWidget {
   const SkillsScreen({super.key});
 
-  static const Map<String, List<String>> _skillData = {
-    'Mobile': ['Flutter', 'Dart', 'iOS', 'Android', 'KMP'],
-    'State Management': ['Riverpod', 'BLoC', 'Provider', 'GetX'],
-    'Architecture': ['Clean Architecture', 'MVVM', 'MVI', 'Feature-Driven'],
-    'Backend Integration': ['REST APIs', 'GraphQL', 'Firebase', 'WebSockets'],
-    'DevOps & Tools': [
-      'Git',
-      'CI/CD',
-      'GitHub Actions',
-      'Fastlane',
-      'Codemagic',
-    ],
-    'Testing': [
-      'Unit Tests',
-      'Widget Tests',
-      'Golden Tests',
-      'Integration Tests',
-    ],
-    'Design': ['Figma', 'Material Design 3', 'Cupertino', 'Custom Shaders'],
-  };
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final screenWidth = MediaQuery.sizeOf(context).width;
     final isDesktop = screenWidth >= 1200;
-
-    final categories = _skillData.entries.toList();
+    final asyncResume = ref.watch(portfolioDataProvider);
+    final story = ref.watch(storyConfigProvider);
+    final chapter = story.chapterBySectionKey('skills');
 
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(
-        horizontal: isDesktop ? 100 : 24,
-        vertical: 80,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 100 : 24, vertical: 80),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -50,44 +28,54 @@ class SkillsScreen extends StatelessWidget {
             child: Center(
               child: Column(
                 children: [
-                  Text(
-                    'Skills & Technologies',
-                    style: theme.textTheme.headlineLarge,
-                  ),
+                  Text(chapter?.title ?? 'The Craft', style: AppTheme.storyTitleStyle(fontSize: 36)),
                   const SizedBox(height: 12),
                   Container(
                     width: 60,
                     height: 3,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          theme.colorScheme.primary,
-                          theme.colorScheme.tertiary,
-                        ],
-                      ),
+                      gradient: LinearGradient(colors: [theme.colorScheme.primary, theme.colorScheme.tertiary]),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
+                  if ((chapter?.subtitle ?? '').isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Text(chapter!.subtitle, style: AppTheme.narrativeStyle(fontSize: 16), textAlign: TextAlign.center),
+                  ],
                 ],
               ),
             ),
           ),
           const SizedBox(height: 50),
-          ...categories.asMap().entries.map((mapEntry) {
-            final index = mapEntry.key;
-            final entry = mapEntry.value;
-            return ScrollReveal(
-              delay: Duration(milliseconds: index * 100),
-              direction: index.isEven
-                  ? RevealDirection.fromLeft
-                  : RevealDirection.fromRight,
-              child: _SkillCategoryGroup(
-                category: entry.key,
-                skills: entry.value,
-                theme: theme,
+          asyncResume.when(
+            loading: () => const Center(
+              child: Padding(padding: EdgeInsets.all(48), child: CircularProgressIndicator()),
+            ),
+            error: (err, _) => Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text('Failed to load skills: $err', style: theme.textTheme.bodyLarge),
               ),
-            );
-          }),
+            ),
+            data: (resume) {
+              final categories = resume.skills;
+              if (categories.isEmpty) {
+                return Center(child: Text('No skills listed.', style: theme.textTheme.bodyLarge));
+              }
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: categories.asMap().entries.map((mapEntry) {
+                  final index = mapEntry.key;
+                  final cat = mapEntry.value;
+                  return ScrollReveal(
+                    delay: Duration(milliseconds: index * 100),
+                    direction: index.isEven ? RevealDirection.fromLeft : RevealDirection.fromRight,
+                    child: _SkillCategoryGroup(category: cat.category, skills: cat.items, theme: theme),
+                  );
+                }).toList(),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -95,11 +83,7 @@ class SkillsScreen extends StatelessWidget {
 }
 
 class _SkillCategoryGroup extends StatelessWidget {
-  const _SkillCategoryGroup({
-    required this.category,
-    required this.skills,
-    required this.theme,
-  });
+  const _SkillCategoryGroup({required this.category, required this.skills, required this.theme});
 
   final String category;
   final List<String> skills;
@@ -112,12 +96,7 @@ class _SkillCategoryGroup extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            category,
-            style: theme.textTheme.titleLarge?.copyWith(
-              color: theme.colorScheme.primary,
-            ),
-          ),
+          Text(category, style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.primary)),
           const SizedBox(height: 14),
           Wrap(
             spacing: 10,
@@ -156,9 +135,7 @@ class _GlassSkillChipState extends State<_GlassSkillChip> {
         decoration: BoxDecoration(
           color: _isHovered
               ? widget.theme.colorScheme.primary.withValues(alpha: 0.15)
-              : widget.theme.colorScheme.surfaceContainerHigh.withValues(
-                  alpha: 0.3,
-                ),
+              : widget.theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: _isHovered
@@ -168,9 +145,7 @@ class _GlassSkillChipState extends State<_GlassSkillChip> {
           boxShadow: _isHovered
               ? [
                   BoxShadow(
-                    color: widget.theme.colorScheme.primary.withValues(
-                      alpha: 0.1,
-                    ),
+                    color: widget.theme.colorScheme.primary.withValues(alpha: 0.1),
                     blurRadius: 15,
                     offset: const Offset(0, 4),
                   ),
@@ -183,9 +158,7 @@ class _GlassSkillChipState extends State<_GlassSkillChip> {
         child: Text(
           widget.label,
           style: widget.theme.textTheme.bodyMedium?.copyWith(
-            color: _isHovered
-                ? widget.theme.colorScheme.primary
-                : widget.theme.colorScheme.onSurface,
+            color: _isHovered ? widget.theme.colorScheme.primary : widget.theme.colorScheme.onSurface,
             fontWeight: _isHovered ? FontWeight.w600 : FontWeight.w400,
           ),
         ),

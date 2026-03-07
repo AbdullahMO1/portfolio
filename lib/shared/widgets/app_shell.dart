@@ -3,7 +3,12 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:portoflio/core/services/audio_service.dart';
+import 'package:portoflio/shared/widgets/arabesque_decoration.dart';
 import 'package:portoflio/shared/widgets/custom_cursor.dart';
+import 'package:portoflio/shared/widgets/magnetic_button.dart';
+import 'package:portoflio/shared/widgets/nav_link.dart';
 import 'package:portoflio/shared/widgets/shader_background.dart';
 
 /// Breakpoint below which we show bottom nav instead of top nav links.
@@ -21,12 +26,16 @@ class AppShell extends StatefulWidget {
     required this.child,
     required this.currentIndex,
     required this.onDestinationSelected,
+    this.placeProgress,
+    this.scrollProgress,
     super.key,
   });
 
   final Widget child;
   final int currentIndex;
   final ValueChanged<int> onDestinationSelected;
+  final ValueNotifier<double>? placeProgress;
+  final ValueNotifier<double>? scrollProgress;
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -34,49 +43,86 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   final ValueNotifier<Offset> _mousePosition = ValueNotifier(Offset.zero);
+  final ValueNotifier<double> _ownPlaceProgress = ValueNotifier(0.0);
+
+  /// Maps route index to place progress (0=camp, 1=oasis, 2=war, 3=mansion).
+  /// Router indices: 0=home, 1=about, 2=skills, 3=experience, 4=projects, 5=contact.
+  double _placeForIndex(int index) {
+    switch (index) {
+      case 0:
+        return 0.0; // home (dynamic when placeProgress provided)
+      case 1:
+        return 3.0; // about
+      case 2:
+        return 0.0; // skills
+      case 3:
+        return 2.0; // experience
+      case 4:
+        return 1.0; // projects
+      case 5:
+        return 0.0; // contact
+      default:
+        return 0.0;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _ownPlaceProgress.value = _placeForIndex(widget.currentIndex);
+  }
+
+  @override
+  void didUpdateWidget(AppShell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.placeProgress == null &&
+        widget.currentIndex != oldWidget.currentIndex) {
+      _ownPlaceProgress.value = _placeForIndex(widget.currentIndex);
+    }
+  }
 
   @override
   void dispose() {
     _mousePosition.dispose();
+    _ownPlaceProgress.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final isSmallScreen =
-        MediaQuery.sizeOf(context).width <= _kSmallScreenBreakpoint;
+    final isSmallScreen = MediaQuery.sizeOf(context).width <= _kSmallScreenBreakpoint;
     final isDesktop = MediaQuery.sizeOf(context).width >= _kDesktopBreakpoint;
-    final bottomNavHeight = isSmallScreen ? 80.0 : 0.0;
 
     final bodyContent = CustomCursorOverlay(
       child: Listener(
         onPointerMove: (event) {
           _mousePosition.value = event.localPosition;
         },
-        child: Padding(
-          padding: EdgeInsets.only(bottom: bottomNavHeight),
-          child: Stack(
-            children: [
-              // Persistent interactive shader background (shared across all routes)
-              Positioned.fill(
-                child: ShaderBackground(mousePosition: _mousePosition),
+        child: Stack(
+          children: [
+            // Persistent interactive shader background (shared across all routes)
+            Positioned.fill(
+              child: ShaderBackground(
+                mousePosition: _mousePosition,
+                placeProgress: widget.placeProgress ?? _ownPlaceProgress,
+                scrollProgress: widget.scrollProgress,
               ),
-              // Main content area
-              widget.child,
-              // Global Header (Top Navigation) — 3D blur + mouse-driven tilt
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: _AnimatedBlurHeader(
-                  mousePosition: _mousePosition,
-                  viewportSize: MediaQuery.sizeOf(context),
-                  compact: isSmallScreen,
-                  hideClickCursor: isDesktop,
-                ),
+            ),
+            // Main content area (top padding clears the header)
+            Padding(padding: const EdgeInsets.only(top: 30), child: widget.child),
+            // Global Header (Top Navigation) — 3D blur + mouse-driven tilt
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: _AnimatedBlurHeader(
+                mousePosition: _mousePosition,
+                viewportSize: MediaQuery.sizeOf(context),
+                compact: isSmallScreen,
+                hideClickCursor: isDesktop,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -115,15 +161,7 @@ class _AppShellState extends State<AppShell> {
     );
 
     return Scaffold(
-      body: isDesktop
-          ? Theme(data: themeOverrides, child: bodyContent)
-          : bodyContent,
-      bottomNavigationBar: isSmallScreen
-          ? _BottomNavBar(
-              currentIndex: widget.currentIndex,
-              onDestinationSelected: widget.onDestinationSelected,
-            )
-          : null,
+      body: isDesktop ? Theme(data: themeOverrides, child: bodyContent) : bodyContent,
     );
   }
 }
@@ -158,67 +196,144 @@ class _AnimatedBlurHeader extends StatelessWidget {
         final rotateY = nx.clamp(-1.0, 1.0) * tiltStrength;
         final rotateX = -ny.clamp(-1.0, 1.0) * tiltStrength;
 
-        return Transform(
-          alignment: Alignment.topCenter,
-          transform: Matrix4.identity()
-            ..setEntry(3, 2, 0.001)
-            ..rotateX(rotateX)
-            ..rotateY(rotateY),
-          child: ClipRect(
-            child: BackdropFilter(
-              filter: ui.ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Transform(
+              alignment: Alignment.topCenter,
+              transform: Matrix4.identity()
+                ..setEntry(3, 2, 0.001)
+                ..rotateX(rotateX)
+                ..rotateY(rotateY),
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surface.withValues(alpha: 0.7),
+                child: ClipRRect(
                   borderRadius: BorderRadius.circular(999),
-                  border: Border.all(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.15),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                      blurRadius: 30,
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () => _navigateTo(context, '/'),
-                      child: hideClickCursor
-                          ? MouseRegion(
-                              cursor: SystemMouseCursors.none,
-                              child: _HeaderLogo(theme: theme),
-                            )
-                          : _HeaderLogo(theme: theme),
-                    ),
-                    if (!compact)
-                      Row(
+                  child: BackdropFilter(
+                    filter: ui.ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface.withValues(alpha: 0.5),
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.15)),
+                        boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.1), blurRadius: 30)],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _HeaderLink(
-                            label: 'Expertise',
-                            onTap: () => _scrollToSection(context, 'skillset'),
+                          GestureDetector(
+                            onTap: () => _navigateTo(context, '/'),
+                            child: hideClickCursor
+                                ? MouseRegion(
+                                    cursor: SystemMouseCursors.none,
+                                    child: _HeaderLogo(theme: theme),
+                                  )
+                                : _HeaderLogo(theme: theme),
                           ),
-                          _HeaderLink(
-                            label: 'Masterpieces',
-                            onTap: () => _scrollToSection(context, 'portfolio'),
-                          ),
-                          _HeaderLink(
-                            label: 'About',
-                            onTap: () => _navigateTo(context, '/about'),
-                          ),
-                          const SizedBox(width: 16),
-                          _HireMeButton(theme: theme),
+                          if (!compact)
+                            Row(
+                              children: [
+                                NavLink(label: 'Skills', onTap: () => _navigateTo(context, '/skills'), padding: const EdgeInsets.only(left: 30)),
+                                NavLink(label: 'Masterpieces', onTap: () => _navigateTo(context, '/projects'), padding: const EdgeInsets.only(left: 30)),
+                                NavLink(label: 'Experience', onTap: () => _navigateTo(context, '/experience'), padding: const EdgeInsets.only(left: 30)),
+                                NavLink(label: 'About', onTap: () => _navigateTo(context, '/about'), padding: const EdgeInsets.only(left: 30)),
+                                const SizedBox(width: 12),
+                                const _AudioToggleButton(),
+                                const SizedBox(width: 12),
+                                _HireMeButton(theme: theme),
+                              ],
+                            )
+                          else
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const _AudioToggleButton(),
+                                const SizedBox(width: 4),
+                            PopupMenuButton<String>(
+                              icon: Icon(Icons.menu, color: theme.colorScheme.primary),
+                              padding: EdgeInsets.zero,
+                              offset: const Offset(0, 48),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              onSelected: (value) {
+                                switch (value) {
+                                  case 'skills':
+                                    _navigateTo(context, '/skills');
+                                    break;
+                                  case 'masterpieces':
+                                    _navigateTo(context, '/projects');
+                                    break;
+                                  case 'experience':
+                                    _navigateTo(context, '/experience');
+                                    break;
+                                  case 'about':
+                                    _navigateTo(context, '/about');
+                                    break;
+                                  case 'hire':
+                                    _navigateTo(context, '/contact');
+                                    break;
+                                }
+                              },
+                              itemBuilder: (context) => [
+                                PopupMenuItem(
+                                  value: 'skills',
+                                  child: Text(
+                                    'Skills',
+                                    style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'masterpieces',
+                                  child: Text(
+                                    'Masterpieces',
+                                    style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'experience',
+                                  child: Text(
+                                    'Experience',
+                                    style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'about',
+                                  child: Text(
+                                    'About',
+                                    style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'hire',
+                                  child: Text(
+                                    'Hire Me',
+                                    style: theme.textTheme.labelLarge?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                              ],
+                            ),
                         ],
                       ),
-                  ],
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: ArabesqueDecoration(
+                color: theme.colorScheme.primary,
+                width: 120,
+                height: 8,
+                opacity: 0.25,
+              ),
+            ),
+          ],
         );
       },
     );
@@ -227,15 +342,6 @@ class _AnimatedBlurHeader extends StatelessWidget {
   void _navigateTo(BuildContext context, String location) {
     final currentPath = GoRouterState.of(context).uri.path;
     if (currentPath != location) context.go(location);
-  }
-
-  void _scrollToSection(BuildContext context, String section) {
-    final currentPath = GoRouterState.of(context).uri.path;
-    if (currentPath != '/') {
-      context.go('/?section=$section');
-    } else {
-      context.go('/?section=$section&t=${DateTime.now().millisecondsSinceEpoch}');
-    }
   }
 }
 
@@ -251,34 +357,110 @@ class _HeaderLogo extends StatelessWidget {
         Container(
           width: 32,
           height: 32,
-          decoration: BoxDecoration(
-            color: theme.colorScheme.primary,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            Icons.star_rounded,
-            size: 18,
-            color: theme.colorScheme.onPrimary,
-          ),
+          decoration: BoxDecoration(color: theme.colorScheme.primary, shape: BoxShape.circle),
+          child: Icon(Icons.star_rounded, size: 18, color: theme.colorScheme.onPrimary),
         ),
         const SizedBox(width: 12),
         ShaderMask(
-          shaderCallback: (bounds) => LinearGradient(
-            colors: [
-              theme.colorScheme.primary,
-              theme.colorScheme.tertiary,
-            ],
-          ).createShader(bounds),
+          shaderCallback: (bounds) =>
+              LinearGradient(colors: [theme.colorScheme.primary, theme.colorScheme.tertiary]).createShader(bounds),
           child: Text(
             'AM',
-            style: theme.textTheme.titleLarge?.copyWith(
+            style: GoogleFonts.amiri(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
               color: Colors.white,
-              fontWeight: FontWeight.w900,
               letterSpacing: 1.0,
             ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class _AudioToggleButton extends StatefulWidget {
+  const _AudioToggleButton();
+
+  @override
+  State<_AudioToggleButton> createState() => _AudioToggleButtonState();
+}
+
+class _AudioToggleButtonState extends State<_AudioToggleButton>
+    with SingleTickerProviderStateMixin {
+  bool _muted = true;
+  late AnimationController _pulse;
+
+  @override
+  void initState() {
+    super.initState();
+    _muted = AudioService.instance.isMuted;
+    _pulse = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+    if (!_muted) _pulse.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  void _toggle() {
+    final playing = AudioService.instance.toggle();
+    setState(() => _muted = !playing);
+    if (playing) {
+      _pulse.repeat(reverse: true);
+    } else {
+      _pulse.stop();
+      _pulse.value = 0;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Tooltip(
+      message: _muted ? 'Unmute desert ambience' : 'Mute',
+      child: GestureDetector(
+        onTap: _toggle,
+        child: AnimatedBuilder(
+          animation: _pulse,
+          builder: (context, child) {
+            final glow = _muted ? 0.0 : (_pulse.value * 0.4 + 0.1);
+            return Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: theme.colorScheme.surface.withValues(alpha: 0.4),
+                border: Border.all(
+                  color: _muted
+                      ? theme.colorScheme.onSurface.withValues(alpha: 0.2)
+                      : theme.colorScheme.primary.withValues(alpha: 0.6),
+                ),
+                boxShadow: _muted
+                    ? null
+                    : [
+                        BoxShadow(
+                          color: theme.colorScheme.primary.withValues(alpha: glow),
+                          blurRadius: 12,
+                        ),
+                      ],
+              ),
+              child: Icon(
+                _muted ? Icons.volume_off_rounded : Icons.volume_up_rounded,
+                size: 16,
+                color: _muted
+                    ? theme.colorScheme.onSurface.withValues(alpha: 0.5)
+                    : theme.colorScheme.primary,
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }
@@ -289,118 +471,37 @@ class _HireMeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return MagneticButton(
       onTap: () => context.go('/contact'),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
         decoration: BoxDecoration(
-          color: theme.colorScheme.primary,
+          gradient: LinearGradient(colors: [theme.colorScheme.primary, theme.colorScheme.tertiary]),
           borderRadius: BorderRadius.circular(999),
           boxShadow: [
             BoxShadow(
               color: theme.colorScheme.primary.withValues(alpha: 0.3),
-              blurRadius: 12,
+              blurRadius: 24,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
-        child: Text(
-          'Hire Me',
-          style: theme.textTheme.labelLarge?.copyWith(
-            color: theme.colorScheme.onPrimary,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _HeaderLink extends StatelessWidget {
-  const _HeaderLink({required this.label, required this.onTap});
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(left: 30),
-      child: TextButton(
-        onPressed: onTap,
-        child: Text(
-          label,
-          style: theme.textTheme.labelLarge?.copyWith(
-            color: theme.colorScheme.onSurface,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Bottom navigation bar for small screens (≤800px).
-class _BottomNavBar extends StatelessWidget {
-  const _BottomNavBar({
-    required this.currentIndex,
-    required this.onDestinationSelected,
-  });
-  final int currentIndex;
-  final ValueChanged<int> onDestinationSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface.withValues(alpha: 0.9),
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.shadow.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: NavigationBar(
-          selectedIndex: currentIndex.clamp(0, 5),
-          onDestinationSelected: onDestinationSelected,
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
-              label: 'Home',
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Hire Me',
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: theme.colorScheme.onPrimary,
+                fontWeight: FontWeight.w700,
+              ),
             ),
-            NavigationDestination(
-              icon: Icon(Icons.person_outline),
-              selectedIcon: Icon(Icons.person),
-              label: 'About',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.code_outlined),
-              selectedIcon: Icon(Icons.code),
-              label: 'Skills',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.work_outline),
-              selectedIcon: Icon(Icons.work),
-              label: 'Experience',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.folder_outlined),
-              selectedIcon: Icon(Icons.folder),
-              label: 'Projects',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.mail_outline),
-              selectedIcon: Icon(Icons.mail),
-              label: 'Contact',
-            ),
+            const SizedBox(width: 8),
+            Icon(Icons.arrow_forward_rounded, color: theme.colorScheme.onPrimary, size: 18),
           ],
         ),
       ),
     );
   }
 }
+

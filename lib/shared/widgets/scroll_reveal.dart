@@ -1,18 +1,22 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 
-/// Reusable scroll-triggered reveal animation widget.
+enum RevealDirection { fromBottom, fromLeft, fromRight, scale, fromTop }
+
+/// Reusable scroll-triggered reveal animation widget with Persian Prince desert theme.
 ///
 /// Wraps any child and animates it into view when it enters the viewport.
 /// Configurable direction, delay, curve, and parallax offset.
 ///
-/// Uses a [Visibility]-like detection approach via layout callbacks
-/// to determine when the widget enters the visible area.
+/// Uses desert-themed animations including sand reveal, magic carpet effects,
+/// and Persian pattern transitions.
 ///
 /// Performance: Throttles visibility checks to once per frame during scroll.
 class ScrollReveal extends StatefulWidget {
   const ScrollReveal({
+    super.key,
     required this.child,
     this.delay = Duration.zero,
     this.duration = const Duration(milliseconds: 800),
@@ -20,7 +24,7 @@ class ScrollReveal extends StatefulWidget {
     this.direction = RevealDirection.fromBottom,
     this.offset = 60.0,
     this.parallaxFactor = 0.0,
-    super.key,
+    this.persianEffect = false, // Enable Persian Prince desert effects
   });
 
   final Widget child;
@@ -28,28 +32,28 @@ class ScrollReveal extends StatefulWidget {
   final Duration duration;
   final Curve curve;
   final RevealDirection direction;
-
-  /// How far the widget slides from its reveal direction.
   final double offset;
-
-  /// Optional parallax factor (0.0 = none, 1.0 = full scroll speed).
   final double parallaxFactor;
+  final bool persianEffect;
 
   @override
   State<ScrollReveal> createState() => _ScrollRevealState();
 }
 
-enum RevealDirection { fromBottom, fromLeft, fromRight, scale, fromTop }
-
 class _ScrollRevealState extends State<ScrollReveal>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _opacity;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _scaleAnimation;
+  late AnimationController _sandController;
+  late Animation<double> _sandWaveAnimation;
+  late AnimationController _carpetController;
+  late Animation<double> _carpetFloatAnimation;
+
   bool _hasTriggered = false;
   bool _checkScheduled = false;
-  final GlobalKey _itemKey = GlobalKey();
+  ScrollPosition? _scrollPosition;
 
   void _scheduleVisibilityCheck() {
     if (_checkScheduled || _hasTriggered || !mounted) return;
@@ -90,22 +94,58 @@ class _ScrollRevealState extends State<ScrollReveal>
       end: 1.0,
     ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
-    // Schedule a post-frame check in case widget is already visible
+    // Persian Prince desert effects
+    if (widget.persianEffect) {
+      // Sand wave animation
+      _sandController = AnimationController(
+        duration: const Duration(milliseconds: 2000),
+        vsync: this,
+      );
+      _sandWaveAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _sandController, curve: Curves.easeInOutSine),
+      );
+
+      // Magic carpet float animation
+      _carpetController = AnimationController(
+        duration: const Duration(milliseconds: 1500),
+        vsync: this,
+      );
+      _carpetFloatAnimation = Tween<double>(begin: -10.0, end: 0.0).animate(
+        CurvedAnimation(parent: _carpetController, curve: Curves.easeOutBack),
+      );
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _attachScrollListener();
       _checkVisibility();
     });
   }
 
+  void _attachScrollListener() {
+    final ctx = context;
+    final scrollable = Scrollable.maybeOf(ctx);
+    if (scrollable != null) {
+      _scrollPosition = scrollable.position;
+      _scrollPosition!.addListener(_scheduleVisibilityCheck);
+    }
+  }
+
   @override
   void dispose() {
+    _scrollPosition?.removeListener(_scheduleVisibilityCheck);
     _controller.dispose();
+    if (widget.persianEffect) {
+      _sandController.dispose();
+      _carpetController.dispose();
+    }
     super.dispose();
   }
 
   void _checkVisibility() {
     if (_hasTriggered || !mounted) return;
 
-    final renderObject = _itemKey.currentContext?.findRenderObject();
+    final renderObject = context.findRenderObject();
+
     if (renderObject == null || renderObject is! RenderBox) return;
 
     final viewport = RenderAbstractViewport.maybeOf(renderObject);
@@ -117,20 +157,21 @@ class _ScrollRevealState extends State<ScrollReveal>
 
     final revealOffset = viewport.getOffsetToReveal(renderObject, 0.0);
     final viewportDimension = (viewport as RenderObject).paintBounds.height;
-    final scrollOffset = revealOffset.offset;
     final itemHeight = renderObject.size.height;
 
     // Get the current scroll offset
-    final scrollable = Scrollable.maybeOf(_itemKey.currentContext!);
+    final scrollable = Scrollable.maybeOf(context);
+
     if (scrollable == null) {
       _trigger();
       return;
     }
     final currentScroll = scrollable.position.pixels;
 
-    // Check if item is within viewport (with some buffer)
-    final itemTop = scrollOffset - currentScroll;
-    final buffer = viewportDimension * 0.15;
+    // Check if item is within viewport (with desert buffer)
+    final itemTop = revealOffset.offset - currentScroll;
+    final buffer =
+        viewportDimension * 0.2; // Increased buffer for Persian effects
     if (itemTop < viewportDimension - buffer && itemTop + itemHeight > buffer) {
       _trigger();
     }
@@ -139,6 +180,7 @@ class _ScrollRevealState extends State<ScrollReveal>
   void _trigger() {
     if (_hasTriggered) return;
     _hasTriggered = true;
+    _scrollPosition?.removeListener(_scheduleVisibilityCheck);
 
     if (widget.delay > Duration.zero) {
       Future.delayed(widget.delay, () {
@@ -147,34 +189,149 @@ class _ScrollRevealState extends State<ScrollReveal>
     } else {
       _controller.forward();
     }
+
+    // Start Persian Prince effects
+    if (widget.persianEffect) {
+      _sandController.forward();
+      _carpetController.forward();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (notification) {
-        _scheduleVisibilityCheck();
-        return false;
-      },
-      child: AnimatedBuilder(
-        key: _itemKey,
-        animation: _controller,
-        builder: (context, child) {
-          return Transform.translate(
-            offset: _slideAnimation.value,
-            child: Transform.scale(
-              scale: _scaleAnimation.value,
-              child: Opacity(
-                opacity: _opacity.value.clamp(0.0, 1.0),
-                child: child,
-              ),
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        // Calculate parallax offset for desert layers
+        double parallaxOffset = 0.0;
+        if (widget.parallaxFactor != 0.0) {
+          final scrollable = Scrollable.maybeOf(context);
+          if (scrollable != null) {
+            parallaxOffset = scrollable.position.pixels * widget.parallaxFactor;
+          }
+        }
+
+        Widget animatedChild = Transform.translate(
+          offset: _slideAnimation.value + Offset(0, parallaxOffset),
+          child: Transform.scale(
+            scale: _scaleAnimation.value,
+            child: Opacity(
+              opacity: _opacity.value.clamp(0.0, 1.0),
+              child: _buildPersianChild(child!),
             ),
+          ),
+        );
+
+        // Add Persian Prince desert effects
+        if (widget.persianEffect) {
+          animatedChild = Stack(
+            children: [
+              // Sand wave effect
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: _SandWavePainter(_sandWaveAnimation.value),
+                  child: const SizedBox.expand(),
+                ),
+              ),
+
+              // Magic carpet float effect
+              Positioned.fill(
+                child: Transform.translate(
+                  offset: Offset(0, _carpetFloatAnimation.value),
+                  child: Opacity(
+                    opacity: 0.3,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            const Color(
+                              0xFFD4AF37,
+                            ).withOpacity(0.2), // Persian gold
+                            const Color(
+                              0xFFF78C4C,
+                            ).withOpacity(0.1), // Sunset orange
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              animatedChild,
+            ],
           );
-        },
-        child: widget.child,
-      ),
+        }
+
+        return animatedChild;
+      },
+      child: widget.child,
     );
   }
+
+  Widget _buildPersianChild(Widget child) {
+    if (!widget.persianEffect) return child;
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(
+              0xFFD4AF37,
+            ).withOpacity(0.1), // Persian gold shadow
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+}
+
+/// Custom painter for desert sand wave effects
+class _SandWavePainter extends CustomPainter {
+  _SandWavePainter(this.waveProgress);
+
+  final double waveProgress;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0xFFF0D8B2)
+          .withOpacity(0.3) // Desert sand
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 2.0;
+
+    // Draw animated sand waves
+    for (int i = 0; i < 5; i++) {
+      final x = (size.width / 5) * i;
+      final baseY = size.height * 0.7;
+      final waveHeight = 20.0 * sin(waveProgress * 3.14159 + i * 0.5);
+      final waveWidth = size.width / 5;
+
+      final path = Path();
+      path.moveTo(x - waveWidth / 2, baseY);
+
+      for (int j = 0; j <= 20; j++) {
+        final t = j / 20.0;
+        final waveX = (x - waveWidth / 2) + waveWidth * t;
+        final waveY = baseY + waveHeight * sin(t * 3.14159 * 2);
+
+        if (j == 0) {
+          path.moveTo(waveX, waveY);
+        } else {
+          path.lineTo(waveX, waveY);
+        }
+      }
+
+      canvas.drawPath(path, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _SandWavePainter oldDelegate) =>
+      waveProgress != oldDelegate.waveProgress;
 }
 
 /// Parallax layer that moves based on scroll offset.

@@ -1,102 +1,103 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:portoflio/core/providers/portfolio_provider.dart';
+import 'package:portoflio/core/providers/story_config_provider.dart';
+import 'package:portoflio/core/config/story_config.dart';
 import 'package:portoflio/shared/widgets/scroll_reveal.dart';
+import 'package:portoflio/shared/widgets/story_banner.dart';
 import 'package:portoflio/shared/widgets/tilt_hover_card.dart';
 
-/// Home-only "Currated Portfolio" section with 2–3 featured projects.
-/// Matches Stitch wireframe: Selected Masterpieces with Case Study links.
-class CuratedPortfolioSection extends StatelessWidget {
+/// Home-only curated portfolio; featured projects from resume (Gist/local).
+class CuratedPortfolioSection extends ConsumerWidget {
   const CuratedPortfolioSection({super.key});
 
-  static const List<Map<String, dynamic>> _featuredProjects = [
-    {
-      'id': 'fintech-app',
-      'number': '01',
-      'category': 'Fintech Solution',
-      'title': 'Royal Bank App',
-      'description':
-          'A high-security banking application featuring real-time transaction tracking, biometric authentication, and custom data visualization charts.',
-      'tech': ['FLUTTER', 'DART', 'FIREBASE'],
-      'imageUrl':
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuAlLHXt9xsALzag-xEyUt0bFlM12SvqTplVZhu0MQnuKg0bQCh3RU38_uyL7w-L4ZKf740_5e0b2zbUeod8ARM7n-7Zrk-aGpOgrogNyzJBi7KOKcekmdLCel5vKNLy2qLbdIPHmO650MPqLCkByQkpAhUWoHUJs5H2CXAvEW1twetgDeXUVFjnw10t1Fukif7c6W0pFSXREp3QOmdtPUOvyAdQmjI4CU8OCLlZOFpM7kS0VbR5lmi17JuJxpQZqjERsjsnt4lsbtUH',
-    },
-    {
-      'id': 'ecommerce-app',
-      'number': '02',
-      'category': 'E-Commerce',
-      'title': 'LuxeMarket',
-      'description':
-          'Redefining luxury shopping with immersive 3D product previews, AR try-ons, and seamless checkout experiences.',
-      'tech': ['RIVE', 'FLUTTER', 'STRIPE'],
-      'imageUrl':
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuC9eUXI1hk7X1NtXE9tCgsEYTxnxWYzkJ-smiLNYMCJTgeDOVlHwfG4xu2zCmhhi3tfjykUeOGVG8WTlbDBxGcLF8UJEf5qVcX0ewTEX6er6e5EPu1ULj1pBkt9ik8OziZxGpwGoJWBxWE593K5HvwN8dNtWushbfFohna1bnuI6XvU11GhixlUsqGId7xjLYeTnCR1WRB-3a7CHs5OJO_RpQddBuaQtvvt5OOTSXJW2r8wRSh-Rz8DeFtqGZ5BPenwFvSgOVxrnj5l',
-    },
-  ];
+  static const String _placeholderImage =
+      'https://placehold.co/800x500/1a1a2e/eab308?text=Project';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final screenWidth = MediaQuery.sizeOf(context).width;
     final isDesktop = screenWidth >= 1200;
+    final asyncResume = ref.watch(portfolioDataProvider);
+    final story = ref.watch(storyConfigProvider);
+    final chapter = story.chapterBySectionKey('portfolio');
+    final projects = asyncResume.value?.projects ?? [];
+    final featured = projects.take(2).toList();
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(
-        horizontal: isDesktop ? 100 : 24,
-        vertical: 80,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ScrollReveal(
-            child: Center(
-              child: Column(
-                children: [
-                  Text(
-                    'CURATED PORTFOLIO',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: theme.colorScheme.primary,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 3,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Selected Masterpieces',
-                    style: theme.textTheme.headlineLarge?.copyWith(
-                      fontSize: isDesktop ? 64 : 40,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 60),
-          ...List.generate(_featuredProjects.length, (index) {
-            final project = _featuredProjects[index];
-            final imageFirst = index == 1;
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: index < _featuredProjects.length - 1 ? 80 : 0,
-              ),
-              child: ScrollReveal(
-                delay: Duration(milliseconds: index * 120),
-                direction: RevealDirection.fromBottom,
-                child: _FeaturedProjectCard(
-                  id: project['id'] as String,
-                  number: project['number'] as String,
-                  category: project['category'] as String,
-                  title: project['title'] as String,
-                  description: project['description'] as String,
-                  tech: project['tech'] as List<String>,
-                  imageUrl: project['imageUrl'] as String,
-                  theme: theme,
-                  isDesktop: isDesktop,
-                  imageFirst: imageFirst,
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: isDesktop ? 72 : 20,
+          vertical: 40,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ScrollReveal(
+              child: Center(
+                child: StoryBanner(
+                  chapter:
+                      chapter ??
+                      const StoryChapter(
+                        key: 'portfolio',
+                        title: 'The Digital Caravans',
+                        subtitle: 'Projects that traverse the digital desert',
+                        storyLine:
+                            'Each creation is a caravan carrying treasures across the vast landscape of technology.',
+                        persianElement: 'caravan',
+                      ),
+                  chapterIndex: 2,
+                  textAlign: TextAlign.center,
                 ),
               ),
-            );
-          }),
-        ],
+            ),
+            const SizedBox(height: 60),
+            if (featured.isEmpty)
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    'No featured projects yet.',
+                    style: theme.textTheme.bodyLarge,
+                  ),
+                ),
+              )
+            else
+              ...List.generate(featured.length, (index) {
+                final project = featured[index];
+                final number = '${(index + 1).toString().padLeft(2, '0')}';
+                final category = project.tech.isNotEmpty
+                    ? project.tech.first
+                    : 'Project';
+                final imageUrl = project.imageUrl ?? _placeholderImage;
+                final imageFirst = index == 1;
+                return Padding(
+                  padding: EdgeInsets.only(
+                    bottom: index < featured.length - 1 ? 40 : 0,
+                  ),
+                  child: ScrollReveal(
+                    delay: Duration(milliseconds: index * 120),
+                    direction: RevealDirection.fromBottom,
+                    child: _FeaturedProjectCard(
+                      id: project.id,
+                      number: number,
+                      category: category,
+                      title: project.title,
+                      description: project.description,
+                      tech: project.tech,
+                      imageUrl: imageUrl,
+                      theme: theme,
+                      isDesktop: isDesktop,
+                      imageFirst: imageFirst,
+                    ),
+                  ),
+                );
+              }),
+          ],
+        ),
       ),
     );
   }
@@ -172,10 +173,7 @@ class _FeaturedProjectCard extends StatelessWidget {
                     children: [
                       if (imageFirst) _buildProjectImage(),
                       if (imageFirst) const SizedBox(width: 64),
-                      Expanded(
-                        flex: 2,
-                        child: _buildProjectContent(),
-                      ),
+                      Expanded(flex: 2, child: _buildProjectContent()),
                       if (!imageFirst) const SizedBox(width: 64),
                       if (!imageFirst) _buildProjectImage(),
                     ],

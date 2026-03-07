@@ -1,56 +1,32 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:portoflio/core/models/resume_model.dart';
+import 'package:portoflio/core/providers/portfolio_provider.dart';
+import 'package:portoflio/core/providers/story_config_provider.dart';
+import 'package:portoflio/core/config/story_config.dart';
 import 'package:portoflio/shared/widgets/scroll_reveal.dart';
+import 'package:portoflio/theme/app_theme.dart';
 
 /// Experience timeline with:
 /// - Animated connector that draws itself on scroll
 /// - Cards slide in from alternating left/right
 /// - Glassmorphism containers with gold accents
 /// - ScrollReveal stagger per entry
-class ExperienceScreen extends StatelessWidget {
+/// - Data from resume (Gist/local)
+class ExperienceScreen extends ConsumerWidget {
   const ExperienceScreen({super.key});
 
-  static const List<Map<String, dynamic>> _experiences = [
-    {
-      'company': 'Tech Innovations Inc.',
-      'role': 'Senior Flutter Developer & Team Lead',
-      'period': '2023 – Present',
-      'location': 'Remote',
-      'highlights': [
-        'Led a team of 8 developers building a financial services app',
-        'Architected the app using Clean Architecture with BLoC pattern',
-        'Reduced app startup time by 40% through shader warm-up and deferred loading',
-        'Introduced Golden Testing with 95% visual regression coverage',
-      ],
-    },
-    {
-      'company': 'Digital Solutions Ltd.',
-      'role': 'Flutter Developer',
-      'period': '2021 – 2023',
-      'location': 'Cairo, Egypt',
-      'highlights': [
-        'Built 5+ production Flutter apps from scratch',
-        'Implemented real-time features using WebSocket and Firebase',
-        'Maintained CI/CD pipelines with GitHub Actions and Fastlane',
-      ],
-    },
-    {
-      'company': 'StartUp Studio',
-      'role': 'Mobile Developer',
-      'period': '2020 – 2021',
-      'location': 'Alexandria, Egypt',
-      'highlights': [
-        'Transitioned the team from native Android to Flutter',
-        'Built custom UI components and animation systems',
-        'Integrated REST APIs and local storage with Hive',
-      ],
-    },
-  ];
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final screenWidth = MediaQuery.sizeOf(context).width;
     final isDesktop = screenWidth >= 1200;
+    final asyncResume = ref.watch(portfolioDataProvider);
+    final story = ref.watch(storyConfigProvider);
+    final chapter = story.chapterBySectionKey('experience');
+    final experiences = asyncResume.value?.experience ?? [];
 
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(
@@ -60,23 +36,31 @@ class ExperienceScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const ScrollReveal(
+          ScrollReveal(
             child: Center(
               child: Column(
                 children: [
                   Text(
-                    'Experience',
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                    chapter?.title ?? 'The Trials',
+                    style: AppTheme.storyTitleStyle(fontSize: 36),
                   ),
-                  SizedBox(height: 12),
-                  _ExperienceDivider(),
+                  const SizedBox(height: 12),
+                  const _ExperienceDivider(),
+                  if ((chapter?.subtitle ?? '').isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      chapter!.subtitle,
+                      style: AppTheme.narrativeStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ],
               ),
             ),
           ),
           const SizedBox(height: 50),
-          ...List.generate(_experiences.length, (index) {
-            final exp = _experiences[index];
+          ...List.generate(experiences.length, (index) {
+            final exp = experiences[index];
             return ScrollReveal(
               delay: Duration(milliseconds: index * 150),
               direction: index.isEven
@@ -85,12 +69,8 @@ class ExperienceScreen extends StatelessWidget {
               offset: 80,
               child: _GlassTimelineEntry(
                 index: index,
-                isLast: index == _experiences.length - 1,
-                company: exp['company'] as String,
-                role: exp['role'] as String,
-                period: exp['period'] as String,
-                location: exp['location'] as String,
-                highlights: exp['highlights'] as List<String>,
+                isLast: index == experiences.length - 1,
+                entry: exp,
                 theme: theme,
               ),
             );
@@ -123,21 +103,13 @@ class _GlassTimelineEntry extends StatefulWidget {
   const _GlassTimelineEntry({
     required this.index,
     required this.isLast,
-    required this.company,
-    required this.role,
-    required this.period,
-    required this.location,
-    required this.highlights,
+    required this.entry,
     required this.theme,
   });
 
   final int index;
   final bool isLast;
-  final String company;
-  final String role;
-  final String period;
-  final String location;
-  final List<String> highlights;
+  final ExperienceEntry entry;
   final ThemeData theme;
 
   @override
@@ -149,6 +121,7 @@ class _GlassTimelineEntryState extends State<_GlassTimelineEntry> {
 
   @override
   Widget build(BuildContext context) {
+    final entry = widget.entry;
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,27 +131,11 @@ class _GlassTimelineEntryState extends State<_GlassTimelineEntry> {
             width: 40,
             child: Column(
               children: [
-                // Gold dot with glow
-                Container(
-                  width: 16,
-                  height: 16,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        widget.theme.colorScheme.primary,
-                        widget.theme.colorScheme.tertiary,
-                      ],
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: widget.theme.colorScheme.primary.withValues(
-                          alpha: 0.5,
-                        ),
-                        blurRadius: 12,
-                        spreadRadius: 2,
-                      ),
-                    ],
+                // 8-pointed star (Islamic geometric motif)
+                CustomPaint(
+                  size: const Size(16, 16),
+                  painter: _EightPointedStarPainter(
+                    color: widget.theme.colorScheme.primary,
                   ),
                 ),
                 if (!widget.isLast)
@@ -240,34 +197,41 @@ class _GlassTimelineEntryState extends State<_GlassTimelineEntry> {
                       : null,
                 ),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.role,
+                                entry.role,
                                 style: widget.theme.textTheme.titleMedium
                                     ?.copyWith(
                                       fontWeight: FontWeight.w600,
                                       color: widget.theme.colorScheme.onSurface,
                                     ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                widget.company,
+                                entry.company,
                                 style: widget.theme.textTheme.bodyLarge
                                     ?.copyWith(
                                       color: widget.theme.colorScheme.primary,
                                       fontWeight: FontWeight.w500,
                                     ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),
                         ),
+                        const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 14,
@@ -284,7 +248,7 @@ class _GlassTimelineEntryState extends State<_GlassTimelineEntry> {
                             ),
                           ),
                           child: Text(
-                            widget.period,
+                            entry.period,
                             style: widget.theme.textTheme.bodySmall?.copyWith(
                               color: widget.theme.colorScheme.primary,
                               fontWeight: FontWeight.w500,
@@ -293,41 +257,56 @@ class _GlassTimelineEntryState extends State<_GlassTimelineEntry> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 6),
-                    Text(
-                      '📍 ${widget.location}',
-                      style: widget.theme.textTheme.bodySmall?.copyWith(
-                        color: widget.theme.colorScheme.onSurfaceVariant,
+                    if (entry.location.isNotEmpty) ...[
+                      const SizedBox(height: 6),
+                      Text(
+                        '📍 ${entry.location}',
+                        style: widget.theme.textTheme.bodySmall?.copyWith(
+                          color: widget.theme.colorScheme.onSurfaceVariant,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
+                    ],
                     const SizedBox(height: 18),
-                    ...widget.highlights.map(
-                      (h) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 6),
-                              child: Container(
-                                width: 6,
-                                height: 6,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: widget.theme.colorScheme.primary
-                                      .withValues(alpha: 0.6),
+                    Flexible(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: entry.highlights
+                            .map(
+                              (h) => Padding(
+                                padding: const EdgeInsets.only(bottom: 8),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 6),
+                                      child: Container(
+                                        width: 6,
+                                        height: 6,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: widget
+                                              .theme
+                                              .colorScheme
+                                              .primary
+                                              .withValues(alpha: 0.6),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Text(
+                                        h,
+                                        style:
+                                            widget.theme.textTheme.bodyMedium,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                h,
-                                style: widget.theme.textTheme.bodyMedium,
-                              ),
-                            ),
-                          ],
-                        ),
+                            )
+                            .toList(),
                       ),
                     ),
                   ],
@@ -339,4 +318,40 @@ class _GlassTimelineEntryState extends State<_GlassTimelineEntry> {
       ),
     );
   }
+}
+
+class _EightPointedStarPainter extends CustomPainter {
+  _EightPointedStarPainter({required this.color});
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+    final cx = size.width / 2;
+    final cy = size.height / 2;
+    final outer = size.width / 2;
+    final inner = outer * 0.4;
+    final path = Path();
+    for (int i = 0; i < 8; i++) {
+      final angle = (i * 45 - 90) * math.pi / 180;
+      final nextAngle = ((i * 45 + 22.5) - 90) * math.pi / 180;
+      final ox = cx + outer * math.cos(angle);
+      final oy = cy + outer * math.sin(angle);
+      final ix = cx + inner * math.cos(nextAngle);
+      final iy = cy + inner * math.sin(nextAngle);
+      if (i == 0) {
+        path.moveTo(ox, oy);
+      } else {
+        path.lineTo(ox, oy);
+      }
+      path.lineTo(ix, iy);
+    }
+    path.close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

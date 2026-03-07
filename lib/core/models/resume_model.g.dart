@@ -103,6 +103,19 @@ _ProjectEntry _$ProjectEntryFromJson(Map<String, dynamic> json) =>
       github: json['github'] as String?,
       demo: json['demo'] as String?,
       imageUrl: json['imageUrl'] as String?,
+      googlePlayUrl: json['googlePlayUrl'] as String?,
+      appStoreUrl: json['appStoreUrl'] as String?,
+      liveDemoUrl: json['liveDemoUrl'] as String?,
+      responsibilities:
+          (json['responsibilities'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      hardestFeatures:
+          (json['hardestFeatures'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$ProjectEntryToJson(_ProjectEntry instance) =>
@@ -114,6 +127,11 @@ Map<String, dynamic> _$ProjectEntryToJson(_ProjectEntry instance) =>
       'github': instance.github,
       'demo': instance.demo,
       'imageUrl': instance.imageUrl,
+      'googlePlayUrl': instance.googlePlayUrl,
+      'appStoreUrl': instance.appStoreUrl,
+      'liveDemoUrl': instance.liveDemoUrl,
+      'responsibilities': instance.responsibilities,
+      'hardestFeatures': instance.hardestFeatures,
     };
 
 _EducationEntry _$EducationEntryFromJson(Map<String, dynamic> json) =>

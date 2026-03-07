@@ -1,20 +1,32 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:portoflio/shared/widgets/magnetic_button.dart';
+import 'package:portoflio/shared/widgets/tilt_hover_card.dart';
+import 'package:portoflio/theme/app_theme.dart';
 
-/// Full-viewport hero section with:
+/// Full-viewport hero section with name and tagline from resume (Gist/local).
 /// - 3D perspective tilt on mouse movement
 /// - Typewriter effect on tagline
 /// - Animated gradient underline sweep
 /// - Staggered entrance animations
 /// - Scroll-fade (opacity + scale reduces on scroll)
 /// - Magnetic hover CTA
-///
-/// Performance: [ValueNotifier] for mouse offset limits rebuilds to 3D transform
-/// layer only; typewriter uses isolated [ValueNotifier] to avoid full rebuilds.
 class HeroSection extends StatefulWidget {
-  const HeroSection({super.key});
+  const HeroSection({
+    super.key,
+    required this.name,
+    required this.tagline,
+    this.storyPreamble,
+    this.storyLine,
+  });
+
+  final String name;
+  final String tagline;
+  final String? storyPreamble;
+  final String? storyLine;
 
   @override
   State<HeroSection> createState() => _HeroSectionState();
@@ -22,17 +34,11 @@ class HeroSection extends StatefulWidget {
 
 class _HeroSectionState extends State<HeroSection>
     with TickerProviderStateMixin {
-  // Entrance animation controllers
   late AnimationController _nameController;
   late AnimationController _taglineController;
   late AnimationController _ctaController;
   late AnimationController _underlineController;
 
-  // 3D perspective — ValueNotifier so only transform layer rebuilds
-  final ValueNotifier<Offset> _mouseOffset = ValueNotifier(Offset.zero);
-
-  // Typewriter state — isolated to avoid full HeroSection rebuilds
-  static const String _fullTagline = 'Senior Flutter Developer & Team Lead';
   final ValueNotifier<String> _displayedTagline = ValueNotifier('');
   final ValueNotifier<bool> _showCursor = ValueNotifier(true);
   Timer? _typewriterTimer;
@@ -42,47 +48,39 @@ class _HeroSectionState extends State<HeroSection>
   @override
   void initState() {
     super.initState();
-
     _nameController = AnimationController(
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 550),
       vsync: this,
     );
     _taglineController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 350),
       vsync: this,
     );
     _ctaController = AnimationController(
-      duration: const Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 400),
       vsync: this,
     );
     _underlineController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 650),
       vsync: this,
     );
 
-    // Staggered entrance
     _nameController.forward();
-    Future.delayed(const Duration(milliseconds: 600), () {
+    final tagline = widget.tagline;
+    Future.delayed(const Duration(milliseconds: 350), () {
       if (mounted) {
         _underlineController.forward();
-        _startTypewriter();
+        _startTypewriter(tagline);
       }
     });
-    Future.delayed(
-      const Duration(milliseconds: 1800 + _fullTagline.length * 50),
-      () {
-        if (mounted) _taglineController.forward();
-      },
-    );
-    Future.delayed(
-      const Duration(milliseconds: 2200 + _fullTagline.length * 50),
-      () {
-        if (mounted) _ctaController.forward();
-      },
-    );
+    Future.delayed(Duration(milliseconds: 950 + tagline.length * 30), () {
+      if (mounted) _taglineController.forward();
+    });
+    Future.delayed(Duration(milliseconds: 1200 + tagline.length * 30), () {
+      if (mounted) _ctaController.forward();
+    });
 
-    // Blinking cursor — updates ValueNotifier, only typewriter row rebuilds
-    _cursorTimer = Timer.periodic(const Duration(milliseconds: 530), (timer) {
+    _cursorTimer = Timer.periodic(const Duration(milliseconds: 400), (timer) {
       if (!mounted) {
         timer.cancel();
         return;
@@ -91,17 +89,29 @@ class _HeroSectionState extends State<HeroSection>
     });
   }
 
-  void _startTypewriter() {
-    _typewriterTimer = Timer.periodic(const Duration(milliseconds: 55), (
+  @override
+  void didUpdateWidget(covariant HeroSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.tagline != widget.tagline) {
+      _typewriterTimer?.cancel();
+      _charIndex = 0;
+      _displayedTagline.value = '';
+      _startTypewriter(widget.tagline);
+    }
+  }
+
+  void _startTypewriter(String fullTagline) {
+    _typewriterTimer?.cancel();
+    _typewriterTimer = Timer.periodic(const Duration(milliseconds: 38), (
       timer,
     ) {
       if (!mounted) {
         timer.cancel();
         return;
       }
-      if (_charIndex < _fullTagline.length) {
+      if (_charIndex < fullTagline.length) {
         _charIndex++;
-        _displayedTagline.value = _fullTagline.substring(0, _charIndex);
+        _displayedTagline.value = fullTagline.substring(0, _charIndex);
       } else {
         timer.cancel();
       }
@@ -116,7 +126,6 @@ class _HeroSectionState extends State<HeroSection>
     _underlineController.dispose();
     _typewriterTimer?.cancel();
     _cursorTimer?.cancel();
-    _mouseOffset.dispose();
     _displayedTagline.dispose();
     _showCursor.dispose();
     super.dispose();
@@ -127,69 +136,38 @@ class _HeroSectionState extends State<HeroSection>
     final theme = Theme.of(context);
     final size = MediaQuery.sizeOf(context);
     final isDesktop = size.width >= 1200;
-    final center = Offset(size.width / 2, size.height / 2);
 
-    return MouseRegion(
-      onHover: (event) {
-        _mouseOffset.value = Offset(
-          (event.position.dx - center.dx) / center.dx,
-          (event.position.dy - center.dy) / center.dy,
-        );
-      },
-      child: SizedBox(
-        height: size.height,
-        child: Center(
-          child: ListenableBuilder(
-            listenable: _mouseOffset,
-            builder: (context, _) {
-              final offset = _mouseOffset.value;
-              final rotateY = offset.dx * 0.015;
-              final rotateX = -offset.dy * 0.015;
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeOutSine,
-                transform: Matrix4.identity()
-                  ..setEntry(3, 2, 0.001) // perspective
-                  ..rotateX(rotateX)
-                  ..rotateY(rotateY),
-                transformAlignment: Alignment.center,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isDesktop ? 120 : 28,
+    return SizedBox(
+      height: size.height,
+      child: Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: isDesktop ? 72 : 20),
+          child: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            child: isDesktop
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        flex: 7,
+                        child: _buildLeftColumn(theme, isDesktop),
+                      ),
+                      const SizedBox(width: 48),
+                      Expanded(flex: 5, child: _buildPortraitCard(theme)),
+                    ],
+                  )
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildPillTag(theme),
+                      const SizedBox(height: 24),
+                      _buildPortraitCard(theme),
+                      const SizedBox(height: 24),
+                      _buildLeftColumn(theme, isDesktop),
+                    ],
                   ),
-                  child: SingleChildScrollView(
-                    physics: const ClampingScrollPhysics(),
-                    child: isDesktop
-                        ? Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                flex: 7,
-                                child: _buildLeftColumn(theme, isDesktop),
-                              ),
-                              const SizedBox(width: 48),
-                              Expanded(
-                                flex: 5,
-                                child: _buildPortraitCard(theme, offset),
-                              ),
-                            ],
-                          )
-                        : Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _buildPillTag(theme),
-                              const SizedBox(height: 24),
-                              _buildPortraitCard(theme, offset),
-                              const SizedBox(height: 24),
-                              _buildLeftColumn(theme, isDesktop),
-                            ],
-                          ),
-                  ),
-                ),
-              );
-            },
           ),
         ),
       ),
@@ -206,49 +184,76 @@ class _HeroSectionState extends State<HeroSection>
         ).value.clamp(0.0, 1.0),
         child: child,
       ),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.primary.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(999),
-          border: Border.all(
-            color: theme.colorScheme.primary.withValues(alpha: 0.3),
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary,
-                shape: BoxShape.circle,
+      child:
+          Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'OPEN FOR GLOBAL COLLABORATIONS',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+              .animate(onPlay: (c) => c.repeat())
+              .shimmer(
+                duration: 2400.ms,
+                delay: 1800.ms,
+                color: theme.colorScheme.primary.withValues(alpha: 0.35),
               ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'OPEN FOR GLOBAL COLLABORATIONS',
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 1.5,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
   Widget _buildLeftColumn(ThemeData theme, bool isDesktop) {
     return Column(
-      crossAxisAlignment:
-          isDesktop ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      crossAxisAlignment: isDesktop
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         _buildPillTag(theme),
-        const SizedBox(height: 24),
+        const SizedBox(height: 20),
+        // Arabesque ornamental divider
+        _ArabesqueDivider(
+          align: isDesktop ? Alignment.centerLeft : Alignment.center,
+        ),
+        const SizedBox(height: 20),
+        if (widget.storyPreamble != null) ...[
+          Text(
+            widget.storyPreamble!,
+            style: AppTheme.narrativeStyle(
+              fontSize: isDesktop ? 20 : 16,
+              color: theme.colorScheme.primary.withValues(alpha: 0.8),
+            ),
+            textAlign: isDesktop ? TextAlign.start : TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+        ],
         _buildName(theme, isDesktop),
         const SizedBox(height: 20),
         _buildSubtitle(theme, isDesktop),
@@ -258,25 +263,23 @@ class _HeroSectionState extends State<HeroSection>
     );
   }
 
-  Widget _buildPortraitCard(ThemeData theme, Offset mouseOffset) {
-    const double size = 320;
-    final rotateY = mouseOffset.dx * 0.05;
-    final rotateX = -mouseOffset.dy * 0.05;
-    return AnimatedBuilder(
-      animation: _nameController,
-      builder: (context, child) => Opacity(
-        opacity: CurvedAnimation(
-          parent: _nameController,
-          curve: const Cubic(0.16, 1, 0.3, 1),
-        ).value.clamp(0.0, 1.0),
-        child: child,
-      ),
-      child: Transform(
-        transform: Matrix4.identity()
-          ..setEntry(3, 2, 0.002)
-          ..rotateX(rotateX)
-          ..rotateY(rotateY),
-        alignment: Alignment.center,
+  Widget _buildPortraitCard(ThemeData theme) {
+    const double size = 400;
+    return TiltHoverCard(
+      tiltStrength: 0.14,
+      followSpeed: 12.0,
+      hoverLift: 6.0,
+      resetDuration: const Duration(milliseconds: 500),
+      resetCurve: Curves.easeOutBack,
+      builder: (context, isHovered) => AnimatedBuilder(
+        animation: _nameController,
+        builder: (context, child) => Opacity(
+          opacity: CurvedAnimation(
+            parent: _nameController,
+            curve: const Cubic(0.16, 1, 0.3, 1),
+          ).value.clamp(0.0, 1.0),
+          child: child,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -305,14 +308,14 @@ class _HeroSectionState extends State<HeroSection>
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  ColorFiltered(
-                    colorFilter: const ColorFilter.mode(
-                      Colors.grey,
-                      BlendMode.saturation,
-                    ),
-                    child: Image.network(
-                      'https://lh3.googleusercontent.com/aida-public/AB6AXuCHBE7N4VxYN66S_gf5pUkIoDN5UJYjGj5Iq1CuOXzrGmbTKG6JBsIvtf_Js5R5Vdl3_fH2maP83XPfyRUne3yJD2OC-ymOvo34Hh2btD4W96bECMJYIJG-nN7QqUvsh0b5uDTcdMd1NkCE0g6vEQvXrtSIn-AYhTfoRTvogCdhnxfTzSun3GYFZRRBbIfE05XBogRxiz7TciDLsPQFicTbGD9ILssX9gtGQA4fUgyQyeJxTMKajOf_S8eKDQ7MzJ028U65nUQYncps',
+                  // Zoom slightly and align so face is centered (crops background)
+                  Transform.scale(
+                    scale: 1.15,
+                    alignment: const Alignment(0, -0.25),
+                    child: Image.asset(
+                      'assets/images/avatar.jpeg',
                       fit: BoxFit.cover,
+                      alignment: const Alignment(0, -0.35),
                       errorBuilder: (context, error, stackTrace) => Container(
                         color: theme.colorScheme.surfaceContainerHighest,
                         child: Icon(
@@ -323,7 +326,8 @@ class _HeroSectionState extends State<HeroSection>
                       ),
                     ),
                   ),
-                  const Positioned(
+                  // Stronger gradient to fade out background and keep focus on face
+                  Positioned(
                     left: 0,
                     right: 0,
                     top: 0,
@@ -335,9 +339,10 @@ class _HeroSectionState extends State<HeroSection>
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            Colors.transparent,
-                            Color(0xE6050A15),
+                            theme.colorScheme.surface.withValues(alpha: 0.2),
+                            theme.colorScheme.surface.withValues(alpha: 0.85),
                           ],
+                          stops: const [0.0, 0.5, 1.0],
                         ),
                       ),
                     ),
@@ -352,7 +357,9 @@ class _HeroSectionState extends State<HeroSection>
                         color: theme.colorScheme.surface.withValues(alpha: 0.7),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: theme.colorScheme.primary.withValues(alpha: 0.15),
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: 0.15,
+                          ),
                         ),
                       ),
                       child: Column(
@@ -408,33 +415,7 @@ class _HeroSectionState extends State<HeroSection>
             ? CrossAxisAlignment.start
             : CrossAxisAlignment.center,
         children: [
-          Text(
-            'Abdullah',
-            style: theme.textTheme.displayLarge?.copyWith(
-              fontSize: isDesktop ? 80 : 48,
-              height: 1.0,
-            ),
-            textAlign: isDesktop ? TextAlign.start : TextAlign.center,
-          ),
-          // Name with gold gradient
-          ShaderMask(
-            shaderCallback: (bounds) => LinearGradient(
-              colors: [
-                theme.colorScheme.primary, // gold
-                theme.colorScheme.tertiary, // amber
-                theme.colorScheme.primary,
-              ],
-            ).createShader(bounds),
-            child: Text(
-              'Mohammed',
-              style: theme.textTheme.displayLarge?.copyWith(
-                fontSize: isDesktop ? 80 : 48,
-                height: 1.0,
-                color: Colors.white, // ShaderMask needs white base
-              ),
-              textAlign: isDesktop ? TextAlign.start : TextAlign.center,
-            ),
-          ),
+          ..._buildNameParts(theme, isDesktop),
           const SizedBox(height: 8),
           // Animated gradient underline
           AnimatedBuilder(
@@ -466,6 +447,42 @@ class _HeroSectionState extends State<HeroSection>
     );
   }
 
+  List<Widget> _buildNameParts(ThemeData theme, bool isDesktop) {
+    final parts = widget.name.trim().split(RegExp(r'\s+'));
+    final first = parts.isNotEmpty ? parts.first : '';
+    final rest = parts.length > 1 ? parts.sublist(1).join(' ') : '';
+    return [
+      if (first.isNotEmpty)
+        Text(
+          first,
+          style: theme.textTheme.displayLarge?.copyWith(
+            fontSize: isDesktop ? 80 : 48,
+            height: 1.0,
+          ),
+          textAlign: isDesktop ? TextAlign.start : TextAlign.center,
+        ),
+      if (rest.isNotEmpty)
+        ShaderMask(
+          shaderCallback: (bounds) => LinearGradient(
+            colors: [
+              theme.colorScheme.primary,
+              theme.colorScheme.tertiary,
+              theme.colorScheme.primary,
+            ],
+          ).createShader(bounds),
+          child: Text(
+            rest,
+            style: theme.textTheme.displayLarge?.copyWith(
+              fontSize: isDesktop ? 80 : 48,
+              height: 1.0,
+              color: Colors.white,
+            ),
+            textAlign: isDesktop ? TextAlign.start : TextAlign.center,
+          ),
+        ),
+    ];
+  }
+
   Widget _buildSubtitle(ThemeData theme, bool isDesktop) {
     final animation = CurvedAnimation(
       parent: _taglineController,
@@ -480,13 +497,68 @@ class _HeroSectionState extends State<HeroSection>
           child: child,
         ),
       ),
-      child: Text(
-        'Crafting beautiful, performant mobile experiences\nwith Flutter & advanced architecture patterns',
-        style: theme.textTheme.bodyLarge?.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
-          height: 1.8,
-        ),
-        textAlign: isDesktop ? TextAlign.start : TextAlign.center,
+      child: ValueListenableBuilder<String>(
+        valueListenable: _displayedTagline,
+        builder: (context, displayed, _) {
+          return ValueListenableBuilder<bool>(
+            valueListenable: _showCursor,
+            builder: (context, showCursor, __) {
+              return Column(
+                crossAxisAlignment: isDesktop
+                    ? CrossAxisAlignment.start
+                    : CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    displayed + (showCursor ? '▌' : ''),
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      height: 1.8,
+                    ),
+                    textAlign: isDesktop ? TextAlign.start : TextAlign.center,
+                  ),
+                  if (widget.storyLine != null) ...[
+                    const SizedBox(height: 16),
+                    // Accented story line with left gold border
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          left: BorderSide(
+                            color: theme.colorScheme.primary.withValues(
+                              alpha: 0.6,
+                            ),
+                            width: 3,
+                          ),
+                        ),
+                        color: theme.colorScheme.primary.withValues(
+                          alpha: 0.04,
+                        ),
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(8),
+                          bottomRight: Radius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        widget.storyLine!,
+                        style: AppTheme.narrativeStyle(
+                          fontSize: isDesktop ? 16 : 14,
+                          color: theme.colorScheme.onSurfaceVariant.withValues(
+                            alpha: 0.8,
+                          ),
+                        ),
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                  ],
+                ],
+              );
+            },
+          );
+        },
       ),
     );
   }
@@ -510,7 +582,7 @@ class _HeroSectionState extends State<HeroSection>
         runSpacing: 12,
         alignment: isDesktop ? WrapAlignment.start : WrapAlignment.center,
         children: [
-          _MagneticButton(
+          MagneticButton(
             onTap: () => context.go('/projects'),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
@@ -550,7 +622,7 @@ class _HeroSectionState extends State<HeroSection>
               ),
             ),
           ),
-          _MagneticButton(
+          MagneticButton(
             onTap: () => context.go('/about'),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
@@ -576,64 +648,65 @@ class _HeroSectionState extends State<HeroSection>
   }
 }
 
-/// Magnetic hover button — slightly translates toward cursor.
-class _MagneticButton extends StatefulWidget {
-  const _MagneticButton({required this.child, required this.onTap});
-  final Widget child;
-  final VoidCallback onTap;
+// ─── Arabesque ornamental divider for HeroSection ────────────────────────────
 
-  @override
-  State<_MagneticButton> createState() => _MagneticButtonState();
-}
-
-class _MagneticButtonState extends State<_MagneticButton> {
-  final ValueNotifier<Offset> _offset = ValueNotifier(Offset.zero);
-  final ValueNotifier<bool> _isHovered = ValueNotifier(false);
-
-  @override
-  void dispose() {
-    _offset.dispose();
-    _isHovered.dispose();
-    super.dispose();
-  }
+class _ArabesqueDivider extends StatelessWidget {
+  const _ArabesqueDivider({required this.align});
+  final Alignment align;
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => _isHovered.value = true,
-      onExit: (_) {
-        _isHovered.value = false;
-        _offset.value = Offset.zero;
-      },
-      onHover: (event) {
-        if (!_isHovered.value) return;
-        final renderBox = context.findRenderObject() as RenderBox?;
-        if (renderBox == null) return;
-        final size = renderBox.size;
-        final center = Offset(size.width / 2, size.height / 2);
-        final delta = event.localPosition - center;
-        _offset.value = Offset(delta.dx * 0.2, delta.dy * 0.2);
-      },
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: ListenableBuilder(
-          listenable: Listenable.merge([_offset, _isHovered]),
-          builder: (context, _) {
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeOutCubic,
-              // ignore: deprecated_member_use
-              transform: Matrix4.identity()
-                // ignore: deprecated_member_use
-                ..translate(_offset.value.dx, _offset.value.dy)
-                // ignore: deprecated_member_use
-                ..scale(_isHovered.value ? 1.06 : 1.0),
-              transformAlignment: Alignment.center,
-              child: widget.child,
-            );
-          },
-        ),
+    final gold = AppTheme.saffron;
+    return Align(
+      alignment: align,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _line(gold, 24),
+          _gem(gold, 8),
+          _line(gold, 48),
+          _gem(gold, 12),
+          _line(gold, 48),
+          _gem(gold, 8),
+          _line(gold, 24),
+        ],
       ),
     );
   }
+
+  Widget _line(Color c, double w) => Container(
+    width: w,
+    height: 1,
+    margin: const EdgeInsets.symmetric(horizontal: 2),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          c.withValues(alpha: 0.0),
+          c.withValues(alpha: 0.7),
+          c.withValues(alpha: 0.0),
+        ],
+      ),
+    ),
+  );
+
+  Widget _gem(Color c, double size) => Container(
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      color: c.withValues(alpha: 0.15),
+      border: Border.all(color: c.withValues(alpha: 0.5), width: 1),
+      shape: BoxShape.rectangle,
+      borderRadius: BorderRadius.circular(2),
+    ),
+    child: Center(
+      child: Container(
+        width: size * 0.4,
+        height: size * 0.4,
+        decoration: BoxDecoration(
+          color: c.withValues(alpha: 0.6),
+          shape: BoxShape.circle,
+        ),
+      ),
+    ),
+  );
 }

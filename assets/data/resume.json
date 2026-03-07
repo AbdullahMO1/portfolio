@@ -1,0 +1,424 @@
+{
+  "meta": {
+    "name": "Abdullah Mohammed",
+    "tagline": "Senior Mobile & Flutter Engineer",
+    "email": "abdullahaboelkhair1@gmail.com",
+    "github": "https://github.com/abdullahmohammed",
+    "linkedin": "https://linkedin.com/in/abdullahmohammed",
+    "location": "Cairo, Egypt",
+    "avatarUrl": ""
+  },
+  "about": "Senior Mobile & Flutter Engineer with 5+ years of experience building secure, high-performance applications at scale using Flutter, Dart, and modular architecture. Specialized in location-based services, real-time features, and optimized UI frameworks used by hundreds of thousands of users across MENA region. Strong contributor in software architecture, CI/CD automation, product delivery, and cross-functional collaboration. Skilled at transforming business requirements into efficient technical solutions while mentoring developers and improving engineering standards.",
+  "skills": [
+    {
+      "category": "Programming Languages",
+      "items": ["Dart", "Java", "Kotlin", "TypeScript"]
+    },
+    {
+      "category": "Frameworks & Libraries", 
+      "items": ["Flutter", "Jetpack Compose", "Angular"]
+    },
+    {
+      "category": "Architecture Patterns",
+      "items": ["Clean Architecture", "MVVM", "SOLID Principles", "Modular Architecture"]
+    },
+    {
+      "category": "State Management",
+      "items": ["BLoC", "Cubit", "Provider", "Riverpod", "RxDart"]
+    },
+    {
+      "category": "Backend & APIs",
+      "items": ["Firebase", "Google Cloud", "Azure", "GraphQL", "REST APIs"]
+    },
+    {
+      "category": "DevOps & CI/CD",
+      "items": ["GitLab CI", "Fastlane", "Firebase App Distribution", "Docker", "Codemagic", "GitHub Actions", "Bitrise"]
+    },
+    {
+      "category": "Mobile Specializations",
+      "items": ["Google Maps", "Geolocation", "Offline First", "WebSockets", "Secure Authentication", "JWT", "OAuth2", "SSO", "SAML"]
+    },
+    {
+      "category": "Testing & Monitoring",
+      "items": ["Unit Testing", "Widget Testing", "Integration Testing", "Crash Monitoring", "Performance Monitoring"]
+    }
+  ],
+  "experience": [
+    {
+      "company": "MENTECH (Previously Calvis)",
+      "role": "Senior Mobile Software Engineer",
+      "period": "Jan 2023 – Present",
+      "location": "6th of October, Egypt",
+      "highlights": [
+        "Leading design and development of scalable Flutter applications using clean modular architecture, ensuring maintainability and long-term product evolution",
+        "Developed and optimized end-to-end mobile modules including navigation flow, secure authentication, deep integrations with REST/GraphQL APIs, caching layers, and offline-support capabilities",
+        "Designed and maintained CI/CD pipelines utilizing GitLab CI, Fastlane, Firebase App Distribution, leading to a significant reduction in release cycles and build failures",
+        "Conduct detailed performance profiling to enhance rendering speed, reduce app size, and eliminate runtime regressions",
+        "Collaborate closely with backend and product teams to refine API contracts, error-handling conventions, feature feasibility, and data synchronization strategies",
+        "Provide mentorship and technical guidance to junior engineers — reviewing code, improving testing discipline, and establishing best engineering practices",
+        "Oversee secure development practices through OAuth2, JWT, encryption, and secure local data storage mechanisms"
+      ]
+    },
+    {
+      "company": "Spark Systems",
+      "role": "Senior Flutter Mobile Developer",
+      "period": "Jan 2024 – Mar 2025",
+      "location": "Full Time",
+      "highlights": [
+        "Architected advanced mobile features including real-time navigation, payment workflows, chat, and analytics integrations that enhanced user satisfaction and business engagement",
+        "Played a major role in apps achieving substantial growth: Padle Rush (10K+ downloads), Sela Super App (40K+ downloads) with high retention metrics",
+        "Upgraded architecture using SOLID principles and separation of concerns, reducing crash rates by 30% and improving scalability",
+        "Designed automated release pipelines enabling parallel distribution for testing and production across both iOS and Android platforms",
+        "Built high-quality UI experiences with custom animations, reusable components, and accessibility improvements aligned with Material standards",
+        "Integrated Google Maps, geolocation, and route-tracking SDKs enabling location-based features and geo-services enhancements"
+      ]
+    },
+    {
+      "company": "Tap – Digital Business Card",
+      "role": "Senior Flutter Developer (Part-Time)",
+      "period": "Jan 2025 – Nov 2025",
+      "location": "Part Time",
+      "highlights": [
+        "Designed and delivered complete digital business card ecosystem including creation, scanning, NFC-sharing, QR-code identity exchange, and smart deep-linking",
+        "Integrated enterprise SSO/SAML authentication and secure session handling, enabling corporate onboarding requirements",
+        "Implemented offline-first architecture with smart data caching, reducing dependency on connectivity and improving startup experience",
+        "Built CI/CD automation pipelines accelerating delivery while improving testing coverage and version control discipline",
+        "Improved app performance by optimizing memory footprint, asynchronous operations, and media handling routines"
+      ]
+    },
+    {
+      "company": "IJD Creatives",
+      "role": "Flutter Developer",
+      "period": "May 2020 – Dec 2022",
+      "location": "Full Time",
+      "highlights": [
+        "Contributed to multiple successful production apps: Deliverzy (10K+ downloads), Nology Store (40K+ downloads), El Khetta (100K+ downloads), Benefx (30K+), Emart (20K+)",
+        "Developed critical features such as Google Maps-enabled delivery, real-time driver tracking, checkout/payment flows, and secure login mechanisms",
+        "Implemented GraphQL, efficient data caching strategies, and UI rendering optimization for responsiveness across device categories",
+        "Established internal component libraries enabling UI consistency and faster delivery across products",
+        "Supported test-driven development by writing unit, widget, and integration tests for core modules",
+        "Participated in CI/CD automation, improving deployment speed and eliminating manual release errors"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "1",
+      "title": "Tap – Digital Business Card",
+      "description": "Digital business card platform with NFC, QR exchange, deep-linking, SSO/SAML login, offline previews, and CI/CD automation.",
+      "tech": ["Flutter", "Dart", "NFC", "QR Code", "SSO", "SAML", "Offline First", "CI/CD"],
+      "github": "https://github.com/abdullahmohammed/tap-digital-card",
+      "demo": "https://tap-digital-card-demo.vercel.app",
+      "imageUrl": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=500&fit=crop",
+      "googlePlayUrl": "https://play.google.com/store/apps/details?id=com.tap.digitalcard",
+      "appStoreUrl": "https://apps.apple.com/app/tap-digital-card/id1234567890",
+      "liveDemoUrl": "https://tap-digital-card-demo.vercel.app",
+      "responsibilities": [
+        "Designed and delivered complete digital business card ecosystem",
+        "Implemented NFC-sharing and QR-code identity exchange",
+        "Integrated enterprise SSO/SAML authentication",
+        "Built offline-first architecture with smart data caching",
+        "Created CI/CD automation pipelines"
+      ],
+      "hardestFeatures": [
+        "NFC integration and QR code generation",
+        "Enterprise SSO/SAML authentication",
+        "Offline data synchronization",
+        "Smart deep-linking system"
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Pepwell – Employee Wellness SuperApp",
+      "description": "Employee wellness platform with home experience, search, offers, login, map-based features, settings, and reusable components.",
+      "tech": ["Flutter", "Dart", "Google Maps", "Geolocation", "State Management", "Modular Architecture"],
+      "github": "https://github.com/abdullahmohammed/pepwell",
+      "demo": "https://pepwell-demo.vercel.app",
+      "imageUrl": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=500&fit=crop",
+      "googlePlayUrl": "https://play.google.com/store/apps/details?id=com.pepwell.wellness",
+      "appStoreUrl": "https://apps.apple.com/app/pepwell-wellness/id1234567891",
+      "liveDemoUrl": "https://pepwell-demo.vercel.app",
+      "responsibilities": [
+        "Implemented home experience and search modules",
+        "Built offers management system",
+        "Created employee login and authentication",
+        "Developed map-based nearby features",
+        "Designed settings and language selection",
+        "Built reusable component library"
+      ],
+      "hardestFeatures": [
+        "Complex state management for wellness tracking",
+        "Map integration with location-based services",
+        "Modular architecture implementation",
+        "Multi-language support system"
+      ]
+    },
+    {
+      "id": "3",
+      "title": "Al Auf – Corporate Ride-Hailing App",
+      "description": "Corporate ride-hailing application with trip management, live tracking, driver navigation, and service modules.",
+      "tech": ["Flutter", "Dart", "Google Maps", "Real-time Tracking", "WebSockets", "CI/CD"],
+      "github": "https://github.com/abdullahmohammed/al-auf",
+      "demo": "https://al-auf-demo.vercel.app",
+      "imageUrl": "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&h=500&fit=crop",
+      "googlePlayUrl": "https://play.google.com/store/apps/details?id=com.alauf.ride",
+      "appStoreUrl": "https://apps.apple.com/app/al-auf-ride/id1234567892",
+      "liveDemoUrl": "https://al-auf-demo.vercel.app",
+      "responsibilities": [
+        "Led mobile team as Senior Flutter Developer",
+        "Built trip management system",
+        "Implemented live tracking functionality",
+        "Created driver navigation features",
+        "Developed arrival detection system",
+        "Built service modules and CI/CD",
+        "Mentored junior developers",
+        "Optimized map performance"
+      ],
+      "hardestFeatures": [
+        "Real-time location tracking and synchronization",
+        "Complex driver-passenger matching algorithm",
+        "Performance optimization for map rendering",
+        "Team leadership and mentoring"
+      ]
+    },
+    {
+      "id": "4",
+      "title": "Real Deal – Vendor & Client Apps / Car Marketplace",
+      "description": "Car marketplace platform with vendor dashboards, client apps, analytics, and comprehensive vehicle management.",
+      "tech": ["Flutter", "Dart", "Analytics", "Chat", "Payment Integration", "Real-time Features"],
+      "github": "https://github.com/abdullahmohammed/real-deal",
+      "demo": "https://real-deal-demo.vercel.app",
+      "imageUrl": "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&h=500&fit=crop",
+      "googlePlayUrl": "https://play.google.com/store/apps/details?id=com.realdeal.cars",
+      "appStoreUrl": "https://apps.apple.com/app/real-deal-cars/id1234567893",
+      "liveDemoUrl": "https://real-deal-demo.vercel.app",
+      "responsibilities": [
+        "Developed vendor dashboards with analytics",
+        "Built offers management system",
+        "Created notification flows",
+        "Implemented client browsing and search",
+        "Built nearby offers functionality",
+        "Integrated chat and payment systems"
+      ],
+      "hardestFeatures": [
+        "Multi-role user system (vendor/client)",
+        "Real-time chat implementation",
+        "Complex payment integration",
+        "Advanced search and filtering"
+      ]
+    },
+    {
+      "id": "5",
+      "title": "Deliverzy – Delivery App",
+      "description": "Dual customer/driver delivery app with real-time tracking, maps integration, in-app chat, and payment systems.",
+      "tech": ["Flutter", "Dart", "Google Maps", "WebSockets", "Real-time Tracking", "Chat", "Payment Integration"],
+      "github": "https://github.com/abdullahmohammed/deliverzy",
+      "demo": "https://deliverzy-demo.vercel.app",
+      "imageUrl": "https://images.unsplash.com/photo-15664762996978-9b9f0d5ae7b3?w=800&h=500&fit=crop",
+      "googlePlayUrl": "https://play.google.com/store/apps/details?id=com.deliverzy.app",
+      "appStoreUrl": "https://apps.apple.com/app/deliverzy/id1234567894",
+      "liveDemoUrl": "https://deliverzy-demo.vercel.app",
+      "responsibilities": [
+        "Built dual customer/driver app architecture",
+        "Implemented real-time tracking via maps and WebSockets",
+        "Created in-app chat system",
+        "Integrated payment workflows",
+        "Optimized app performance"
+      ],
+      "hardestFeatures": [
+        "Real-time driver tracking",
+        "WebSocket communication",
+        "Dual user role management",
+        "Performance optimization"
+      ]
+    },
+    {
+      "id": "6",
+      "title": "Nology Store – E-commerce Platform",
+      "description": "GraphQL-based shopping app with caching, animations, social login, live chat, and comprehensive testing.",
+      "tech": ["Flutter", "Dart", "GraphQL", "Caching", "Animations", "Social Login", "Chat", "Integration Testing"],
+      "github": "https://github.com/abdullahmohammed/nology-store",
+      "demo": "https://nology-store-demo.vercel.app",
+      "imageUrl": "https://images.unsplash.com/photo-1556742502-50725348104d?w=800&h=500&fit=crop",
+      "googlePlayUrl": "https://play.google.com/store/apps/details?id=com.nology.store",
+      "appStoreUrl": "https://apps.apple.com/app/nology-store/id1234567895",
+      "liveDemoUrl": "https://nology-store-demo.vercel.app",
+      "responsibilities": [
+        "Built GraphQL-based shopping application",
+        "Implemented efficient data caching strategies",
+        "Created smooth animations and transitions",
+        "Integrated social login functionality",
+        "Built live chat support system",
+        "Wrote comprehensive integration tests"
+      ],
+      "hardestFeatures": [
+        "GraphQL integration and caching",
+        "Complex animation systems",
+        "Real-time chat implementation",
+        "Comprehensive test coverage"
+      ]
+    },
+    {
+      "id": "7",
+      "title": "Sela SuperApp",
+      "description": "Super application with multiple modules, achieving 40K+ downloads with high retention metrics.",
+      "tech": ["Flutter", "Dart", "Modular Architecture", "State Management", "CI/CD"],
+      "github": "https://github.com/abdullahmohammed/sela-superapp",
+      "demo": "https://sela-superapp-demo.vercel.app",
+      "imageUrl": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=500&fit=crop",
+      "googlePlayUrl": "https://play.google.com/store/apps/details?id=com.sela.superapp",
+      "appStoreUrl": "https://apps.apple.com/app/sela-superapp/id1234567896",
+      "liveDemoUrl": "https://sela-superapp-demo.vercel.app",
+      "responsibilities": [
+        "Contributed to SuperApp architecture",
+        "Built multiple service modules",
+        "Implemented high-retention features",
+        "Optimized performance for scale"
+      ],
+      "hardestFeatures": [
+        "Modular SuperApp architecture",
+        "Cross-module communication",
+        "Performance optimization at scale",
+        "High user retention strategies"
+      ]
+    },
+    {
+      "id": "8",
+      "title": "El Khetta",
+      "description": "Successful mobile application with 100K+ downloads, featuring comprehensive design system and reusable components.",
+      "tech": ["Flutter", "Dart", "Design System", "Reusable Components", "Performance Optimization"],
+      "github": "https://github.com/abdullahmohammed/el-khetta",
+      "demo": "https://el-khetta-demo.vercel.app",
+      "imageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=500&fit=crop",
+      "googlePlayUrl": "https://play.google.com/store/apps/details?id=com.alkhetta.app",
+      "appStoreUrl": "https://apps.apple.com/app/el-khetta/id1234567897",
+      "liveDemoUrl": "https://el-khetta-demo.vercel.app",
+      "responsibilities": [
+        "Built successful app with 100K+ downloads",
+        "Established comprehensive design system",
+        "Created reusable component library",
+        "Optimized for high performance"
+      ],
+      "hardestFeatures": [
+        "Scalable design system",
+        "Component reusability",
+        "Performance at high user volume",
+        "UI consistency across features"
+      ]
+    },
+    {
+      "id": "9",
+      "title": "Padle Rush",
+      "description": "Mobile application with 10K+ downloads, focusing on reusable design systems and engaging user experience.",
+      "tech": ["Flutter", "Dart", "Design System", "Reusable Components", "Performance Optimization"],
+      "github": "https://github.com/abdullahmohammed/padle-rush",
+      "demo": "https://padle-rush-demo.vercel.app",
+      "imageUrl": "https://images.unsplash.com/photo-1572021335635-2cea16c9c7a3?w=800&h=500&fit=crop",
+      "googlePlayUrl": "https://play.google.com/store/apps/details?id=com.padlerush.game",
+      "appStoreUrl": "https://apps.apple.com/app/padle-rush/id1234567898",
+      "liveDemoUrl": "https://padle-rush-demo.vercel.app",
+      "responsibilities": [
+        "Built app with 10K+ downloads",
+        "Implemented reusable design system",
+        "Created engaging user experience",
+        "Optimized app performance"
+      ],
+      "hardestFeatures": [
+        "Reusable design system implementation",
+        "User engagement optimization",
+        "Performance tuning",
+        "Component library development"
+      ]
+    },
+    {
+      "id": "10",
+      "title": "Emart",
+      "description": "E-commerce application with secure login, payment integrations, chat functionality, and caching systems.",
+      "tech": ["Flutter", "Dart", "Payment Integration", "Chat", "Secure Authentication", "Caching", "CI/CD"],
+      "github": "https://github.com/abdullahmohammed/emart",
+      "demo": "https://emart-demo.vercel.app",
+      "imageUrl": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=500&fit=crop",
+      "googlePlayUrl": "https://play.google.com/store/apps/details?id=com.emart.shopping",
+      "appStoreUrl": "https://apps.apple.com/app/emart-shopping/id1234567899",
+      "liveDemoUrl": "https://emart-demo.vercel.app",
+      "responsibilities": [
+        "Built e-commerce platform",
+        "Implemented secure login systems",
+        "Integrated payment workflows",
+        "Created chat functionality",
+        "Developed caching strategies",
+        "Set up CI/CD pipelines"
+      ],
+      "hardestFeatures": [
+        "Secure payment integration",
+        "Real-time chat implementation",
+        "Advanced caching mechanisms",
+        "CI/CD automation"
+      ]
+    },
+    {
+      "id": "11",
+      "title": "Benefx",
+      "description": "Mobile application with 30K+ downloads, featuring secure login, payment integrations, forms, and caching systems.",
+      "tech": ["Flutter", "Dart", "Secure Authentication", "Payment Integration", "Forms", "Caching", "CI/CD"],
+      "github": "https://github.com/abdullahmohammed/benefx",
+      "demo": "https://benefx-demo.vercel.app",
+      "imageUrl": "https://images.unsplash.com/photo-1559526324-59f1b5b7ac4e?w=800&h=500&fit=crop",
+      "googlePlayUrl": "https://play.google.com/store/apps/details?id=com.benefx.app",
+      "appStoreUrl": "https://apps.apple.com/app/benefx/id1234567900",
+      "liveDemoUrl": "https://benefx-demo.vercel.app",
+      "responsibilities": [
+        "Built app with 30K+ downloads",
+        "Implemented secure authentication",
+        "Integrated payment systems",
+        "Created form systems",
+        "Developed caching solutions",
+        "Set up CI/CD pipelines"
+      ],
+      "hardestFeatures": [
+        "Secure authentication systems",
+        "Payment gateway integration",
+        "Complex form handling",
+        "Efficient caching implementation"
+      ]
+    },
+    {
+      "id": "12",
+      "title": "IRC",
+      "description": "Communication application with real-time messaging, secure authentication, and reusable design systems.",
+      "tech": ["Flutter", "Dart", "Real-time Communication", "Secure Authentication", "Design System", "CI/CD"],
+      "github": "https://github.com/abdullahmohammed/irc",
+      "demo": "https://irc-demo.vercel.app",
+      "imageUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=500&fit=crop",
+      "googlePlayUrl": "https://play.google.com/store/apps/details?id=com.irc.chat",
+      "appStoreUrl": "https://apps.apple.com/app/irc-chat/id1234567901",
+      "liveDemoUrl": "https://irc-demo.vercel.app",
+      "responsibilities": [
+        "Built real-time communication app",
+        "Implemented secure authentication",
+        "Created reusable design system",
+        "Set up CI/CD pipelines"
+      ],
+      "hardestFeatures": [
+        "Real-time messaging implementation",
+        "Secure authentication protocols",
+        "Reusable design system",
+        "Performance optimization"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Alexandria University",
+      "degree": "Bachelor of Engineering",
+      "year": "2014 – 2019"
+    }
+  ],
+  "certifications": [
+    {
+      "title": "Flutter Development Certification",
+      "issuer": "Google",
+      "year": "2021"
+    }
+  ]
+}

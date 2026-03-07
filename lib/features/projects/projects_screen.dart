@@ -1,128 +1,110 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:portoflio/core/providers/portfolio_provider.dart';
+import 'package:portoflio/core/providers/story_config_provider.dart';
+import 'package:portoflio/core/config/story_config.dart';
+import 'package:portoflio/features/projects/widgets/store_button.dart';
 import 'package:portoflio/shared/widgets/scroll_reveal.dart';
 import 'package:portoflio/shared/widgets/tilt_hover_card.dart';
+import 'package:portoflio/theme/app_theme.dart';
 
-/// Projects grid with:
+/// Projects grid with data from resume (Gist or local).
 /// - 3D perspective tilt cards tracking cursor
 /// - Glassmorphism with gold border glow on hover
 /// - ScrollReveal staggered entrance (scale pop)
 /// - Deep link navigation to /projects/:id
-class ProjectsScreen extends StatelessWidget {
+class ProjectsScreen extends ConsumerWidget {
   const ProjectsScreen({super.key});
 
-  static const List<Map<String, dynamic>> _projects = [
-    {
-      'id': 'fintech-app',
-      'title': 'FinTech Super App',
-      'description':
-          'Comprehensive financial services with real-time trading, bill payments, and smart budgeting.',
-      'tech': ['Flutter', 'BLoC', 'WebSocket', 'Firebase'],
-      'icon': Icons.account_balance_rounded,
-    },
-    {
-      'id': 'delivery-platform',
-      'title': 'Delivery Platform',
-      'description':
-          'End-to-end delivery with real-time tracking, route optimization, and fleet management.',
-      'tech': ['Flutter', 'Google Maps', 'Riverpod', 'REST'],
-      'icon': Icons.local_shipping_rounded,
-    },
-    {
-      'id': 'health-tracker',
-      'title': 'Health & Fitness',
-      'description':
-          'Personal health tracker with workout plans, nutrition logging, and wearable sync.',
-      'tech': ['Flutter', 'Health Kit', 'Charts', 'SQLite'],
-      'icon': Icons.favorite_rounded,
-    },
-    {
-      'id': 'ecommerce-app',
-      'title': 'E-Commerce App',
-      'description':
-          'Feature-rich shopping with AR product preview, wishlist, and payment gateway.',
-      'tech': ['Flutter', 'Stripe', 'ARCore', 'GetX'],
-      'icon': Icons.shopping_bag_rounded,
-    },
-    {
-      'id': 'social-platform',
-      'title': 'Social Platform',
-      'description':
-          'Community-driven social platform with real-time chat, stories, and moderation.',
-      'tech': ['Flutter', 'Firebase', 'Agora', 'BLoC'],
-      'icon': Icons.people_rounded,
-    },
-    {
-      'id': 'smart-home',
-      'title': 'Smart Home',
-      'description':
-          'IoT dashboard for controlling smart devices with voice commands and automation.',
-      'tech': ['Flutter', 'MQTT', 'Riverpod', 'BLE'],
-      'icon': Icons.home_rounded,
-    },
-  ];
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final screenWidth = MediaQuery.sizeOf(context).width;
     final isDesktop = screenWidth >= 1200;
     final crossAxisCount = isDesktop ? 3 : (screenWidth >= 600 ? 2 : 1);
+    final asyncResume = ref.watch(portfolioDataProvider);
+    final story = ref.watch(storyConfigProvider);
+    final chapter = story.chapterBySectionKey('portfolio');
 
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(
-        horizontal: isDesktop ? 100 : 24,
-        vertical: 80,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 100 : 24, vertical: 80),
       child: Column(
         children: [
           ScrollReveal(
             child: Center(
               child: Column(
                 children: [
-                  Text('Projects', style: theme.textTheme.headlineLarge),
+                  Text(chapter?.title ?? 'That Which Was Wrought', style: AppTheme.storyTitleStyle(fontSize: 36)),
                   const SizedBox(height: 12),
                   Container(
                     width: 60,
                     height: 3,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          theme.colorScheme.primary,
-                          theme.colorScheme.tertiary,
-                        ],
-                      ),
+                      gradient: LinearGradient(colors: [theme.colorScheme.primary, theme.colorScheme.tertiary]),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
+                  if ((chapter?.subtitle ?? '').isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      chapter!.subtitle,
+                      style: AppTheme.narrativeStyle(fontSize: 16, color: theme.colorScheme.onSurfaceVariant),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ],
               ),
             ),
           ),
           const SizedBox(height: 50),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              mainAxisSpacing: 24,
-              crossAxisSpacing: 24,
-              childAspectRatio: isDesktop ? 0.95 : 1.1,
+          asyncResume.when(
+            loading: () => const Center(
+              child: Padding(padding: EdgeInsets.all(48), child: CircularProgressIndicator()),
             ),
-            itemCount: _projects.length,
-            itemBuilder: (context, index) {
-              final project = _projects[index];
-              return ScrollReveal(
-                delay: Duration(milliseconds: index * 100),
-                direction: RevealDirection.scale,
-                child: _Glass3DProjectCard(
-                  id: project['id'] as String,
-                  title: project['title'] as String,
-                  description: project['description'] as String,
-                  tech: project['tech'] as List<String>,
-                  icon: project['icon'] as IconData,
-                  theme: theme,
+            error: (err, _) => Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text('Failed to load projects: $err', style: theme.textTheme.bodyLarge),
+              ),
+            ),
+            data: (resume) {
+              final projects = resume.projects;
+              if (projects.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Text('No projects yet.', style: theme.textTheme.bodyLarge),
+                  ),
+                );
+              }
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  mainAxisSpacing: 24,
+                  crossAxisSpacing: 24,
+                  childAspectRatio: isDesktop ? 0.95 : 1.1,
                 ),
+                itemCount: projects.length,
+                itemBuilder: (context, index) {
+                  final project = projects[index];
+                  return ScrollReveal(
+                    delay: Duration(milliseconds: index * 100),
+                    direction: RevealDirection.scale,
+                    child: _Glass3DProjectCard(
+                      id: project.id,
+                      title: project.title,
+                      description: project.description,
+                      tech: project.tech,
+                      icon: Icons.rocket_launch_rounded,
+                      googlePlayUrl: project.googlePlayUrl,
+                      appStoreUrl: project.appStoreUrl,
+                      theme: theme,
+                    ),
+                  );
+                },
               );
             },
           ),
@@ -139,6 +121,8 @@ class _Glass3DProjectCard extends StatelessWidget {
     required this.description,
     required this.tech,
     required this.icon,
+    this.googlePlayUrl,
+    this.appStoreUrl,
     required this.theme,
   });
 
@@ -147,6 +131,8 @@ class _Glass3DProjectCard extends StatelessWidget {
   final String description;
   final List<String> tech;
   final IconData icon;
+  final String? googlePlayUrl;
+  final String? appStoreUrl;
   final ThemeData theme;
 
   @override
@@ -165,9 +151,7 @@ class _Glass3DProjectCard extends StatelessWidget {
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
-              color: theme.colorScheme.surfaceContainerHigh.withValues(
-                alpha: isHovered ? 0.4 : 0.2,
-              ),
+              color: theme.colorScheme.surfaceContainerHigh.withValues(alpha: isHovered ? 0.4 : 0.2),
               border: Border.all(
                 color: isHovered
                     ? theme.colorScheme.primary.withValues(alpha: 0.4)
@@ -176,11 +160,7 @@ class _Glass3DProjectCard extends StatelessWidget {
               ),
               boxShadow: [
                 if (isHovered)
-                  BoxShadow(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.12),
-                    blurRadius: 40,
-                    spreadRadius: 2,
-                  ),
+                  BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.12), blurRadius: 40, spreadRadius: 2),
                 BoxShadow(
                   color: Colors.black.withValues(alpha: isHovered ? 0.3 : 0.15),
                   blurRadius: 20,
@@ -196,9 +176,7 @@ class _Glass3DProjectCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: theme.colorScheme.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.2),
-                    ),
+                    border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.2)),
                   ),
                   child: Icon(icon, color: theme.colorScheme.primary, size: 26),
                 ),
@@ -228,27 +206,16 @@ class _Glass3DProjectCard extends StatelessWidget {
                   children: tech
                       .map(
                         (t) => Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.primary.withValues(
-                              alpha: 0.08,
-                            ),
+                            color: theme.colorScheme.primary.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(6),
-                            border: Border.all(
-                              color: theme.colorScheme.primary.withValues(
-                                alpha: 0.15,
-                              ),
-                            ),
+                            border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.15)),
                           ),
                           child: Text(
                             t,
                             style: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.primary.withValues(
-                                alpha: 0.8,
-                              ),
+                              color: theme.colorScheme.primary.withValues(alpha: 0.8),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -256,6 +223,16 @@ class _Glass3DProjectCard extends StatelessWidget {
                       )
                       .toList(),
                 ),
+                if (googlePlayUrl != null || appStoreUrl != null) ...[
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      if (googlePlayUrl != null) StoreButton(store: StoreType.googlePlay, url: googlePlayUrl!),
+                      if (googlePlayUrl != null && appStoreUrl != null) const SizedBox(width: 10),
+                      if (appStoreUrl != null) StoreButton(store: StoreType.appStore, url: appStoreUrl!),
+                    ],
+                  ),
+                ],
               ],
             ),
           );

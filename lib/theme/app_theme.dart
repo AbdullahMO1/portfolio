@@ -2,80 +2,109 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// Royal palette and Material 3 theming for the portfolio.
-/// Colors: Imperial Navy, Gold, and Deep Slate.
+/// Colors: Imperial Navy, Gold, Deep Slate, and Desert accents.
 class AppTheme {
-  static const Color navyBase = Color(0xFF0A1128); // Imperial Navy
-  static const Color navySurface = Color(
-    0xFF0F1B3D,
-  ); // Lighter navy for surface
-  static const Color gold = Color(0xFFD4AF37); // Royal Gold
-  static const Color goldLight = Color(0xFFFFD700); // Shimmering Gold
-  static const Color slate = Color(0xFF8E9AAF); // Modern Slate
+  // Persian Dessert Palette
+  static const Color saffron = Color(0xFFD4AF37); // Base Saffron
+  static const Color saffronLight = Color(
+    0xFFFDF5E6,
+  ); // Creamy Saffron background
+  static const Color pistachio = Color(0xFF93C572); // Pistachio Green
+  static const Color rosewater = Color(0xFFF4C2C2); // Rosewater Pink
+  static const Color cardamon = Color(0xFF8B7D6B); // Cardamon Brown (muted)
+  static const Color pomegranate = Color(
+    0xFFC0392B,
+  ); // Pomegranate Red (accent)
+  static const Color deepNavy = Color(
+    0xFF0A1128,
+  ); // Contrast for text in dark mode
+
+  /// Story title style — Amiri calligraphic serif.
+  static TextStyle storyTitleStyle({
+    double fontSize = 48,
+    Color color = saffron,
+  }) => GoogleFonts.amiri(
+    fontSize: fontSize,
+    fontWeight: FontWeight.w700,
+    color: color,
+    letterSpacing: 0.5,
+    height: 1.2,
+  );
+
+  /// Story subtitle / narrative style — Newsreader.
+  static TextStyle narrativeStyle({
+    double fontSize = 18,
+    Color color = Colors.black87,
+  }) => GoogleFonts.newsreader(
+    fontSize: fontSize,
+    fontWeight: FontWeight.w400,
+    fontStyle: FontStyle.italic,
+    color: color,
+    height: 1.6,
+  );
 
   static ThemeData get dark {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: const ColorScheme.dark(
-        primary: gold,
-        onPrimary: navyBase,
-        secondary: goldLight,
-        onSecondary: navyBase,
-        tertiary: Color(0xFFE5B80B),
-        surface: navyBase,
-        onSurface: Colors.white,
-        surfaceContainerHigh: navySurface,
-        outline: slate,
+        primary: saffron,
+        onPrimary: deepNavy,
+        secondary: pistachio,
+        onSecondary: deepNavy,
+        tertiary: rosewater,
+        surface: deepNavy,
+        onSurface: saffronLight,
+        surfaceContainerHigh: Color(0xFF141D3B),
+        outline: cardamon,
       ),
-      scaffoldBackgroundColor: navyBase,
+      scaffoldBackgroundColor: deepNavy,
 
-      // Modern Typography — Newsreader (Stitch project font)
       textTheme: GoogleFonts.newsreaderTextTheme(
         const TextTheme(
           headlineLarge: TextStyle(
-            fontSize: 48,
+            fontSize: 56,
             fontWeight: FontWeight.w900,
-            color: Colors.white,
+            color: saffron,
             letterSpacing: -1.0,
           ),
           headlineMedium: TextStyle(
-            fontSize: 32,
+            fontSize: 36,
             fontWeight: FontWeight.w800,
-            color: gold,
+            color: rosewater,
             letterSpacing: -0.5,
           ),
           titleLarge: TextStyle(
-            fontSize: 24,
+            fontSize: 28,
             fontWeight: FontWeight.w700,
-            color: Colors.white,
+            color: saffronLight,
           ),
           bodyLarge: TextStyle(
-            fontSize: 18,
+            fontSize: 20,
             height: 1.6,
-            color: Color(0xFFBDC3C7),
+            color: Color(0xFFD5D9E0),
           ),
           bodyMedium: TextStyle(
-            fontSize: 16,
+            fontSize: 18,
             height: 1.5,
-            color: Color(0xFFBDC3C7),
+            color: Color(0xFFD5D9E0),
           ),
           labelLarge: TextStyle(
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.2,
-            color: gold,
+            color: saffron,
           ),
         ),
       ),
 
-      // Button Styles
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: gold,
-          foregroundColor: navyBase,
+          backgroundColor: saffron,
+          foregroundColor: deepNavy,
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(999),
           ),
           textStyle: const TextStyle(
             fontWeight: FontWeight.w700,
@@ -84,30 +113,107 @@ class AppTheme {
         ),
       ),
 
-      // Card Styles
       cardTheme: CardThemeData(
-        color: navySurface,
+        color: const Color(0xFF141D3B),
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: Color(0x1AFFFFFF)),
+          borderRadius: BorderRadius.circular(24),
+          side: BorderSide(color: saffron.withValues(alpha: 0.1)),
         ),
       ),
 
-      // Navigation Bar (mobile)
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: navyBase.withValues(alpha: 0.95),
-        indicatorColor: const Color(0xFFD4AF37).withValues(alpha: 0.15),
+        backgroundColor: deepNavy.withValues(alpha: 0.95),
+        indicatorColor: saffron.withValues(alpha: 0.15),
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-      ),
-
-      dividerTheme: const DividerThemeData(
-        color: Color(0x1AFFFFFF),
-        thickness: 1,
       ),
     );
   }
 
-  // Light theme (fallback or auto-switch)
-  static ThemeData get light => dark; // Focusing on the "Royal Dark" aesthetic
+  static ThemeData get light {
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      colorScheme: const ColorScheme.light(
+        primary: saffron,
+        onPrimary: Colors.white,
+        secondary: pistachio,
+        onSecondary: Colors.white,
+        tertiary: pomegranate,
+        surface: saffronLight,
+        onSurface: deepNavy,
+        surfaceContainerHigh: Color(0xFFF5EFE0),
+        outline: cardamon,
+      ),
+      scaffoldBackgroundColor: saffronLight,
+
+      textTheme: GoogleFonts.newsreaderTextTheme(
+        const TextTheme(
+          headlineLarge: TextStyle(
+            fontSize: 56,
+            fontWeight: FontWeight.w900,
+            color: deepNavy,
+            letterSpacing: -1.0,
+          ),
+          headlineMedium: TextStyle(
+            fontSize: 36,
+            fontWeight: FontWeight.w800,
+            color: cardamon,
+            letterSpacing: -0.5,
+          ),
+          titleLarge: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w700,
+            color: deepNavy,
+          ),
+          bodyLarge: TextStyle(
+            fontSize: 20,
+            height: 1.6,
+            color: Color(0xFF333333),
+          ),
+          bodyMedium: TextStyle(
+            fontSize: 18,
+            height: 1.5,
+            color: Color(0xFF333333),
+          ),
+          labelLarge: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.2,
+            color: saffron,
+          ),
+        ),
+      ),
+
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: saffron,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(999),
+          ),
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.2,
+          ),
+        ),
+      ),
+
+      cardTheme: CardThemeData(
+        color: Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+          side: BorderSide(color: saffron.withValues(alpha: 0.1)),
+        ),
+      ),
+
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: saffronLight.withValues(alpha: 0.95),
+        indicatorColor: saffron.withValues(alpha: 0.1),
+        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+      ),
+    );
+  }
 }

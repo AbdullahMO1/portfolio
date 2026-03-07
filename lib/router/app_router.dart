@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:portoflio/core/providers/place_progress_provider.dart';
 import 'package:portoflio/features/about/about_screen.dart';
 import 'package:portoflio/features/contact/contact_screen.dart';
 import 'package:portoflio/features/experience/experience_screen.dart';
@@ -9,22 +12,29 @@ import 'package:portoflio/features/skills/skills_screen.dart';
 import 'package:portoflio/router/route_transitions.dart';
 import 'package:portoflio/shared/widgets/app_shell.dart';
 
-/// GoRouter configuration with ShellRoute for persistent navigation,
-/// deep linking support, and custom page transitions.
-final GoRouter appRouter = GoRouter(
+final appRouterProvider = Provider<GoRouter>((ref) {
+  final placeNotifier = ref.read(homePlaceProgressProvider);
+  return _createRouter(placeNotifier);
+});
+
+GoRouter _createRouter(ValueNotifier<double> placeNotifier) => GoRouter(
   initialLocation: '/',
   routes: [
     ShellRoute(
       builder: (context, state, child) {
-        // Determine the current navigation index from the location
         final location = state.uri.path;
         final index = _locationToIndex(location);
+        final isHome = index == 0;
+        final ref = ProviderScope.containerOf(context);
+        final scrollProgress = ref.read(homeScrollProgressProvider);
 
         return AppShell(
           currentIndex: index,
           onDestinationSelected: (i) {
             context.go(_indexToLocation(i));
           },
+          placeProgress: isHome ? placeNotifier : null,
+          scrollProgress: isHome ? scrollProgress : null,
           child: child,
         );
       },

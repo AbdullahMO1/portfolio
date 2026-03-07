@@ -1178,7 +1178,7 @@ as List<String>,
 /// @nodoc
 mixin _$ProjectEntry {
 
- String get id; String get title; String get description; List<String> get tech; String? get github; String? get demo; String? get imageUrl;
+ String get id; String get title; String get description; List<String> get tech; String? get github; String? get demo; String? get imageUrl; String? get googlePlayUrl; String? get appStoreUrl; String? get liveDemoUrl; List<String> get responsibilities; List<String> get hardestFeatures;
 /// Create a copy of ProjectEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1191,16 +1191,16 @@ $ProjectEntryCopyWith<ProjectEntry> get copyWith => _$ProjectEntryCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.tech, tech)&&(identical(other.github, github) || other.github == github)&&(identical(other.demo, demo) || other.demo == demo)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.tech, tech)&&(identical(other.github, github) || other.github == github)&&(identical(other.demo, demo) || other.demo == demo)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.googlePlayUrl, googlePlayUrl) || other.googlePlayUrl == googlePlayUrl)&&(identical(other.appStoreUrl, appStoreUrl) || other.appStoreUrl == appStoreUrl)&&(identical(other.liveDemoUrl, liveDemoUrl) || other.liveDemoUrl == liveDemoUrl)&&const DeepCollectionEquality().equals(other.responsibilities, responsibilities)&&const DeepCollectionEquality().equals(other.hardestFeatures, hardestFeatures));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,const DeepCollectionEquality().hash(tech),github,demo,imageUrl);
+int get hashCode => Object.hash(runtimeType,id,title,description,const DeepCollectionEquality().hash(tech),github,demo,imageUrl,googlePlayUrl,appStoreUrl,liveDemoUrl,const DeepCollectionEquality().hash(responsibilities),const DeepCollectionEquality().hash(hardestFeatures));
 
 @override
 String toString() {
-  return 'ProjectEntry(id: $id, title: $title, description: $description, tech: $tech, github: $github, demo: $demo, imageUrl: $imageUrl)';
+  return 'ProjectEntry(id: $id, title: $title, description: $description, tech: $tech, github: $github, demo: $demo, imageUrl: $imageUrl, googlePlayUrl: $googlePlayUrl, appStoreUrl: $appStoreUrl, liveDemoUrl: $liveDemoUrl, responsibilities: $responsibilities, hardestFeatures: $hardestFeatures)';
 }
 
 
@@ -1211,7 +1211,7 @@ abstract mixin class $ProjectEntryCopyWith<$Res>  {
   factory $ProjectEntryCopyWith(ProjectEntry value, $Res Function(ProjectEntry) _then) = _$ProjectEntryCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, String description, List<String> tech, String? github, String? demo, String? imageUrl
+ String id, String title, String description, List<String> tech, String? github, String? demo, String? imageUrl, String? googlePlayUrl, String? appStoreUrl, String? liveDemoUrl, List<String> responsibilities, List<String> hardestFeatures
 });
 
 
@@ -1228,7 +1228,7 @@ class _$ProjectEntryCopyWithImpl<$Res>
 
 /// Create a copy of ProjectEntry
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? tech = null,Object? github = freezed,Object? demo = freezed,Object? imageUrl = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? tech = null,Object? github = freezed,Object? demo = freezed,Object? imageUrl = freezed,Object? googlePlayUrl = freezed,Object? appStoreUrl = freezed,Object? liveDemoUrl = freezed,Object? responsibilities = null,Object? hardestFeatures = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -1237,7 +1237,12 @@ as String,tech: null == tech ? _self.tech : tech // ignore: cast_nullable_to_non
 as List<String>,github: freezed == github ? _self.github : github // ignore: cast_nullable_to_non_nullable
 as String?,demo: freezed == demo ? _self.demo : demo // ignore: cast_nullable_to_non_nullable
 as String?,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,googlePlayUrl: freezed == googlePlayUrl ? _self.googlePlayUrl : googlePlayUrl // ignore: cast_nullable_to_non_nullable
+as String?,appStoreUrl: freezed == appStoreUrl ? _self.appStoreUrl : appStoreUrl // ignore: cast_nullable_to_non_nullable
+as String?,liveDemoUrl: freezed == liveDemoUrl ? _self.liveDemoUrl : liveDemoUrl // ignore: cast_nullable_to_non_nullable
+as String?,responsibilities: null == responsibilities ? _self.responsibilities : responsibilities // ignore: cast_nullable_to_non_nullable
+as List<String>,hardestFeatures: null == hardestFeatures ? _self.hardestFeatures : hardestFeatures // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
@@ -1322,10 +1327,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String description,  List<String> tech,  String? github,  String? demo,  String? imageUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String description,  List<String> tech,  String? github,  String? demo,  String? imageUrl,  String? googlePlayUrl,  String? appStoreUrl,  String? liveDemoUrl,  List<String> responsibilities,  List<String> hardestFeatures)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProjectEntry() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.tech,_that.github,_that.demo,_that.imageUrl);case _:
+return $default(_that.id,_that.title,_that.description,_that.tech,_that.github,_that.demo,_that.imageUrl,_that.googlePlayUrl,_that.appStoreUrl,_that.liveDemoUrl,_that.responsibilities,_that.hardestFeatures);case _:
   return orElse();
 
 }
@@ -1343,10 +1348,10 @@ return $default(_that.id,_that.title,_that.description,_that.tech,_that.github,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String description,  List<String> tech,  String? github,  String? demo,  String? imageUrl)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String description,  List<String> tech,  String? github,  String? demo,  String? imageUrl,  String? googlePlayUrl,  String? appStoreUrl,  String? liveDemoUrl,  List<String> responsibilities,  List<String> hardestFeatures)  $default,) {final _that = this;
 switch (_that) {
 case _ProjectEntry():
-return $default(_that.id,_that.title,_that.description,_that.tech,_that.github,_that.demo,_that.imageUrl);case _:
+return $default(_that.id,_that.title,_that.description,_that.tech,_that.github,_that.demo,_that.imageUrl,_that.googlePlayUrl,_that.appStoreUrl,_that.liveDemoUrl,_that.responsibilities,_that.hardestFeatures);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1363,10 +1368,10 @@ return $default(_that.id,_that.title,_that.description,_that.tech,_that.github,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String description,  List<String> tech,  String? github,  String? demo,  String? imageUrl)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String description,  List<String> tech,  String? github,  String? demo,  String? imageUrl,  String? googlePlayUrl,  String? appStoreUrl,  String? liveDemoUrl,  List<String> responsibilities,  List<String> hardestFeatures)?  $default,) {final _that = this;
 switch (_that) {
 case _ProjectEntry() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.tech,_that.github,_that.demo,_that.imageUrl);case _:
+return $default(_that.id,_that.title,_that.description,_that.tech,_that.github,_that.demo,_that.imageUrl,_that.googlePlayUrl,_that.appStoreUrl,_that.liveDemoUrl,_that.responsibilities,_that.hardestFeatures);case _:
   return null;
 
 }
@@ -1378,7 +1383,7 @@ return $default(_that.id,_that.title,_that.description,_that.tech,_that.github,_
 @JsonSerializable()
 
 class _ProjectEntry implements ProjectEntry {
-  const _ProjectEntry({required this.id, required this.title, required this.description, final  List<String> tech = const [], this.github, this.demo, this.imageUrl}): _tech = tech;
+  const _ProjectEntry({required this.id, required this.title, required this.description, final  List<String> tech = const [], this.github, this.demo, this.imageUrl, this.googlePlayUrl, this.appStoreUrl, this.liveDemoUrl, final  List<String> responsibilities = const [], final  List<String> hardestFeatures = const []}): _tech = tech,_responsibilities = responsibilities,_hardestFeatures = hardestFeatures;
   factory _ProjectEntry.fromJson(Map<String, dynamic> json) => _$ProjectEntryFromJson(json);
 
 @override final  String id;
@@ -1394,6 +1399,23 @@ class _ProjectEntry implements ProjectEntry {
 @override final  String? github;
 @override final  String? demo;
 @override final  String? imageUrl;
+@override final  String? googlePlayUrl;
+@override final  String? appStoreUrl;
+@override final  String? liveDemoUrl;
+ final  List<String> _responsibilities;
+@override@JsonKey() List<String> get responsibilities {
+  if (_responsibilities is EqualUnmodifiableListView) return _responsibilities;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_responsibilities);
+}
+
+ final  List<String> _hardestFeatures;
+@override@JsonKey() List<String> get hardestFeatures {
+  if (_hardestFeatures is EqualUnmodifiableListView) return _hardestFeatures;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_hardestFeatures);
+}
+
 
 /// Create a copy of ProjectEntry
 /// with the given fields replaced by the non-null parameter values.
@@ -1408,16 +1430,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._tech, _tech)&&(identical(other.github, github) || other.github == github)&&(identical(other.demo, demo) || other.demo == demo)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._tech, _tech)&&(identical(other.github, github) || other.github == github)&&(identical(other.demo, demo) || other.demo == demo)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.googlePlayUrl, googlePlayUrl) || other.googlePlayUrl == googlePlayUrl)&&(identical(other.appStoreUrl, appStoreUrl) || other.appStoreUrl == appStoreUrl)&&(identical(other.liveDemoUrl, liveDemoUrl) || other.liveDemoUrl == liveDemoUrl)&&const DeepCollectionEquality().equals(other._responsibilities, _responsibilities)&&const DeepCollectionEquality().equals(other._hardestFeatures, _hardestFeatures));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,const DeepCollectionEquality().hash(_tech),github,demo,imageUrl);
+int get hashCode => Object.hash(runtimeType,id,title,description,const DeepCollectionEquality().hash(_tech),github,demo,imageUrl,googlePlayUrl,appStoreUrl,liveDemoUrl,const DeepCollectionEquality().hash(_responsibilities),const DeepCollectionEquality().hash(_hardestFeatures));
 
 @override
 String toString() {
-  return 'ProjectEntry(id: $id, title: $title, description: $description, tech: $tech, github: $github, demo: $demo, imageUrl: $imageUrl)';
+  return 'ProjectEntry(id: $id, title: $title, description: $description, tech: $tech, github: $github, demo: $demo, imageUrl: $imageUrl, googlePlayUrl: $googlePlayUrl, appStoreUrl: $appStoreUrl, liveDemoUrl: $liveDemoUrl, responsibilities: $responsibilities, hardestFeatures: $hardestFeatures)';
 }
 
 
@@ -1428,7 +1450,7 @@ abstract mixin class _$ProjectEntryCopyWith<$Res> implements $ProjectEntryCopyWi
   factory _$ProjectEntryCopyWith(_ProjectEntry value, $Res Function(_ProjectEntry) _then) = __$ProjectEntryCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, String description, List<String> tech, String? github, String? demo, String? imageUrl
+ String id, String title, String description, List<String> tech, String? github, String? demo, String? imageUrl, String? googlePlayUrl, String? appStoreUrl, String? liveDemoUrl, List<String> responsibilities, List<String> hardestFeatures
 });
 
 
@@ -1445,7 +1467,7 @@ class __$ProjectEntryCopyWithImpl<$Res>
 
 /// Create a copy of ProjectEntry
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? tech = null,Object? github = freezed,Object? demo = freezed,Object? imageUrl = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? tech = null,Object? github = freezed,Object? demo = freezed,Object? imageUrl = freezed,Object? googlePlayUrl = freezed,Object? appStoreUrl = freezed,Object? liveDemoUrl = freezed,Object? responsibilities = null,Object? hardestFeatures = null,}) {
   return _then(_ProjectEntry(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -1454,7 +1476,12 @@ as String,tech: null == tech ? _self._tech : tech // ignore: cast_nullable_to_no
 as List<String>,github: freezed == github ? _self.github : github // ignore: cast_nullable_to_non_nullable
 as String?,demo: freezed == demo ? _self.demo : demo // ignore: cast_nullable_to_non_nullable
 as String?,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,googlePlayUrl: freezed == googlePlayUrl ? _self.googlePlayUrl : googlePlayUrl // ignore: cast_nullable_to_non_nullable
+as String?,appStoreUrl: freezed == appStoreUrl ? _self.appStoreUrl : appStoreUrl // ignore: cast_nullable_to_non_nullable
+as String?,liveDemoUrl: freezed == liveDemoUrl ? _self.liveDemoUrl : liveDemoUrl // ignore: cast_nullable_to_non_nullable
+as String?,responsibilities: null == responsibilities ? _self._responsibilities : responsibilities // ignore: cast_nullable_to_non_nullable
+as List<String>,hardestFeatures: null == hardestFeatures ? _self._hardestFeatures : hardestFeatures // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 

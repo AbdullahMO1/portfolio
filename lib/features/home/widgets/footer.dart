@@ -1,187 +1,205 @@
 import 'package:flutter/material.dart';
-import 'package:portoflio/shared/widgets/three_d_scroll_wrapper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:portoflio/core/models/resume_model.dart';
+import 'package:portoflio/core/providers/portfolio_provider.dart';
+import 'package:portoflio/shared/widgets/arabesque_decoration.dart';
+import 'package:portoflio/shared/widgets/nav_link.dart';
+import 'package:portoflio/theme/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Footer extends StatelessWidget {
-  const Footer({required this.scrollController, super.key});
+class Footer extends ConsumerWidget {
+  const Footer({super.key});
 
-  final ScrollController scrollController;
+  static List<_LinkItem> _connectLinks(MetaInfo meta) {
+    final links = <_LinkItem>[];
+    if (meta.linkedin.isNotEmpty) {
+      links.add(
+        _LinkItem('LinkedIn', () => launchUrl(Uri.parse(meta.linkedin))),
+      );
+    }
+    if (meta.github.isNotEmpty) {
+      links.add(_LinkItem('GitHub', () => launchUrl(Uri.parse(meta.github))));
+    }
+    links.add(
+      _LinkItem('Email', () => launchUrl(Uri.parse('mailto:${meta.email}'))),
+    );
+    return links;
+  }
+
+  static List<_LinkItem> _siteLinks(BuildContext context) {
+    return [
+      _LinkItem('Projects', () => context.go('/projects')),
+      _LinkItem('Skills', () => context.go('/skills')),
+      _LinkItem('Contact', () => context.go('/contact')),
+    ];
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final size = MediaQuery.sizeOf(context);
     final isDesktop = size.width >= 1200;
+    final asyncResume = ref.watch(portfolioDataProvider);
+    final resume = asyncResume.value;
+    final name = resume?.meta.name ?? 'Portfolio';
+    final meta = resume?.meta;
 
-    return ThreeDScrollWrapper(
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(
-          horizontal: isDesktop ? 120 : 24,
-          vertical: 48,
-        ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              theme.colorScheme.surface.withValues(alpha: 0.0),
-              theme.colorScheme.surface.withValues(alpha: 0.6),
-              theme.colorScheme.surface,
-            ],
-          ),
-        ),
-        child: Column(
-          children: [
-            Divider(
-              color: theme.colorScheme.primary.withValues(alpha: 0.1),
-              thickness: 1,
-            ),
-            const SizedBox(height: 40),
-            isDesktop
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '© ${DateTime.now().year} Abdullah Mohammed. All rights reserved.',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant
-                              .withValues(alpha: 0.7),
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          _FooterLink(
-                            label: 'Privacy',
-                            onTap: () {},
-                            inline: true,
-                          ),
-                          const SizedBox(width: 32),
-                          _FooterLink(
-                            label: 'Terms',
-                            onTap: () {},
-                            inline: true,
-                          ),
-                          const SizedBox(width: 32),
-                          _FooterLink(
-                            label: 'LinkedIn',
-                            onTap: () =>
-                                launchUrl(Uri.parse('https://linkedin.com')),
-                            inline: true,
-                          ),
-                        ],
-                      ),
-                      _buildBackToTop(theme),
-                    ],
-                  )
-                : Column(
-                    children: [
-                      Text(
-                        '© ${DateTime.now().year} Abdullah Mohammed. All rights reserved.',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant
-                              .withValues(alpha: 0.7),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        spacing: 24,
-                        children: [
-                          _FooterLink(
-                            label: 'Privacy',
-                            onTap: () {},
-                            inline: true,
-                          ),
-                          _FooterLink(
-                            label: 'Terms',
-                            onTap: () {},
-                            inline: true,
-                          ),
-                          _FooterLink(
-                            label: 'LinkedIn',
-                            onTap: () =>
-                                launchUrl(Uri.parse('https://linkedin.com')),
-                            inline: true,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      _buildBackToTop(theme),
-                    ],
-                  ),
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        horizontal: isDesktop ? 100 : 20,
+        vertical: 80,
+      ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            theme.colorScheme.surface.withValues(alpha: 0.0),
+            theme.colorScheme.surface.withValues(alpha: 0.6),
+            theme.colorScheme.surface,
           ],
         ),
       ),
+      child: Column(
+        children: [
+          const Center(
+            child: ArabesqueDecoration(
+              color: AppTheme.saffronLight,
+              width: 200,
+              height: 12,
+              opacity: 0.3,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'From the first fire to the last account.',
+            style: GoogleFonts.amiri(
+              fontSize: 14,
+              fontStyle: FontStyle.italic,
+              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          Divider(
+            color: theme.colorScheme.primary.withValues(alpha: 0.2),
+            thickness: 1.5,
+          ),
+          const SizedBox(height: 56),
+          if (isDesktop) _buildDesktopFooter(context, theme, name, meta),
+          if (!isDesktop) _buildMobileFooter(context, theme, name, meta),
+        ],
+      ),
     );
   }
 
-  Widget _buildBackToTop(ThemeData theme) {
-    return TextButton.icon(
-      onPressed: () {
-        scrollController.animateTo(
-          0,
-          duration: const Duration(milliseconds: 1500),
-          curve: Curves.fastOutSlowIn,
-        );
-      },
-      icon: Icon(
-        Icons.arrow_upward_rounded,
-        size: 18,
-        color: theme.colorScheme.primary,
-      ),
-      label: Text(
-        'BACK TO TOP',
-        style: theme.textTheme.labelLarge?.copyWith(
-          color: theme.colorScheme.primary,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 1.2,
+  Widget _buildDesktopFooter(
+    BuildContext context,
+    ThemeData theme,
+    String name,
+    MetaInfo? meta,
+  ) {
+    final connectLinks = meta != null ? _connectLinks(meta) : <_LinkItem>[];
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          '© ${DateTime.now().year} $name. All rights reserved.',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.75),
+            letterSpacing: 0.3,
+          ),
         ),
-      ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _FooterColumn(
+              title: 'Connect',
+              links: connectLinks.isNotEmpty
+                  ? connectLinks
+                  : [_LinkItem('Email', () {})],
+            ),
+            const SizedBox(width: 96),
+            _FooterColumn(title: 'Site', links: _siteLinks(context)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMobileFooter(
+    BuildContext context,
+    ThemeData theme,
+    String name,
+    MetaInfo? meta,
+  ) {
+    final connectLinks = meta != null ? _connectLinks(meta) : <_LinkItem>[];
+    return Column(
+      children: [
+        Text(
+          '© ${DateTime.now().year} $name. All rights reserved.',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.75),
+            letterSpacing: 0.3,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 32),
+        _FooterColumn(
+          title: 'Connect',
+          links: connectLinks.isNotEmpty
+              ? connectLinks
+              : [_LinkItem('Email', () {})],
+        ),
+        const SizedBox(height: 20),
+        _FooterColumn(title: 'Site', links: _siteLinks(context)),
+      ],
     );
   }
 }
 
-class _FooterLink extends StatefulWidget {
-  const _FooterLink({
-    required this.label,
-    required this.onTap,
-    this.inline = false,
-  });
+class _LinkItem {
+  const _LinkItem(this.label, this.onTap);
   final String label;
   final VoidCallback onTap;
-  final bool inline;
-
-  @override
-  State<_FooterLink> createState() => _FooterLinkState();
 }
 
-class _FooterLinkState extends State<_FooterLink> {
-  bool _isHovered = false;
+class _FooterColumn extends StatelessWidget {
+  const _FooterColumn({required this.title, required this.links});
+  final String title;
+  final List<_LinkItem> links;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: widget.inline ? EdgeInsets.zero : const EdgeInsets.only(bottom: 12),
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 200),
-            style: theme.textTheme.bodySmall!.copyWith(
-              color: _isHovered
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
-              fontWeight: _isHovered ? FontWeight.w600 : FontWeight.w400,
-            ),
-            child: Text(widget.label),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          title.toUpperCase(),
+          style: theme.textTheme.titleSmall?.copyWith(
+            color: theme.colorScheme.primary.withValues(alpha: 0.9),
+            fontWeight: FontWeight.w700,
+            letterSpacing: 2.5,
           ),
         ),
-      ),
+        const SizedBox(height: 20),
+        ...links.map(
+          (item) => Padding(
+            padding: const EdgeInsets.only(bottom: 14),
+            child: NavLink(
+              label: item.label,
+              onTap: item.onTap,
+              padding: const EdgeInsets.all(12),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -212,7 +230,7 @@ class _SocialIconState extends State<_SocialIcon> {
           decoration: BoxDecoration(
             color: _isHovered
                 ? theme.colorScheme.primary
-                : theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.3),
+                : AppTheme.saffronLight.withValues(alpha: 0.1),
             shape: BoxShape.circle,
             border: Border.all(
               color: _isHovered

@@ -71,6 +71,11 @@ abstract class ProjectEntry with _$ProjectEntry {
     String? github,
     String? demo,
     String? imageUrl,
+    String? googlePlayUrl,
+    String? appStoreUrl,
+    String? liveDemoUrl,
+    @Default([]) List<String> responsibilities,
+    @Default([]) List<String> hardestFeatures,
   }) = _ProjectEntry;
 
   factory ProjectEntry.fromJson(Map<String, dynamic> json) =>

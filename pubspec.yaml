@@ -33,6 +33,18 @@ dependencies:
   # URL launcher (contact links)
   url_launcher: ^6.3.1
 
+  # Cinematic video background (optional)
+  video_player: ^2.9.2
+
+  # Animation & Interaction for Persian Prince theme
+  animations: ^2.0.11
+  flutter_animate: ^4.5.0
+  visibility_detector: any
+  smooth_scroll_multiplatform: ^1.0.2
+  rive: ^0.13.13
+  model_viewer_plus: ^1.2.1
+  audioplayers: ^5.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -51,5 +63,21 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  assets:
+    - assets/data/resume.json
+    - assets/images/avatar.jpeg
+    - assets/video/
+    - assets/rive/
+    - assets/textures/
+    - assets/images/desert_landscapes/
+    - assets/images/persian_patterns/
+    - assets/images/icons/
+
   shaders:
     - assets/shaders/hero_bg.frag
+    - assets/shaders/desert_dunes.frag
+    - assets/shaders/persian_caravan.frag
+    - assets/shaders/oasis_water.frag
+    - assets/shaders/desert_sunset.frag
+    - assets/shaders/starlight_desert.frag
+
