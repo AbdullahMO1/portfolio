@@ -3,8 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:portoflio/router/app_router.dart';
 import 'package:portoflio/theme/app_theme.dart';
 import 'package:portoflio/theme/theme_notifier.dart';
+import 'package:portoflio/core/services/audio_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final audioService = AudioService.instance;
+  await audioService.initialize();
+
   runApp(const ProviderScope(child: PortfolioApp()));
 }
 

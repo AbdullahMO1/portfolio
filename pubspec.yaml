@@ -72,6 +72,7 @@ flutter:
     - assets/images/desert_landscapes/
     - assets/images/persian_patterns/
     - assets/images/icons/
+    - assets/audio/
 
   shaders:
     - assets/shaders/hero_bg.frag

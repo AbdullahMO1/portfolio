@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:portoflio/core/services/audio_service.dart';
 
 /// Persian Prince themed magnetic button with desert magic effects
 class MagneticButton extends StatefulWidget {
@@ -145,6 +146,7 @@ class _MagneticButtonState extends State<MagneticButton>
   }
 
   void _onTap() {
+    AudioService.instance.playSoundEffect('sword_click');
     widget.onTap();
 
     // Persian magic lamp effect on tap

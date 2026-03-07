@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Providers for tracking place and scroll progress in the home screen
 /// These are used for animations and journey progress indicators
 
-/// Provider for place progress (0.0 to 3.0) used for cinematic effects
+/// Provider for place progress (0.0 to 5.0) used for cinematic effects
 /// Maps to different "places" in the journey narrative
 final homePlaceProgressProvider = Provider<ValueNotifier<double>>((ref) {
   return ValueNotifier<double>(0.0);
@@ -36,10 +36,10 @@ final scrollVelocityProvider = Provider<double>((ref) {
 
 /// Utility functions for progress calculations
 class ProgressUtils {
-  /// Convert scroll progress (0-1) to place progress (0-3)
-  /// Maps the 6 home sections to 3 main places
+  /// Convert scroll progress (0-1) to place progress (0-5)
+  /// Maps the 6 home sections to 6 main places
   static double scrollToPlaceProgress(double scrollProgress) {
-    return scrollProgress * 3.0;
+    return scrollProgress * 5.0;
   }
 
   /// Convert scroll progress (0-1) to section index (0-5)
@@ -49,13 +49,17 @@ class ProgressUtils {
 
   /// Get place name based on progress value
   static String getPlaceName(double placeProgress) {
-    if (placeProgress < 1.0) return 'Beginning';
-    if (placeProgress < 2.0) return 'Journey';
+    if (placeProgress < 2.0) return 'Beginning';
+    if (placeProgress < 4.0) return 'Journey';
     return 'Destination';
   }
 
   /// Calculate progress between two places
-  static double calculatePlaceProgress(double currentPlace, double targetPlace, double scrollProgress) {
+  static double calculatePlaceProgress(
+    double currentPlace,
+    double targetPlace,
+    double scrollProgress,
+  ) {
     final totalDistance = targetPlace - currentPlace;
     return currentPlace + (totalDistance * scrollProgress);
   }

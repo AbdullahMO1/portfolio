@@ -27,7 +27,7 @@ class CuratedPortfolioSection extends ConsumerWidget {
     final featured = projects.take(2).toList();
 
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
           horizontal: isDesktop ? 72 : 20,
           vertical: 40,

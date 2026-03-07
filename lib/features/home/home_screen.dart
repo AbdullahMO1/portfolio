@@ -39,8 +39,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     const maxPage = 5.0; // Hero, Skills, Portfolio, Experience, About, Footer
     final progress = (page / maxPage).clamp(0.0, 1.0);
 
-    // Smoothly map page to place progress (0 to 3.0)
-    _placeProgress.value = progress * 3.0;
+    // Smoothly map page to place progress (0 to 5.0)
+    _placeProgress.value = progress * 5.0;
     ref.read(homeScrollProgressProvider).value = progress;
   }
 
@@ -70,15 +70,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       ),
       const SizedBox.expand(child: SandRevealWrapper(child: SkillsetSection())),
-      const SizedBox.expand(child: SandRevealWrapper(child: CuratedPortfolioSection())),
-      const SizedBox.expand(child: SandRevealWrapper(child: ExperienceTeaserSection())),
-      const SizedBox.expand(child: SandRevealWrapper(child: AboutTeaserSection())),
+      const SizedBox.expand(
+        child: SandRevealWrapper(child: CuratedPortfolioSection()),
+      ),
+      const SizedBox.expand(
+        child: SandRevealWrapper(child: ExperienceTeaserSection()),
+      ),
+      const SizedBox.expand(
+        child: SandRevealWrapper(child: AboutTeaserSection()),
+      ),
       const SizedBox.expand(child: Footer()),
     ];
 
     return Stack(
       children: [
-        Positioned.fill(child: CinematicVideoBackground(opacity: 0.85, placeProgress: _placeProgress)),
+        Positioned.fill(
+          child: CinematicVideoBackground(
+            opacity: 0.85,
+            placeProgress: _placeProgress,
+          ),
+        ),
         Positioned.fill(child: PlaceOverlay(placeProgress: _placeProgress)),
 
         PageView(
@@ -95,7 +106,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             bottom: 0,
             child: Center(
               child: RepaintBoundary(
-                child: _StoryScrollIndicator(controller: _pageController, placeProgress: _placeProgress, story: story),
+                child: _StoryScrollIndicator(
+                  controller: _pageController,
+                  placeProgress: _placeProgress,
+                  story: story,
+                ),
               ),
             ),
           ),
@@ -124,7 +139,9 @@ class FloatingBackToTop extends StatelessWidget {
       bottom: 24,
       child: FloatingActionButton.small(
         onPressed: onTap,
-        backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+        backgroundColor: Theme.of(
+          context,
+        ).colorScheme.primary.withValues(alpha: 0.2),
         child: const Icon(Icons.arrow_upward),
       ),
     );
@@ -132,7 +149,11 @@ class FloatingBackToTop extends StatelessWidget {
 }
 
 class _StoryScrollIndicator extends StatelessWidget {
-  const _StoryScrollIndicator({required this.controller, required this.placeProgress, required this.story});
+  const _StoryScrollIndicator({
+    required this.controller,
+    required this.placeProgress,
+    required this.story,
+  });
 
   final PageController controller;
   final ValueNotifier<double> placeProgress;
@@ -147,7 +168,8 @@ class _StoryScrollIndicator extends StatelessWidget {
         double progress = 0;
         if (controller.hasClients) {
           final page = controller.page ?? 0.0;
-          const maxPage = 5.0; // Hero, Skills, Portfolio, Experience, About, Footer
+          const maxPage =
+              5.0; // Hero, Skills, Portfolio, Experience, About, Footer
           progress = (page / maxPage).clamp(0.0, 1.0);
         }
         if (progress.isNaN || progress.isInfinite) progress = 0;
@@ -252,5 +274,6 @@ class _RoadIndicatorPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _RoadIndicatorPainter oldDelegate) =>
-      progress != oldDelegate.progress || placeProgress != oldDelegate.placeProgress;
+      progress != oldDelegate.progress ||
+      placeProgress != oldDelegate.placeProgress;
 }

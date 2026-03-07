@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
+import 'package:portoflio/core/services/desert_audio_service.dart';
 
 /// Audio service for managing ambient sounds and music
-class AudioService {
+class AudioService extends ChangeNotifier {
   static final AudioService _instance = AudioService._internal();
   factory AudioService() => _instance;
   static AudioService get instance => _instance;
   AudioService._internal();
 
+  final DesertAudioService _desertAudio = DesertAudioService.instance;
   bool _isMuted = true;
   bool _isInitialized = false;
 
@@ -21,11 +23,10 @@ class AudioService {
     if (_isInitialized) return;
 
     try {
-      // Initialize audio system
       if (kDebugMode) {
         debugPrint('AudioService: Initializing audio system');
       }
-
+      await _desertAudio.initialize();
       _isInitialized = true;
     } catch (e) {
       if (kDebugMode) {
@@ -41,13 +42,12 @@ class AudioService {
     }
 
     _isMuted = !_isMuted;
+    notifyListeners();
 
     if (kDebugMode) {
       debugPrint('AudioService: ${_isMuted ? 'Muted' : 'Unmuted'}');
     }
 
-    // Here you would actually start/stop audio playback
-    // For now, we'll just simulate the state change
     if (!_isMuted) {
       _startAmbientSound();
     } else {
@@ -57,11 +57,20 @@ class AudioService {
     return !_isMuted; // Return playing state (true = playing)
   }
 
+  /// Attempt to unlock audio after user interaction
+  Future<void> tryUnlock() async {
+    if (!_isInitialized) await initialize();
+    if (!_isMuted) {
+      await _startAmbientSound();
+    }
+  }
+
   /// Set mute state explicitly
   void setMuted(bool muted) {
-    if (_isMuted == muted) return;
+    if (_isMuted == muted && _isInitialized) return;
 
     _isMuted = muted;
+    notifyListeners();
 
     if (kDebugMode) {
       debugPrint('AudioService: Set muted to $muted');
@@ -75,18 +84,11 @@ class AudioService {
   }
 
   /// Start playing ambient desert sounds
-  void _startAmbientSound() {
+  Future<void> _startAmbientSound() async {
     if (kDebugMode) {
       debugPrint('AudioService: Starting ambient desert sounds');
     }
-
-    // In a real implementation, you would:
-    // 1. Load audio files (wind, sand, distant sounds)
-    // 2. Create audio players
-    // 3. Start playback with looping
-    // 4. Apply volume and fade effects
-
-    // For now, we'll just simulate the audio starting
+    await _desertAudio.playBackgroundSound(DesertSound.desertAmbient);
   }
 
   /// Stop playing ambient sounds
@@ -94,13 +96,7 @@ class AudioService {
     if (kDebugMode) {
       debugPrint('AudioService: Stopping ambient sounds');
     }
-
-    // In a real implementation, you would:
-    // 1. Fade out current audio
-    // 2. Stop audio players
-    // 3. Release resources if needed
-
-    // For now, we'll just simulate the audio stopping
+    _desertAudio.stopBackgroundSound();
   }
 
   /// Update volume based on user preferences or context
@@ -116,7 +112,7 @@ class AudioService {
       debugPrint('AudioService: Setting volume to ${volume * 100}%');
     }
 
-    // Apply volume to all active audio players
+    _desertAudio.setVolume(volume);
   }
 
   /// Play a one-shot sound effect
@@ -127,19 +123,22 @@ class AudioService {
       debugPrint('AudioService: Playing sound effect: $soundName');
     }
 
-    // In a real implementation, you would:
-    // 1. Load the sound effect if not already loaded
-    // 2. Play it through an audio player
-    // 3. Handle cleanup when finished
+    // Map string sound names to DesertSound if applicable
+    if (soundName == 'sword_click') {
+      _desertAudio.playSoundEffect(DesertSound.swordClick);
+    }
   }
 
   /// Dispose of all audio resources
+  @override
   void dispose() {
     if (kDebugMode) {
       debugPrint('AudioService: Disposing audio resources');
     }
 
     _stopAmbientSound();
+    _desertAudio.dispose();
     _isInitialized = false;
+    super.dispose();
   }
 }

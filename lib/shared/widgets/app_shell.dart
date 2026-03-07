@@ -90,11 +90,21 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    final isSmallScreen = MediaQuery.sizeOf(context).width <= _kSmallScreenBreakpoint;
+    final isSmallScreen =
+        MediaQuery.sizeOf(context).width <= _kSmallScreenBreakpoint;
     final isDesktop = MediaQuery.sizeOf(context).width >= _kDesktopBreakpoint;
 
     final bodyContent = CustomCursorOverlay(
       child: Listener(
+        onPointerDown: (_) {
+          // Silent attempt to start audio on interaction
+          final audio = AudioService.instance;
+          if (audio.isMuted) {
+            audio.setMuted(false);
+          } else {
+            audio.tryUnlock();
+          }
+        },
         onPointerMove: (event) {
           _mousePosition.value = event.localPosition;
         },
@@ -109,7 +119,10 @@ class _AppShellState extends State<AppShell> {
               ),
             ),
             // Main content area (top padding clears the header)
-            Padding(padding: const EdgeInsets.only(top: 30), child: widget.child),
+            Padding(
+              padding: const EdgeInsets.only(top: 30),
+              child: widget.child,
+            ),
             // Global Header (Top Navigation) — 3D blur + mouse-driven tilt
             Positioned(
               top: 0,
@@ -161,7 +174,9 @@ class _AppShellState extends State<AppShell> {
     );
 
     return Scaffold(
-      body: isDesktop ? Theme(data: themeOverrides, child: bodyContent) : bodyContent,
+      body: isDesktop
+          ? Theme(data: themeOverrides, child: bodyContent)
+          : bodyContent,
     );
   }
 }
@@ -206,18 +221,35 @@ class _AnimatedBlurHeader extends StatelessWidget {
                 ..rotateX(rotateX)
                 ..rotateY(rotateY),
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(999),
                   child: BackdropFilter(
                     filter: ui.ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
                         color: theme.colorScheme.surface.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(999),
-                        border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.15)),
-                        boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.1), blurRadius: 30)],
+                        border: Border.all(
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: 0.15,
+                          ),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: theme.colorScheme.primary.withValues(
+                              alpha: 0.1,
+                            ),
+                            blurRadius: 30,
+                          ),
+                        ],
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -234,10 +266,28 @@ class _AnimatedBlurHeader extends StatelessWidget {
                           if (!compact)
                             Row(
                               children: [
-                                NavLink(label: 'Skills', onTap: () => _navigateTo(context, '/skills'), padding: const EdgeInsets.only(left: 30)),
-                                NavLink(label: 'Masterpieces', onTap: () => _navigateTo(context, '/projects'), padding: const EdgeInsets.only(left: 30)),
-                                NavLink(label: 'Experience', onTap: () => _navigateTo(context, '/experience'), padding: const EdgeInsets.only(left: 30)),
-                                NavLink(label: 'About', onTap: () => _navigateTo(context, '/about'), padding: const EdgeInsets.only(left: 30)),
+                                NavLink(
+                                  label: 'Skills',
+                                  onTap: () => _navigateTo(context, '/skills'),
+                                  padding: const EdgeInsets.only(left: 30),
+                                ),
+                                NavLink(
+                                  label: 'Masterpieces',
+                                  onTap: () =>
+                                      _navigateTo(context, '/projects'),
+                                  padding: const EdgeInsets.only(left: 30),
+                                ),
+                                NavLink(
+                                  label: 'Experience',
+                                  onTap: () =>
+                                      _navigateTo(context, '/experience'),
+                                  padding: const EdgeInsets.only(left: 30),
+                                ),
+                                NavLink(
+                                  label: 'About',
+                                  onTap: () => _navigateTo(context, '/about'),
+                                  padding: const EdgeInsets.only(left: 30),
+                                ),
                                 const SizedBox(width: 12),
                                 const _AudioToggleButton(),
                                 const SizedBox(width: 12),
@@ -250,71 +300,89 @@ class _AnimatedBlurHeader extends StatelessWidget {
                               children: [
                                 const _AudioToggleButton(),
                                 const SizedBox(width: 4),
-                            PopupMenuButton<String>(
-                              icon: Icon(Icons.menu, color: theme.colorScheme.primary),
-                              padding: EdgeInsets.zero,
-                              offset: const Offset(0, 48),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                              onSelected: (value) {
-                                switch (value) {
-                                  case 'skills':
-                                    _navigateTo(context, '/skills');
-                                    break;
-                                  case 'masterpieces':
-                                    _navigateTo(context, '/projects');
-                                    break;
-                                  case 'experience':
-                                    _navigateTo(context, '/experience');
-                                    break;
-                                  case 'about':
-                                    _navigateTo(context, '/about');
-                                    break;
-                                  case 'hire':
-                                    _navigateTo(context, '/contact');
-                                    break;
-                                }
-                              },
-                              itemBuilder: (context) => [
-                                PopupMenuItem(
-                                  value: 'skills',
-                                  child: Text(
-                                    'Skills',
-                                    style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                                PopupMenuButton<String>(
+                                  icon: Icon(
+                                    Icons.menu,
+                                    color: theme.colorScheme.primary,
                                   ),
-                                ),
-                                PopupMenuItem(
-                                  value: 'masterpieces',
-                                  child: Text(
-                                    'Masterpieces',
-                                    style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                                  padding: EdgeInsets.zero,
+                                  offset: const Offset(0, 48),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
                                   ),
-                                ),
-                                PopupMenuItem(
-                                  value: 'experience',
-                                  child: Text(
-                                    'Experience',
-                                    style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
-                                  ),
-                                ),
-                                PopupMenuItem(
-                                  value: 'about',
-                                  child: Text(
-                                    'About',
-                                    style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
-                                  ),
-                                ),
-                                PopupMenuItem(
-                                  value: 'hire',
-                                  child: Text(
-                                    'Hire Me',
-                                    style: theme.textTheme.labelLarge?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      color: theme.colorScheme.primary,
+                                  onSelected: (value) {
+                                    switch (value) {
+                                      case 'skills':
+                                        _navigateTo(context, '/skills');
+                                        break;
+                                      case 'masterpieces':
+                                        _navigateTo(context, '/projects');
+                                        break;
+                                      case 'experience':
+                                        _navigateTo(context, '/experience');
+                                        break;
+                                      case 'about':
+                                        _navigateTo(context, '/about');
+                                        break;
+                                      case 'hire':
+                                        _navigateTo(context, '/contact');
+                                        break;
+                                    }
+                                  },
+                                  itemBuilder: (context) => [
+                                    PopupMenuItem(
+                                      value: 'skills',
+                                      child: Text(
+                                        'Skills',
+                                        style: theme.textTheme.labelLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                      ),
                                     ),
-                                  ),
+                                    PopupMenuItem(
+                                      value: 'masterpieces',
+                                      child: Text(
+                                        'Masterpieces',
+                                        style: theme.textTheme.labelLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                      ),
+                                    ),
+                                    PopupMenuItem(
+                                      value: 'experience',
+                                      child: Text(
+                                        'Experience',
+                                        style: theme.textTheme.labelLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                      ),
+                                    ),
+                                    PopupMenuItem(
+                                      value: 'about',
+                                      child: Text(
+                                        'About',
+                                        style: theme.textTheme.labelLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                      ),
+                                    ),
+                                    PopupMenuItem(
+                                      value: 'hire',
+                                      child: Text(
+                                        'Hire Me',
+                                        style: theme.textTheme.labelLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              color: theme.colorScheme.primary,
+                                            ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
                               ],
                             ),
                         ],
@@ -357,13 +425,21 @@ class _HeaderLogo extends StatelessWidget {
         Container(
           width: 32,
           height: 32,
-          decoration: BoxDecoration(color: theme.colorScheme.primary, shape: BoxShape.circle),
-          child: Icon(Icons.star_rounded, size: 18, color: theme.colorScheme.onPrimary),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primary,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.star_rounded,
+            size: 18,
+            color: theme.colorScheme.onPrimary,
+          ),
         ),
         const SizedBox(width: 12),
         ShaderMask(
-          shaderCallback: (bounds) =>
-              LinearGradient(colors: [theme.colorScheme.primary, theme.colorScheme.tertiary]).createShader(bounds),
+          shaderCallback: (bounds) => LinearGradient(
+            colors: [theme.colorScheme.primary, theme.colorScheme.tertiary],
+          ).createShader(bounds),
           child: Text(
             'AM',
             style: GoogleFonts.amiri(
@@ -388,48 +464,58 @@ class _AudioToggleButton extends StatefulWidget {
 
 class _AudioToggleButtonState extends State<_AudioToggleButton>
     with SingleTickerProviderStateMixin {
-  bool _muted = true;
   late AnimationController _pulse;
 
   @override
   void initState() {
     super.initState();
-    _muted = AudioService.instance.isMuted;
     _pulse = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-    if (!_muted) _pulse.repeat(reverse: true);
+    // Initial state
+    if (!AudioService.instance.isMuted) _pulse.repeat(reverse: true);
+
+    // Add listener to react to global audio state changes
+    AudioService.instance.addListener(_onAudioStateChanged);
+  }
+
+  void _onAudioStateChanged() {
+    if (!mounted) return;
+    final muted = AudioService.instance.isMuted;
+    if (!muted && !_pulse.isAnimating) {
+      _pulse.repeat(reverse: true);
+    } else if (muted && _pulse.isAnimating) {
+      _pulse.stop();
+      _pulse.value = 0;
+    }
+    setState(() {}); // Rebuild on state change
   }
 
   @override
   void dispose() {
+    AudioService.instance.removeListener(_onAudioStateChanged);
     _pulse.dispose();
     super.dispose();
   }
 
   void _toggle() {
-    final playing = AudioService.instance.toggle();
-    setState(() => _muted = !playing);
-    if (playing) {
-      _pulse.repeat(reverse: true);
-    } else {
-      _pulse.stop();
-      _pulse.value = 0;
-    }
+    AudioService.instance.toggle();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final muted = AudioService.instance.isMuted;
+
     return Tooltip(
-      message: _muted ? 'Unmute desert ambience' : 'Mute',
+      message: muted ? 'Unmute desert ambience' : 'Mute',
       child: GestureDetector(
         onTap: _toggle,
         child: AnimatedBuilder(
           animation: _pulse,
           builder: (context, child) {
-            final glow = _muted ? 0.0 : (_pulse.value * 0.4 + 0.1);
+            final glow = muted ? 0.0 : (_pulse.value * 0.4 + 0.1);
             return Container(
               width: 34,
               height: 34,
@@ -437,23 +523,25 @@ class _AudioToggleButtonState extends State<_AudioToggleButton>
                 shape: BoxShape.circle,
                 color: theme.colorScheme.surface.withValues(alpha: 0.4),
                 border: Border.all(
-                  color: _muted
+                  color: muted
                       ? theme.colorScheme.onSurface.withValues(alpha: 0.2)
                       : theme.colorScheme.primary.withValues(alpha: 0.6),
                 ),
-                boxShadow: _muted
+                boxShadow: muted
                     ? null
                     : [
                         BoxShadow(
-                          color: theme.colorScheme.primary.withValues(alpha: glow),
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: glow,
+                          ),
                           blurRadius: 12,
                         ),
                       ],
               ),
               child: Icon(
-                _muted ? Icons.volume_off_rounded : Icons.volume_up_rounded,
+                muted ? Icons.volume_off_rounded : Icons.volume_up_rounded,
                 size: 16,
-                color: _muted
+                color: muted
                     ? theme.colorScheme.onSurface.withValues(alpha: 0.5)
                     : theme.colorScheme.primary,
               ),
@@ -476,7 +564,9 @@ class _HireMeButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [theme.colorScheme.primary, theme.colorScheme.tertiary]),
+          gradient: LinearGradient(
+            colors: [theme.colorScheme.primary, theme.colorScheme.tertiary],
+          ),
           borderRadius: BorderRadius.circular(999),
           boxShadow: [
             BoxShadow(
@@ -497,11 +587,14 @@ class _HireMeButton extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            Icon(Icons.arrow_forward_rounded, color: theme.colorScheme.onPrimary, size: 18),
+            Icon(
+              Icons.arrow_forward_rounded,
+              color: theme.colorScheme.onPrimary,
+              size: 18,
+            ),
           ],
         ),
       ),
     );
   }
 }
-

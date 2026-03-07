@@ -38,22 +38,22 @@ class CinematicVideoBackground extends StatelessWidget {
 
   List<Color> _getGradientColors(BuildContext context, double progress) {
     final theme = Theme.of(context);
-    
-    // Different gradients based on place progress (0.0 to 3.0)
-    if (progress < 1.0) {
-      // Beginning - warm colors
+
+    // Different gradients based on place progress (0.0 to 5.0)
+    if (progress < 2.0) {
+      // Beginning (Hero, Skills) - warm colors
       return [
         theme.colorScheme.primary.withValues(alpha: 0.3),
         theme.colorScheme.tertiary.withValues(alpha: 0.2),
       ];
-    } else if (progress < 2.0) {
-      // Journey - cool colors
+    } else if (progress < 4.0) {
+      // Journey (Portfolio, Experience) - cool colors
       return [
         theme.colorScheme.primary.withValues(alpha: 0.2),
         Colors.blue.withValues(alpha: 0.1),
       ];
     } else {
-      // Destination - dramatic colors
+      // Destination (About, Footer) - dramatic colors
       return [
         Colors.deepPurple.withValues(alpha: 0.2),
         theme.colorScheme.primary.withValues(alpha: 0.3),
