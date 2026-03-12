@@ -37,7 +37,7 @@ class _PlaceOverlayPainter extends CustomPainter {
           Colors.white.withValues(alpha: 0.05 * progress),
           Colors.transparent,
         ],
-        stops: [0.0, 0.5, 1.0],
+        stops: const [0.0, 0.5, 1.0],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);

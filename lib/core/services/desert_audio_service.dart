@@ -1,13 +1,14 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Audio service for Persian Prince desert ambient sounds
 class DesertAudioService {
-  static final DesertAudioService _instance = DesertAudioService._internal();
   factory DesertAudioService() => _instance;
-  static DesertAudioService get instance => _instance;
-
   DesertAudioService._internal();
+
+  static final DesertAudioService _instance = DesertAudioService._internal();
+  static DesertAudioService get instance => _instance;
 
   final AudioPlayer _bgPlayer = AudioPlayer();
   final AudioPlayer _effectPlayer = AudioPlayer();
@@ -16,7 +17,7 @@ class DesertAudioService {
   /// Initialize audio service
   Future<void> initialize() async {
     if (_isInitialized) return;
-    _bgPlayer.setReleaseMode(ReleaseMode.loop);
+    await _bgPlayer.setReleaseMode(ReleaseMode.loop);
     _isInitialized = true;
   }
 
@@ -32,7 +33,7 @@ class DesertAudioService {
       await _bgPlayer.setVolume(0.3);
       await _bgPlayer.resume();
     } catch (e) {
-      print('Failed to play background sound: $e');
+      debugPrint('Failed to play background sound: $e');
     }
   }
 
@@ -48,7 +49,7 @@ class DesertAudioService {
       await _effectPlayer.setVolume(0.6);
       await _effectPlayer.resume();
     } catch (e) {
-      print('Failed to play sound effect: $e');
+      debugPrint('Failed to play sound effect: $e');
     }
   }
 
@@ -58,7 +59,7 @@ class DesertAudioService {
     try {
       await _bgPlayer.stop();
     } catch (e) {
-      print('Failed to stop background sound: $e');
+      debugPrint('Failed to stop background sound: $e');
     }
   }
 
@@ -70,7 +71,7 @@ class DesertAudioService {
       await _bgPlayer.setVolume(clampedVolume * 0.3);
       await _effectPlayer.setVolume(clampedVolume * 0.6);
     } catch (e) {
-      print('Failed to set volume: $e');
+      debugPrint('Failed to set volume: $e');
     }
   }
 

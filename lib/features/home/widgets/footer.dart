@@ -138,10 +138,10 @@ class Footer extends ConsumerWidget {
             children: [
               Expanded(
                 child: _buildLinkGroup(context, theme, 'Explore', [
-                  _NavItem('Skills', '/skills'),
-                  _NavItem('Masterpieces', '/projects'),
-                  _NavItem('Experience', '/experience'),
-                  _NavItem('About', '/about'),
+                  const _NavItem('Skills', '/skills'),
+                  const _NavItem('Masterpieces', '/projects'),
+                  const _NavItem('Experience', '/experience'),
+                  const _NavItem('About', '/about'),
                 ]),
               ),
               const SizedBox(width: 40),
@@ -170,10 +170,10 @@ class Footer extends ConsumerWidget {
           children: [
             Expanded(
               child: _buildLinkGroup(context, theme, 'Explore', [
-                _NavItem('Skills', '/skills'),
-                _NavItem('Masterpieces', '/projects'),
-                _NavItem('Experience', '/experience'),
-                _NavItem('About', '/about'),
+                const _NavItem('Skills', '/skills'),
+                const _NavItem('Masterpieces', '/projects'),
+                const _NavItem('Experience', '/experience'),
+                const _NavItem('About', '/about'),
               ]),
             ),
             const SizedBox(width: 24),

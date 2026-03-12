@@ -219,7 +219,7 @@ class _Glass3DProjectCard extends StatelessWidget {
                           Image.network(
                             imageUrl!,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(
+                            errorBuilder: (_, _, _) => Container(
                               color: theme.colorScheme.surfaceContainerHighest,
                               child: Icon(
                                 icon,

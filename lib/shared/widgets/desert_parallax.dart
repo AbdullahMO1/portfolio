@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 /// Persian Prince desert parallax widget for creating depth
 class DesertParallax extends StatefulWidget {
@@ -53,16 +52,16 @@ class _DesertParallaxState extends State<DesertParallax> {
             if (widget.desertLayers >= 1)
               Positioned.fill(
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        const Color(0xFF0D0D26), // Night sky
-                        const Color(0xFFF78C4C), // Sunset orange
-                        const Color(0xFFF0D8B2), // Desert sand
+                        Color(0xFF0D0D26), // Night sky
+                        Color(0xFFF78C4C), // Sunset orange
+                        Color(0xFFF0D8B2), // Desert sand
                       ],
-                      stops: const [0.0, 0.3, 1.0],
+                      stops: [0.0, 0.3, 1.0],
                     ),
                   ),
                 ),

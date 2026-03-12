@@ -534,7 +534,7 @@ class _HeroSectionState extends State<HeroSection>
         builder: (context, displayed, _) {
           return ValueListenableBuilder<bool>(
             valueListenable: _showCursor,
-            builder: (context, showCursor, __) {
+            builder: (context, showCursor, _) {
               return Column(
                 crossAxisAlignment: isDesktop
                     ? CrossAxisAlignment.start
@@ -686,7 +686,7 @@ class _ArabesqueDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gold = AppTheme.saffron;
+    const gold = AppTheme.saffron;
     return Align(
       alignment: align,
       child: Row(

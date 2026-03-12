@@ -167,10 +167,10 @@ class _PersianPrinceCharacterState extends ConsumerState<PersianPrinceCharacter>
                       colors: [
                         const Color(
                           0xFFD4AF37,
-                        ).withOpacity(0.3), // Persian gold
+                        ).withValues(alpha: 0.3), // Persian gold
                         const Color(
                           0xFFF78C4C,
-                        ).withOpacity(0.2), // Sunset orange
+                        ).withValues(alpha: 0.2), // Sunset orange
                         Colors.transparent,
                       ],
                     ),
@@ -179,7 +179,7 @@ class _PersianPrinceCharacterState extends ConsumerState<PersianPrinceCharacter>
               ),
 
             // Child widget (if provided)
-            if (child != null) child,
+            ?child,
           ],
         ),
       ),
@@ -362,7 +362,7 @@ class _PrincePainter extends CustomPainter {
     // Magic glow effect
     final glowPaint = Paint()
       ..color = const Color(0xFFD4AF37)
-          .withOpacity(0.3) // Persian gold glow
+          .withValues(alpha: 0.3) // Persian gold glow
       ..style = PaintingStyle.fill
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
 

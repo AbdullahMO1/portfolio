@@ -39,8 +39,9 @@ class StoryBanner extends StatelessWidget {
   ];
 
   String get _roman {
-    if (chapterIndex < _romanNumerals.length)
+    if (chapterIndex < _romanNumerals.length) {
       return _romanNumerals[chapterIndex];
+    }
     return '${chapterIndex + 1}';
   }
 
@@ -176,7 +177,7 @@ class _OrnamentDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gold = AppTheme.saffron;
+    const gold = AppTheme.saffron;
     final isCenter = align == TextAlign.center;
 
     return Row(
@@ -186,8 +187,8 @@ class _OrnamentDivider extends StatelessWidget {
           : MainAxisAlignment.start,
       children: [
         _buildLine(gold, 40),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
           child: Text('✦', style: TextStyle(color: gold, fontSize: 14)),
         ),
         _buildLine(gold, 40),

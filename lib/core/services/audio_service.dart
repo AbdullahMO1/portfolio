@@ -3,10 +3,11 @@ import 'package:portoflio/core/services/desert_audio_service.dart';
 
 /// Audio service for managing ambient sounds and music
 class AudioService extends ChangeNotifier {
-  static final AudioService _instance = AudioService._internal();
   factory AudioService() => _instance;
-  static AudioService get instance => _instance;
   AudioService._internal();
+
+  static final AudioService _instance = AudioService._internal();
+  static AudioService get instance => _instance;
 
   final DesertAudioService _desertAudio = DesertAudioService.instance;
   bool _isMuted = true;

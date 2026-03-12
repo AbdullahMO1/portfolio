@@ -10,9 +10,9 @@ uniform float u_place;
 out vec4 fragColor;
 
 const vec3 DEEP_NAVY = vec3(0.039, 0.067, 0.157);
-const vec3 GOLD      = vec3(0.831, 0.686, 0.216);
-const vec3 GOLD_LT   = vec3(0.96, 0.88, 0.55);
-const vec3 GOLD_DK   = vec3(0.40, 0.28, 0.06);
+const vec3 GOLD      = vec3(0.45, 0.35, 0.15);
+const vec3 GOLD_LT   = vec3(0.55, 0.45, 0.25);
+const vec3 GOLD_DK   = vec3(0.25, 0.18, 0.06);
 
 float waveShape(float x, float t) {
     float w  = sin(x * 1.8 - t * 0.4) * 0.10;
@@ -63,15 +63,15 @@ void main() {
 
     vec3 waveColor = mix(GOLD_DK, GOLD, diffuse * 0.7 + 0.3);
     waveColor = mix(waveColor, GOLD_LT, topSide * core * 0.5);
-    waveColor += spec * vec3(1.0, 0.96, 0.88) * 0.3;
+    waveColor += spec * vec3(0.7, 0.65, 0.55) * 0.15;
 
-    float opacity = fade * fade * 0.35 + body * 0.35 + core * 0.3;
+    float opacity = fade * fade * 0.2 + body * 0.2 + core * 0.15;
 
     col = mix(col, waveColor, opacity);
 
     vec2 mouseNorm = u_mouse / u_resolution;
     float mouseGlow = 1.0 - smoothstep(0.0, 0.35, length(uv - mouseNorm));
-    col += mouseGlow * GOLD * 0.04;
+    col += mouseGlow * GOLD * 0.02;
 
     fragColor = vec4(col, 1.0);
 }

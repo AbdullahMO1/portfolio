@@ -106,7 +106,7 @@ class ProjectDetailScreen extends ConsumerWidget {
                         Image.network(
                           project.imageUrl!,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
+                          errorBuilder: (_, _, _) => Container(
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,

@@ -246,10 +246,10 @@ class _ScrollRevealState extends State<ScrollReveal>
                           colors: [
                             const Color(
                               0xFFD4AF37,
-                            ).withOpacity(0.2), // Persian gold
+                            ).withValues(alpha: 0.2), // Persian gold
                             const Color(
                               0xFFF78C4C,
-                            ).withOpacity(0.1), // Sunset orange
+                            ).withValues(alpha: 0.1), // Sunset orange
                           ],
                         ),
                       ),
@@ -278,7 +278,7 @@ class _ScrollRevealState extends State<ScrollReveal>
           BoxShadow(
             color: const Color(
               0xFFD4AF37,
-            ).withOpacity(0.1), // Persian gold shadow
+            ).withValues(alpha: 0.1), // Persian gold shadow
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -299,7 +299,7 @@ class _SandWavePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = const Color(0xFFF0D8B2)
-          .withOpacity(0.3) // Desert sand
+          .withValues(alpha: 0.3) // Desert sand
       ..style = PaintingStyle.fill
       ..strokeWidth = 2.0;
 

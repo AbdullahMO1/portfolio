@@ -176,11 +176,11 @@ class _MagneticButtonState extends State<MagneticButton>
         builder: (context, child) {
           return Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
+              gradient: const LinearGradient(
                 colors: [
-                  const Color(0xFFD4AF37), // Persian Gold
-                  const Color(0xFFF78C4C), // Sunset Orange
-                  const Color(0xFF8B4513), // Camel Brown
+                  Color(0xFFD4AF37), // Persian Gold
+                  Color(0xFFF78C4C), // Sunset Orange
+                  Color(0xFF8B4513), // Camel Brown
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -188,7 +188,7 @@ class _MagneticButtonState extends State<MagneticButton>
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFD4AF37).withOpacity(0.3),
+                  color: const Color(0xFFD4AF37).withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),

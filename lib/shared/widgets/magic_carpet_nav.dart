@@ -85,13 +85,13 @@ class _MagicCarpetNavState extends ConsumerState<MagicCarpetNav>
           // Magic carpet header
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [const Color(0xFFD4AF37), const Color(0xFFF78C4C)],
+                colors: [Color(0xFFD4AF37), Color(0xFFF78C4C)],
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
               ),
-              borderRadius: const BorderRadius.only(
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
@@ -122,7 +122,7 @@ class _MagicCarpetNavState extends ConsumerState<MagicCarpetNav>
                           ),
                         ],
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.auto_awesome,
                         color: Colors.white,
                         size: 24,
@@ -134,7 +134,7 @@ class _MagicCarpetNavState extends ConsumerState<MagicCarpetNav>
                 const SizedBox(width: 16),
 
                 // Title
-                Expanded(
+                const Expanded(
                   child: Text(
                     'Magic Carpet Navigation',
                     style: TextStyle(
@@ -143,8 +143,8 @@ class _MagicCarpetNavState extends ConsumerState<MagicCarpetNav>
                       fontWeight: FontWeight.bold,
                       shadows: [
                         Shadow(
-                          color: const Color(0xFF8B4513),
-                          offset: const Offset(0, 2),
+                          color: Color(0xFF8B4513),
+                          offset: Offset(0, 2),
                           blurRadius: 4,
                         ),
                       ],
