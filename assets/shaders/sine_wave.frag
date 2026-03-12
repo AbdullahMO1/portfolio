@@ -63,7 +63,7 @@ void main() {
 
     vec3 waveColor = mix(GOLD_DK, GOLD, diffuse * 0.7 + 0.3);
     waveColor = mix(waveColor, GOLD_LT, topSide * core * 0.5);
-    waveColor += spec * vec3(0.7, 0.65, 0.55) * 0.15;
+    waveColor += spec * vec3(0.8, 0.65, 0.55) * 0.2;
 
     float opacity = fade * fade * 0.2 + body * 0.2 + core * 0.15;
 

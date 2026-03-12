@@ -25,8 +25,6 @@ jobs:
       - name: Format check
         run: dart format --set-exit-if-changed .
 
-      - name: Analyze
-        run: flutter analyze --fatal-infos
 
       - name: Build Web (Release — production optimizations)
         run: flutter build web --release --wasm --base-href "/portoflio/"

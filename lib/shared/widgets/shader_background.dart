@@ -48,8 +48,8 @@ class _ShaderBackgroundState extends State<ShaderBackground>
   final ValueNotifier<double> _placeProgress = ValueNotifier(0.0);
 
   static const double _mouseLerpSpeed = 6.0;
-  static const double _lowEndMaxWidth = 600;
-  static const double _lowEndMaxHeight = 450;
+  static const double _lowEndMaxWidth = 300;
+  static const double _lowEndMaxHeight = 300;
   static const double _reducedFpsMinWidth = 600;
   static const double _reducedFpsMaxWidth = 900;
 
