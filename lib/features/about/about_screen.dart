@@ -21,15 +21,24 @@ class AboutScreen extends ConsumerWidget {
     final chapter = story.chapterBySectionKey('about');
 
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 100 : 24, vertical: 80),
+      padding: EdgeInsets.symmetric(
+        horizontal: isDesktop ? 100 : 24,
+        vertical: 80,
+      ),
       child: asyncResume.when(
         loading: () => const Center(
-          child: Padding(padding: EdgeInsets.all(48), child: CircularProgressIndicator()),
+          child: Padding(
+            padding: EdgeInsets.all(48),
+            child: CircularProgressIndicator(),
+          ),
         ),
         error: (err, _) => Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
-            child: Text('Failed to load about: $err', style: theme.textTheme.bodyLarge),
+            child: Text(
+              'Failed to load about: $err',
+              style: theme.textTheme.bodyLarge,
+            ),
           ),
         ),
         data: (resume) {
@@ -37,7 +46,10 @@ class AboutScreen extends ConsumerWidget {
           return Column(
             children: [
               ScrollReveal(
-                child: _SectionTitle(title: chapter?.title ?? 'The Full Account', theme: theme),
+                child: _SectionTitle(
+                  title: chapter?.title ?? 'The Full Account',
+                  theme: theme,
+                ),
               ),
               const SizedBox(height: 60),
               isDesktop
@@ -46,14 +58,21 @@ class AboutScreen extends ConsumerWidget {
                       children: [
                         ScrollReveal(
                           direction: RevealDirection.fromLeft,
-                          child: ProfileCard(name: meta.name, tagline: meta.tagline, avatarUrl: meta.avatarUrl),
+                          child: ProfileCard(
+                            name: meta.name,
+                            tagline: meta.tagline,
+                            avatarUrl: meta.avatarUrl,
+                          ),
                         ),
                         const SizedBox(width: 80),
                         Expanded(
                           child: ScrollReveal(
                             delay: const Duration(milliseconds: 200),
                             direction: RevealDirection.fromRight,
-                            child: _AboutContent(theme: theme, about: resume.about),
+                            child: _AboutContent(
+                              theme: theme,
+                              about: resume.about,
+                            ),
                           ),
                         ),
                       ],
@@ -62,12 +81,19 @@ class AboutScreen extends ConsumerWidget {
                       children: [
                         ScrollReveal(
                           direction: RevealDirection.scale,
-                          child: ProfileCard(name: meta.name, tagline: meta.tagline, avatarUrl: meta.avatarUrl),
+                          child: ProfileCard(
+                            name: meta.name,
+                            tagline: meta.tagline,
+                            avatarUrl: meta.avatarUrl,
+                          ),
                         ),
                         const SizedBox(height: 48),
                         ScrollReveal(
                           delay: const Duration(milliseconds: 200),
-                          child: _AboutContent(theme: theme, about: resume.about),
+                          child: _AboutContent(
+                            theme: theme,
+                            about: resume.about,
+                          ),
                         ),
                       ],
                     ),
@@ -80,17 +106,29 @@ class AboutScreen extends ConsumerWidget {
                   ScrollReveal(
                     delay: const Duration(milliseconds: 300),
                     direction: RevealDirection.scale,
-                    child: _GlowStatCard(label: 'Years Experience', value: '5+', theme: theme),
+                    child: _GlowStatCard(
+                      label: 'Years Experience',
+                      value: '5+',
+                      theme: theme,
+                    ),
                   ),
                   ScrollReveal(
                     delay: const Duration(milliseconds: 450),
                     direction: RevealDirection.scale,
-                    child: _GlowStatCard(label: 'Apps Delivered', value: '15+', theme: theme),
+                    child: _GlowStatCard(
+                      label: 'Apps Delivered',
+                      value: '15+',
+                      theme: theme,
+                    ),
                   ),
                   ScrollReveal(
                     delay: const Duration(milliseconds: 600),
                     direction: RevealDirection.scale,
-                    child: _GlowStatCard(label: 'Team Size Led', value: '8+', theme: theme),
+                    child: _GlowStatCard(
+                      label: 'Team Size Led',
+                      value: '8+',
+                      theme: theme,
+                    ),
                   ),
                 ],
               ),
@@ -117,7 +155,9 @@ class _SectionTitle extends StatelessWidget {
           width: 60,
           height: 3,
           decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [theme.colorScheme.primary, theme.colorScheme.tertiary]),
+            gradient: LinearGradient(
+              colors: [theme.colorScheme.primary, theme.colorScheme.tertiary],
+            ),
             borderRadius: BorderRadius.circular(2),
           ),
         ),
@@ -138,7 +178,8 @@ class _AboutContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (final p in paragraphs) ...[
-          if (p.trim().isNotEmpty) Text(p.trim(), style: theme.textTheme.bodyLarge),
+          if (p.trim().isNotEmpty)
+            Text(p.trim(), style: theme.textTheme.bodyLarge),
           if (p != paragraphs.last) const SizedBox(height: 20),
         ],
       ],
@@ -147,7 +188,11 @@ class _AboutContent extends StatelessWidget {
 }
 
 class _GlowStatCard extends StatefulWidget {
-  const _GlowStatCard({required this.label, required this.value, required this.theme});
+  const _GlowStatCard({
+    required this.label,
+    required this.value,
+    required this.theme,
+  });
 
   final String label;
   final String value;
@@ -170,7 +215,9 @@ class _GlowStatCardState extends State<_GlowStatCard> {
         curve: Curves.easeOutCubic,
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
         decoration: BoxDecoration(
-          color: widget.theme.colorScheme.surfaceContainerHigh.withValues(alpha: _isHovered ? 0.5 : 0.3),
+          color: widget.theme.colorScheme.surfaceContainerHigh.withValues(
+            alpha: _isHovered ? 0.5 : 0.3,
+          ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: _isHovered
@@ -180,7 +227,9 @@ class _GlowStatCardState extends State<_GlowStatCard> {
           boxShadow: _isHovered
               ? [
                   BoxShadow(
-                    color: widget.theme.colorScheme.primary.withValues(alpha: 0.1),
+                    color: widget.theme.colorScheme.primary.withValues(
+                      alpha: 0.1,
+                    ),
                     blurRadius: 30,
                     spreadRadius: 2,
                   ),
@@ -191,11 +240,17 @@ class _GlowStatCardState extends State<_GlowStatCard> {
           children: [
             ShaderMask(
               shaderCallback: (bounds) => LinearGradient(
-                colors: [widget.theme.colorScheme.primary, widget.theme.colorScheme.tertiary],
+                colors: [
+                  widget.theme.colorScheme.primary,
+                  widget.theme.colorScheme.tertiary,
+                ],
               ).createShader(bounds),
               child: Text(
                 widget.value,
-                style: widget.theme.textTheme.displayMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
+                style: widget.theme.textTheme.displayMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
             const SizedBox(height: 6),

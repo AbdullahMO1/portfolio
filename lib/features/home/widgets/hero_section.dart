@@ -473,8 +473,8 @@ class _HeroSectionState extends State<HeroSection>
     final double fontSize = isDesktop
         ? 80
         : screenWidth < 400
-            ? 36
-            : 48;
+        ? 36
+        : 48;
     return [
       if (first.isNotEmpty)
         FittedBox(

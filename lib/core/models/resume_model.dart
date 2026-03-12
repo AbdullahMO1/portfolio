@@ -16,7 +16,8 @@ abstract class ResumeModel with _$ResumeModel {
     @Default([]) List<CertificationEntry> certifications,
   }) = _ResumeModel;
 
-  factory ResumeModel.fromJson(Map<String, dynamic> json) => _$ResumeModelFromJson(json);
+  factory ResumeModel.fromJson(Map<String, dynamic> json) =>
+      _$ResumeModelFromJson(json);
 }
 
 @freezed
@@ -31,21 +32,30 @@ abstract class MetaInfo with _$MetaInfo {
     @Default('') String avatarUrl,
   }) = _MetaInfo;
 
-  factory MetaInfo.fromJson(Map<String, dynamic> json) => _$MetaInfoFromJson(json);
+  factory MetaInfo.fromJson(Map<String, dynamic> json) =>
+      _$MetaInfoFromJson(json);
 }
 
 @freezed
 abstract class SkillCategory with _$SkillCategory {
-  const factory SkillCategory({required String category, required List<SkillItem> items}) = _SkillCategory;
+  const factory SkillCategory({
+    required String category,
+    required List<SkillItem> items,
+  }) = _SkillCategory;
 
-  factory SkillCategory.fromJson(Map<String, dynamic> json) => _$SkillCategoryFromJson(json);
+  factory SkillCategory.fromJson(Map<String, dynamic> json) =>
+      _$SkillCategoryFromJson(json);
 }
 
 @freezed
 abstract class SkillItem with _$SkillItem {
-  const factory SkillItem({required String name, @Default(80) int proficiency}) = _SkillItem;
+  const factory SkillItem({
+    required String name,
+    @Default(80) int proficiency,
+  }) = _SkillItem;
 
-  factory SkillItem.fromJson(Map<String, dynamic> json) => _$SkillItemFromJson(json);
+  factory SkillItem.fromJson(Map<String, dynamic> json) =>
+      _$SkillItemFromJson(json);
 }
 
 @freezed
@@ -58,7 +68,8 @@ abstract class ExperienceEntry with _$ExperienceEntry {
     @Default([]) List<String> highlights,
   }) = _ExperienceEntry;
 
-  factory ExperienceEntry.fromJson(Map<String, dynamic> json) => _$ExperienceEntryFromJson(json);
+  factory ExperienceEntry.fromJson(Map<String, dynamic> json) =>
+      _$ExperienceEntryFromJson(json);
 }
 
 @freezed
@@ -78,21 +89,30 @@ abstract class ProjectEntry with _$ProjectEntry {
     @Default([]) List<String> hardestFeatures,
   }) = _ProjectEntry;
 
-  factory ProjectEntry.fromJson(Map<String, dynamic> json) => _$ProjectEntryFromJson(json);
+  factory ProjectEntry.fromJson(Map<String, dynamic> json) =>
+      _$ProjectEntryFromJson(json);
 }
 
 @freezed
 abstract class EducationEntry with _$EducationEntry {
-  const factory EducationEntry({required String institution, required String degree, @Default('') String year}) =
-      _EducationEntry;
+  const factory EducationEntry({
+    required String institution,
+    required String degree,
+    @Default('') String year,
+  }) = _EducationEntry;
 
-  factory EducationEntry.fromJson(Map<String, dynamic> json) => _$EducationEntryFromJson(json);
+  factory EducationEntry.fromJson(Map<String, dynamic> json) =>
+      _$EducationEntryFromJson(json);
 }
 
 @freezed
 abstract class CertificationEntry with _$CertificationEntry {
-  const factory CertificationEntry({required String title, required String issuer, @Default('') String year}) =
-      _CertificationEntry;
+  const factory CertificationEntry({
+    required String title,
+    required String issuer,
+    @Default('') String year,
+  }) = _CertificationEntry;
 
-  factory CertificationEntry.fromJson(Map<String, dynamic> json) => _$CertificationEntryFromJson(json);
+  factory CertificationEntry.fromJson(Map<String, dynamic> json) =>
+      _$CertificationEntryFromJson(json);
 }

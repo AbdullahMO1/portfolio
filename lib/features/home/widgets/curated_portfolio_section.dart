@@ -16,7 +16,14 @@ class CuratedPortfolioSection extends ConsumerWidget {
       'https://placehold.co/800x500/1a1a2e/eab308?text=Project';
 
   static const List<double> _heightPattern = [
-    340, 260, 280, 360, 240, 320, 300, 280,
+    340,
+    260,
+    280,
+    360,
+    240,
+    320,
+    300,
+    280,
   ];
 
   @override
@@ -78,8 +85,7 @@ class CuratedPortfolioSection extends ConsumerWidget {
                 children: List.generate(featured.length, (index) {
                   final project = featured[index];
                   final imageUrl = project.imageUrl ?? _placeholderImage;
-                  final height =
-                      _heightPattern[index % _heightPattern.length];
+                  final height = _heightPattern[index % _heightPattern.length];
 
                   return ScrollReveal(
                     delay: Duration(milliseconds: index * 100),
@@ -193,8 +199,9 @@ class _StaggeredProjectTile extends StatelessWidget {
                     spreadRadius: 0,
                   ),
                 BoxShadow(
-                  color:
-                      Colors.black.withValues(alpha: isHovered ? 0.35 : 0.18),
+                  color: Colors.black.withValues(
+                    alpha: isHovered ? 0.35 : 0.18,
+                  ),
                   blurRadius: 16,
                   offset: const Offset(0, 8),
                 ),
@@ -249,8 +256,9 @@ class _StaggeredProjectTile extends StatelessWidget {
                           vertical: 5,
                         ),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.primary
-                              .withValues(alpha: 0.85),
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: 0.85,
+                          ),
                           borderRadius: BorderRadius.circular(999),
                         ),
                         child: Text(
@@ -290,7 +298,10 @@ class _StaggeredProjectTile extends StatelessWidget {
                           crossFadeState: isHovered
                               ? CrossFadeState.showSecond
                               : CrossFadeState.showFirst,
-                          firstChild: const SizedBox(height: 0, width: double.infinity),
+                          firstChild: const SizedBox(
+                            height: 0,
+                            width: double.infinity,
+                          ),
                           secondChild: Padding(
                             padding: const EdgeInsets.only(top: 10),
                             child: Column(
@@ -307,24 +318,27 @@ class _StaggeredProjectTile extends StatelessWidget {
                                             vertical: 3,
                                           ),
                                           decoration: BoxDecoration(
-                                            color: Colors.white
-                                                .withValues(alpha: 0.15),
-                                            borderRadius:
-                                                BorderRadius.circular(6),
+                                            color: Colors.white.withValues(
+                                              alpha: 0.15,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              6,
+                                            ),
                                             border: Border.all(
-                                              color: Colors.white
-                                                  .withValues(alpha: 0.2),
+                                              color: Colors.white.withValues(
+                                                alpha: 0.2,
+                                              ),
                                             ),
                                           ),
                                           child: Text(
                                             t,
                                             style: theme.textTheme.labelSmall
                                                 ?.copyWith(
-                                              color: Colors.white
-                                                  .withValues(alpha: 0.9),
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 10,
-                                            ),
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.9),
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 10,
+                                                ),
                                           ),
                                         ),
                                       )
@@ -337,10 +351,10 @@ class _StaggeredProjectTile extends StatelessWidget {
                                       'View Project',
                                       style: theme.textTheme.labelSmall
                                           ?.copyWith(
-                                        color: theme.colorScheme.primary,
-                                        fontWeight: FontWeight.w700,
-                                        letterSpacing: 0.5,
-                                      ),
+                                            color: theme.colorScheme.primary,
+                                            fontWeight: FontWeight.w700,
+                                            letterSpacing: 0.5,
+                                          ),
                                     ),
                                     const SizedBox(width: 4),
                                     Icon(

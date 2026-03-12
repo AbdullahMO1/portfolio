@@ -45,7 +45,9 @@ class SkillsScreen extends ConsumerWidget {
                       children: [
                         Text(
                           chapter?.title ?? 'The Craft',
-                          style: AppTheme.storyTitleStyle(fontSize: screenWidth < 400 ? 26 : 36),
+                          style: AppTheme.storyTitleStyle(
+                            fontSize: screenWidth < 400 ? 26 : 36,
+                          ),
                           textAlign: TextAlign.center,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -55,7 +57,12 @@ class SkillsScreen extends ConsumerWidget {
                           width: 60,
                           height: 3,
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(colors: [theme.colorScheme.primary, theme.colorScheme.tertiary]),
+                            gradient: LinearGradient(
+                              colors: [
+                                theme.colorScheme.primary,
+                                theme.colorScheme.tertiary,
+                              ],
+                            ),
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
@@ -74,18 +81,29 @@ class SkillsScreen extends ConsumerWidget {
                 const SizedBox(height: 50),
                 asyncResume.when(
                   loading: () => const Center(
-                    child: Padding(padding: EdgeInsets.all(48), child: CircularProgressIndicator()),
+                    child: Padding(
+                      padding: EdgeInsets.all(48),
+                      child: CircularProgressIndicator(),
+                    ),
                   ),
                   error: (err, _) => Center(
                     child: Padding(
                       padding: const EdgeInsets.all(24),
-                      child: Text('Failed to load skills: $err', style: theme.textTheme.bodyLarge),
+                      child: Text(
+                        'Failed to load skills: $err',
+                        style: theme.textTheme.bodyLarge,
+                      ),
                     ),
                   ),
                   data: (resume) {
                     final categories = resume.skills;
                     if (categories.isEmpty) {
-                      return Center(child: Text('No skills listed.', style: theme.textTheme.bodyLarge));
+                      return Center(
+                        child: Text(
+                          'No skills listed.',
+                          style: theme.textTheme.bodyLarge,
+                        ),
+                      );
                     }
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,7 +166,12 @@ class _SkillCategoryGroup extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(category, style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.primary)),
+          Text(
+            category,
+            style: theme.textTheme.titleLarge?.copyWith(
+              color: theme.colorScheme.primary,
+            ),
+          ),
           const SizedBox(height: 14),
           GridView.builder(
             shrinkWrap: true,
@@ -179,15 +202,23 @@ class _GlassSkillChip extends StatefulWidget {
   State<_GlassSkillChip> createState() => _GlassSkillChipState();
 }
 
-class _GlassSkillChipState extends State<_GlassSkillChip> with SingleTickerProviderStateMixin {
+class _GlassSkillChipState extends State<_GlassSkillChip>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutQuart, reverseCurve: Curves.easeInCubic);
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutQuart,
+      reverseCurve: Curves.easeInCubic,
+    );
   }
 
   @override
@@ -245,7 +276,9 @@ class _GlassSkillChipState extends State<_GlassSkillChip> with SingleTickerProvi
                 boxShadow: t > 0.01
                     ? [
                         BoxShadow(
-                          color: theme.colorScheme.primary.withValues(alpha: 0.08 * t),
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: 0.08 * t,
+                          ),
                           blurRadius: 12 * t,
                           offset: Offset(0, 3 * t),
                         ),
@@ -259,7 +292,11 @@ class _GlassSkillChipState extends State<_GlassSkillChip> with SingleTickerProvi
                   Text(
                     widget.skill.name,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Color.lerp(theme.colorScheme.onSurface, theme.colorScheme.primary, t),
+                      color: Color.lerp(
+                        theme.colorScheme.onSurface,
+                        theme.colorScheme.primary,
+                        t,
+                      ),
                       fontWeight: t > 0.5 ? FontWeight.w600 : FontWeight.w400,
                     ),
                     maxLines: 1,
@@ -286,22 +323,41 @@ class _GlassSkillChipState extends State<_GlassSkillChip> with SingleTickerProvi
                                         Container(
                                           width: constraints.maxWidth,
                                           decoration: BoxDecoration(
-                                            color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
-                                            borderRadius: BorderRadius.circular(4),
+                                            color: theme
+                                                .colorScheme
+                                                .surfaceContainerHighest
+                                                .withValues(alpha: 0.4),
+                                            borderRadius: BorderRadius.circular(
+                                              4,
+                                            ),
                                           ),
                                         ),
                                         AnimatedBuilder(
                                           animation: _animation,
                                           builder: (context, _) {
                                             return Container(
-                                              width: constraints.maxWidth * (proficiency / 100.0) * _animation.value,
+                                              width:
+                                                  constraints.maxWidth *
+                                                  (proficiency / 100.0) *
+                                                  _animation.value,
                                               decoration: BoxDecoration(
                                                 gradient: LinearGradient(
-                                                  colors: [barColor.withValues(alpha: 0.7), barColor],
+                                                  colors: [
+                                                    barColor.withValues(
+                                                      alpha: 0.7,
+                                                    ),
+                                                    barColor,
+                                                  ],
                                                 ),
-                                                borderRadius: BorderRadius.circular(4),
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
                                                 boxShadow: [
-                                                  BoxShadow(color: barColor.withValues(alpha: 0.3), blurRadius: 4),
+                                                  BoxShadow(
+                                                    color: barColor.withValues(
+                                                      alpha: 0.3,
+                                                    ),
+                                                    blurRadius: 4,
+                                                  ),
                                                 ],
                                               ),
                                             );

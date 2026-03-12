@@ -54,7 +54,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final asyncResume = ref.watch(portfolioDataProvider);
     final resume = asyncResume.value;
     final name = resume?.meta.name ?? 'Abdullah Mohammed';
-    final tagline = resume?.meta.tagline ?? 'Senior Mobile Engineer & Team Lead';
+    final tagline =
+        resume?.meta.tagline ?? 'Senior Mobile Engineer & Team Lead';
     final story = ref.watch(storyConfigProvider);
     final heroChapter = story.chapterBySectionKey('hero');
 
@@ -90,11 +91,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         CustomScrollView(
           controller: _scrollController,
           physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverList(
-              delegate: SliverChildListDelegate(sections),
-            ),
-          ],
+          slivers: [SliverList(delegate: SliverChildListDelegate(sections))],
         ),
 
         if (MediaQuery.sizeOf(context).width > 600)
@@ -164,8 +161,7 @@ class _StoryScrollIndicator extends StatelessWidget {
       listenable: Listenable.merge([controller, placeProgress]),
       builder: (context, _) {
         double progress = 0;
-        if (controller.hasClients &&
-            controller.position.hasContentDimensions) {
+        if (controller.hasClients && controller.position.hasContentDimensions) {
           final maxExtent = controller.position.maxScrollExtent;
           if (maxExtent > 0) {
             progress = (controller.offset / maxExtent).clamp(0.0, 1.0);

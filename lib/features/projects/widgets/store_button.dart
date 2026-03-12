@@ -3,7 +3,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 /// Store button for app store links (Google Play, App Store)
 class StoreButton extends StatelessWidget {
-  const StoreButton({super.key, required this.store, required this.url, this.size = StoreButtonSize.medium});
+  const StoreButton({
+    super.key,
+    required this.store,
+    required this.url,
+    this.size = StoreButtonSize.medium,
+  });
 
   final StoreType store;
   final String url;
@@ -29,7 +34,10 @@ class StoreButton extends StatelessWidget {
               decoration: BoxDecoration(
                 color: _getBackgroundColor(hovered, theme),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: _getBorderColor(hovered, theme), width: 1.5),
+                border: Border.all(
+                  color: _getBorderColor(hovered, theme),
+                  width: 1.5,
+                ),
                 boxShadow: hovered ? _getBoxShadow(theme) : null,
               ),
               child: Row(
@@ -79,7 +87,11 @@ class StoreButton extends StatelessWidget {
 
   List<BoxShadow> _getBoxShadow(ThemeData theme) {
     return [
-      BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.2), blurRadius: 12, offset: const Offset(0, 4)),
+      BoxShadow(
+        color: theme.colorScheme.primary.withValues(alpha: 0.2),
+        blurRadius: 12,
+        offset: const Offset(0, 4),
+      ),
     ];
   }
 
@@ -133,7 +145,11 @@ class StoreButton extends StatelessWidget {
           fontWeight: FontWeight.w600,
           color: theme.colorScheme.onSurface,
         ) ??
-        TextStyle(fontSize: fontSize, fontWeight: FontWeight.w600, color: theme.colorScheme.onSurface);
+        TextStyle(
+          fontSize: fontSize,
+          fontWeight: FontWeight.w600,
+          color: theme.colorScheme.onSurface,
+        );
   }
 
   Future<void> _launchStore(String url) async {

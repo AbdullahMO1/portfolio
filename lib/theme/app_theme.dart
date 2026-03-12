@@ -18,8 +18,12 @@ class AppTheme {
   static const Color deepNavy = Color(
     0xFF0A1128,
   ); // Contrast for text in dark mode
-  static const Color parchment = Color(0xFFE8DCC8); // Warm parchment for body text
-  static const Color ivoryGold = Color(0xFFF0E6C8); // Light gold for secondary text
+  static const Color parchment = Color(
+    0xFFE8DCC8,
+  ); // Warm parchment for body text
+  static const Color ivoryGold = Color(
+    0xFFF0E6C8,
+  ); // Light gold for secondary text
 
   /// Story title style — Amiri calligraphic serif.
   static TextStyle storyTitleStyle({
@@ -82,21 +86,9 @@ class AppTheme {
             fontWeight: FontWeight.w700,
             color: saffronLight,
           ),
-          bodyLarge: TextStyle(
-            fontSize: 20,
-            height: 1.6,
-            color: parchment,
-          ),
-          bodyMedium: TextStyle(
-            fontSize: 18,
-            height: 1.5,
-            color: parchment,
-          ),
-          bodySmall: TextStyle(
-            fontSize: 14,
-            height: 1.5,
-            color: ivoryGold,
-          ),
+          bodyLarge: TextStyle(fontSize: 20, height: 1.6, color: parchment),
+          bodyMedium: TextStyle(fontSize: 18, height: 1.5, color: parchment),
+          bodySmall: TextStyle(fontSize: 14, height: 1.5, color: ivoryGold),
           labelLarge: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,

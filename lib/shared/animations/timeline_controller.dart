@@ -40,7 +40,10 @@ class AnimationTimelineController extends ChangeNotifier {
       vsync: vsync,
     );
 
-    final curvedAnimation = CurvedAnimation(parent: controller, curve: trigger.curve ?? Curves.easeOutCubic);
+    final curvedAnimation = CurvedAnimation(
+      parent: controller,
+      curve: trigger.curve ?? Curves.easeOutCubic,
+    );
 
     _controllers[trigger.target] = controller;
     _curvedAnimations[trigger.target] = curvedAnimation;
@@ -86,7 +89,10 @@ class AnimationTimelineController extends ChangeNotifier {
     // Determine which chapter should be active based on progress
     final story = ref.read(storyConfigProvider);
     final chapterCount = story.chapters.length;
-    final targetChapterIndex = (_currentProgress * chapterCount).floor().clamp(0, chapterCount - 1);
+    final targetChapterIndex = (_currentProgress * chapterCount).floor().clamp(
+      0,
+      chapterCount - 1,
+    );
 
     if (targetChapterIndex != _currentChapterIndex) {
       triggerChapterAnimations(story.chapters[targetChapterIndex].key);
@@ -158,13 +164,19 @@ class AnimationTimelineController extends ChangeNotifier {
 /// Provider for the animation timeline controller
 final animationTimelineProvider = Provider<AnimationTimelineController>((ref) {
   // Note: This needs to be created with a vsync from the widget
-  throw UnimplementedError('AnimationTimelineController requires vsync parameter - create manually in widget');
+  throw UnimplementedError(
+    'AnimationTimelineController requires vsync parameter - create manually in widget',
+  );
 });
 
 /// Utility class for Persian Prince animation effects
 class PersianAnimationEffects {
   /// Sand reveal animation configuration
-  static AnimationTrigger sandReveal({required String target, Duration? delay, Duration? duration}) {
+  static AnimationTrigger sandReveal({
+    required String target,
+    Duration? delay,
+    Duration? duration,
+  }) {
     return AnimationTrigger(
       type: AnimationType.sandReveal,
       target: target,
@@ -175,7 +187,11 @@ class PersianAnimationEffects {
   }
 
   /// Magic carpet animation configuration
-  static AnimationTrigger magicCarpet({required String target, Duration? delay, Duration? duration}) {
+  static AnimationTrigger magicCarpet({
+    required String target,
+    Duration? delay,
+    Duration? duration,
+  }) {
     return AnimationTrigger(
       type: AnimationType.magicCarpet,
       target: target,
@@ -186,7 +202,11 @@ class PersianAnimationEffects {
   }
 
   /// Prince walk animation configuration
-  static AnimationTrigger princeWalk({required String target, Duration? delay, Duration? duration}) {
+  static AnimationTrigger princeWalk({
+    required String target,
+    Duration? delay,
+    Duration? duration,
+  }) {
     return AnimationTrigger(
       type: AnimationType.princeWalk,
       target: target,
@@ -197,7 +217,11 @@ class PersianAnimationEffects {
   }
 
   /// Oasis shimmer animation configuration
-  static AnimationTrigger oasisShimmer({required String target, Duration? delay, Duration? duration}) {
+  static AnimationTrigger oasisShimmer({
+    required String target,
+    Duration? delay,
+    Duration? duration,
+  }) {
     return AnimationTrigger(
       type: AnimationType.oasisShimmer,
       target: target,
@@ -208,7 +232,11 @@ class PersianAnimationEffects {
   }
 
   /// Sunset glow animation configuration
-  static AnimationTrigger sunsetGlow({required String target, Duration? delay, Duration? duration}) {
+  static AnimationTrigger sunsetGlow({
+    required String target,
+    Duration? delay,
+    Duration? duration,
+  }) {
     return AnimationTrigger(
       type: AnimationType.sunsetGlow,
       target: target,
@@ -219,7 +247,11 @@ class PersianAnimationEffects {
   }
 
   /// Palace rise animation configuration
-  static AnimationTrigger palaceRise({required String target, Duration? delay, Duration? duration}) {
+  static AnimationTrigger palaceRise({
+    required String target,
+    Duration? delay,
+    Duration? duration,
+  }) {
     return AnimationTrigger(
       type: AnimationType.palaceRise,
       target: target,

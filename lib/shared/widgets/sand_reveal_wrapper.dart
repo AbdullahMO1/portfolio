@@ -46,10 +46,7 @@ class _SandRevealWrapperState extends State<SandRevealWrapper>
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    );
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
   }
 
   @override

@@ -16,9 +16,21 @@ class ContactScreen extends ConsumerWidget {
   const ContactScreen({super.key});
 
   static const List<_SocialLink> _links = [
-    _SocialLink(icon: Icons.email_rounded, label: 'Email', url: 'mailto:abdullahaboelkhair1@gmail.com'),
-    _SocialLink(icon: Icons.code_rounded, label: 'GitHub', url: 'https://github.com/AbdullahMO1'),
-    _SocialLink(icon: Icons.work_rounded, label: 'LinkedIn', url: 'https://www.linkedin.com/in/abdullah-mohammed-ali/'),
+    _SocialLink(
+      icon: Icons.email_rounded,
+      label: 'Email',
+      url: 'mailto:abdullahaboelkhair1@gmail.com',
+    ),
+    _SocialLink(
+      icon: Icons.code_rounded,
+      label: 'GitHub',
+      url: 'https://github.com/AbdullahMO1',
+    ),
+    _SocialLink(
+      icon: Icons.work_rounded,
+      label: 'LinkedIn',
+      url: 'https://www.linkedin.com/in/abdullah-mohammed-ali/',
+    ),
   ];
 
   @override
@@ -31,7 +43,10 @@ class ContactScreen extends ConsumerWidget {
 
     return Center(
       child: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: isDesktop ? 100 : 24, vertical: 80),
+        padding: EdgeInsets.symmetric(
+          horizontal: isDesktop ? 100 : 24,
+          vertical: 80,
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -48,13 +63,22 @@ class ContactScreen extends ConsumerWidget {
                     width: 60,
                     height: 3,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [theme.colorScheme.primary, theme.colorScheme.tertiary]),
+                      gradient: LinearGradient(
+                        colors: [
+                          theme.colorScheme.primary,
+                          theme.colorScheme.tertiary,
+                        ],
+                      ),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
                   if ((chapter?.subtitle ?? '').isNotEmpty) ...[
                     const SizedBox(height: 12),
-                    Text(chapter!.subtitle, style: AppTheme.narrativeStyle(fontSize: 16), textAlign: TextAlign.center),
+                    Text(
+                      chapter!.subtitle,
+                      style: AppTheme.narrativeStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
                   ],
                 ],
               ),
@@ -82,7 +106,11 @@ class ContactScreen extends ConsumerWidget {
                 spacing: 20,
                 runSpacing: 20,
                 alignment: WrapAlignment.center,
-                children: _links.map((link) => _MagneticSocialButton(link: link, theme: theme)).toList(),
+                children: _links
+                    .map(
+                      (link) => _MagneticSocialButton(link: link, theme: theme),
+                    )
+                    .toList(),
               ),
             ),
           ],
@@ -93,7 +121,11 @@ class ContactScreen extends ConsumerWidget {
 }
 
 class _SocialLink {
-  const _SocialLink({required this.icon, required this.label, required this.url});
+  const _SocialLink({
+    required this.icon,
+    required this.label,
+    required this.url,
+  });
   final IconData icon;
   final String label;
   final String url;
@@ -147,7 +179,9 @@ class _MagneticSocialButtonState extends State<_MagneticSocialButton> {
           decoration: BoxDecoration(
             color: _isHovered
                 ? widget.theme.colorScheme.primary.withValues(alpha: 0.12)
-                : widget.theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.3),
+                : widget.theme.colorScheme.surfaceContainerHigh.withValues(
+                    alpha: 0.3,
+                  ),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: _isHovered
@@ -157,7 +191,9 @@ class _MagneticSocialButtonState extends State<_MagneticSocialButton> {
             boxShadow: _isHovered
                 ? [
                     BoxShadow(
-                      color: widget.theme.colorScheme.primary.withValues(alpha: 0.15),
+                      color: widget.theme.colorScheme.primary.withValues(
+                        alpha: 0.15,
+                      ),
                       blurRadius: 25,
                       offset: const Offset(0, 8),
                     ),
@@ -169,13 +205,17 @@ class _MagneticSocialButtonState extends State<_MagneticSocialButton> {
             children: [
               Icon(
                 widget.link.icon,
-                color: _isHovered ? widget.theme.colorScheme.primary : widget.theme.colorScheme.onSurface,
+                color: _isHovered
+                    ? widget.theme.colorScheme.primary
+                    : widget.theme.colorScheme.onSurface,
               ),
               const SizedBox(width: 14),
               Text(
                 widget.link.label,
                 style: widget.theme.textTheme.labelLarge?.copyWith(
-                  color: _isHovered ? widget.theme.colorScheme.primary : widget.theme.colorScheme.onSurface,
+                  color: _isHovered
+                      ? widget.theme.colorScheme.primary
+                      : widget.theme.colorScheme.onSurface,
                   fontWeight: FontWeight.w600,
                 ),
               ),

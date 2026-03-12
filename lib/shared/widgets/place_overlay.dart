@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Place overlay widget for journey progress visualization
 class PlaceOverlay extends StatelessWidget {
-  const PlaceOverlay({
-    super.key,
-    required this.placeProgress,
-  });
+  const PlaceOverlay({super.key, required this.placeProgress});
 
   final ValueNotifier<double> placeProgress;
 
@@ -43,10 +40,7 @@ class _PlaceOverlayPainter extends CustomPainter {
         stops: [0.0, 0.5, 1.0],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
-    canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      paint,
-    );
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
 
     // Add place-specific decorative elements
     if (progress > 1.0) {
@@ -69,7 +63,7 @@ class _PlaceOverlayPainter extends CustomPainter {
     for (int i = 0; i < positions.length; i++) {
       final markerProgress = ((progress - 1.0) * 2).clamp(0.0, 1.0);
       final radius = 3.0 + (markerProgress * 5.0);
-      
+
       canvas.drawCircle(positions[i], radius, markerPaint);
     }
   }

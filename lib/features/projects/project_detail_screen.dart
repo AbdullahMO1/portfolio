@@ -30,7 +30,10 @@ class ProjectDetailScreen extends ConsumerWidget {
 
     return AsyncValueExtensions(asyncResume).when(
       loading: () => const Center(
-        child: Padding(padding: EdgeInsets.all(48), child: CircularProgressIndicator()),
+        child: Padding(
+          padding: EdgeInsets.all(48),
+          child: CircularProgressIndicator(),
+        ),
       ),
       error: (err, _) => Center(
         child: Padding(
@@ -38,7 +41,10 @@ class ProjectDetailScreen extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Failed to load project: $err', style: theme.textTheme.bodyLarge),
+              Text(
+                'Failed to load project: $err',
+                style: theme.textTheme.bodyLarge,
+              ),
               const SizedBox(height: 16),
               TextButton.icon(
                 onPressed: () => context.go('/projects'),
@@ -56,7 +62,11 @@ class ProjectDetailScreen extends ConsumerWidget {
             : projectId
                   .replaceAll('-', ' ')
                   .split(' ')
-                  .map((w) => w.isNotEmpty ? '${w[0].toUpperCase()}${w.substring(1)}' : '')
+                  .map(
+                    (w) => w.isNotEmpty
+                        ? '${w[0].toUpperCase()}${w.substring(1)}'
+                        : '',
+                  )
                   .join(' ');
         final description =
             project?.description ??
@@ -70,7 +80,10 @@ class ProjectDetailScreen extends ConsumerWidget {
         final hardestFeatures = project?.hardestFeatures ?? const [];
 
         return SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: isDesktop ? 120 : 24, vertical: 60),
+          padding: EdgeInsets.symmetric(
+            horizontal: isDesktop ? 120 : 24,
+            vertical: 60,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -88,7 +101,8 @@ class ProjectDetailScreen extends ConsumerWidget {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      if (project?.imageUrl != null && project!.imageUrl!.isNotEmpty)
+                      if (project?.imageUrl != null &&
+                          project!.imageUrl!.isNotEmpty)
                         Image.network(
                           project.imageUrl!,
                           fit: BoxFit.cover,
@@ -97,11 +111,18 @@ class ProjectDetailScreen extends ConsumerWidget {
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: [theme.colorScheme.primaryContainer, theme.colorScheme.tertiaryContainer],
+                                colors: [
+                                  theme.colorScheme.primaryContainer,
+                                  theme.colorScheme.tertiaryContainer,
+                                ],
                               ),
                             ),
                             child: Center(
-                              child: Icon(Icons.rocket_launch_rounded, size: 64, color: theme.colorScheme.onPrimaryContainer),
+                              child: Icon(
+                                Icons.rocket_launch_rounded,
+                                size: 64,
+                                color: theme.colorScheme.onPrimaryContainer,
+                              ),
                             ),
                           ),
                         )
@@ -111,7 +132,10 @@ class ProjectDetailScreen extends ConsumerWidget {
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              colors: [theme.colorScheme.primaryContainer, theme.colorScheme.tertiaryContainer],
+                              colors: [
+                                theme.colorScheme.primaryContainer,
+                                theme.colorScheme.tertiaryContainer,
+                              ],
                             ),
                           ),
                         ),
@@ -149,8 +173,13 @@ class ProjectDetailScreen extends ConsumerWidget {
                 spacing: 12,
                 runSpacing: 12,
                 children: [
-                  if (googlePlayUrl != null) StoreButton(store: StoreType.googlePlay, url: googlePlayUrl),
-                  if (appStoreUrl != null) StoreButton(store: StoreType.appStore, url: appStoreUrl),
+                  if (googlePlayUrl != null)
+                    StoreButton(
+                      store: StoreType.googlePlay,
+                      url: googlePlayUrl,
+                    ),
+                  if (appStoreUrl != null)
+                    StoreButton(store: StoreType.appStore, url: appStoreUrl),
                   if (githubUrl != null)
                     ElevatedButton.icon(
                       onPressed: () => launchUrl(Uri.parse(githubUrl)),
@@ -168,7 +197,12 @@ class ProjectDetailScreen extends ConsumerWidget {
               const SizedBox(height: 32),
               _SectionHeader(theme: theme, title: 'Overview'),
               const SizedBox(height: 16),
-              Text(description, style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              Text(
+                description,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
               if (responsibilities.isNotEmpty) ...[
                 const SizedBox(height: 40),
                 _SectionHeader(theme: theme, title: 'My Role'),
@@ -184,13 +218,18 @@ class ProjectDetailScreen extends ConsumerWidget {
                           child: Container(
                             width: 6,
                             height: 6,
-                            decoration: BoxDecoration(color: theme.colorScheme.primary, shape: BoxShape.circle),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary,
+                              shape: BoxShape.circle,
+                            ),
                           ),
                         ),
                         Expanded(
                           child: Text(
                             e.toString(),
-                            style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
                           ),
                         ),
                       ],
@@ -213,13 +252,18 @@ class ProjectDetailScreen extends ConsumerWidget {
                           child: Container(
                             width: 6,
                             height: 6,
-                            decoration: BoxDecoration(color: theme.colorScheme.primary, shape: BoxShape.circle),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary,
+                              shape: BoxShape.circle,
+                            ),
                           ),
                         ),
                         Expanded(
                           child: Text(
                             e.toString(),
-                            style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
                           ),
                         ),
                       ],
@@ -248,14 +292,19 @@ class _SectionHeader extends StatelessWidget {
       children: [
         Text(
           title,
-          style: theme.textTheme.headlineSmall?.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w600),
+          style: theme.textTheme.headlineSmall?.copyWith(
+            color: theme.colorScheme.primary,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: 12),
         Container(
           width: 60,
           height: 3,
           decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [theme.colorScheme.primary, theme.colorScheme.tertiary]),
+            gradient: LinearGradient(
+              colors: [theme.colorScheme.primary, theme.colorScheme.tertiary],
+            ),
             borderRadius: BorderRadius.circular(2),
           ),
         ),

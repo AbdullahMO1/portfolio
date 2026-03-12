@@ -63,9 +63,7 @@ class Footer extends ConsumerWidget {
 
           // Main content
           Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: isDesktop ? 80 : 24,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: isDesktop ? 80 : 24),
             child: isDesktop
                 ? _buildDesktopLayout(context, theme, name, tagline, meta)
                 : _buildMobileLayout(context, theme, name, tagline, meta),
@@ -83,8 +81,7 @@ class Footer extends ConsumerWidget {
             decoration: BoxDecoration(
               border: Border(
                 top: BorderSide(
-                  color:
-                      theme.colorScheme.primary.withValues(alpha: 0.08),
+                  color: theme.colorScheme.primary.withValues(alpha: 0.08),
                 ),
               ),
             ),
@@ -140,22 +137,15 @@ class Footer extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: _buildLinkGroup(
-                  context,
-                  theme,
-                  'Explore',
-                  [
-                    _NavItem('Skills', '/skills'),
-                    _NavItem('Masterpieces', '/projects'),
-                    _NavItem('Experience', '/experience'),
-                    _NavItem('About', '/about'),
-                  ],
-                ),
+                child: _buildLinkGroup(context, theme, 'Explore', [
+                  _NavItem('Skills', '/skills'),
+                  _NavItem('Masterpieces', '/projects'),
+                  _NavItem('Experience', '/experience'),
+                  _NavItem('About', '/about'),
+                ]),
               ),
               const SizedBox(width: 40),
-              Expanded(
-                child: _buildConnectGroup(context, theme, meta),
-              ),
+              Expanded(child: _buildConnectGroup(context, theme, meta)),
             ],
           ),
         ),
@@ -179,22 +169,15 @@ class Footer extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: _buildLinkGroup(
-                context,
-                theme,
-                'Explore',
-                [
-                  _NavItem('Skills', '/skills'),
-                  _NavItem('Masterpieces', '/projects'),
-                  _NavItem('Experience', '/experience'),
-                  _NavItem('About', '/about'),
-                ],
-              ),
+              child: _buildLinkGroup(context, theme, 'Explore', [
+                _NavItem('Skills', '/skills'),
+                _NavItem('Masterpieces', '/projects'),
+                _NavItem('Experience', '/experience'),
+                _NavItem('About', '/about'),
+              ]),
             ),
             const SizedBox(width: 24),
-            Expanded(
-              child: _buildConnectGroup(context, theme, meta),
-            ),
+            Expanded(child: _buildConnectGroup(context, theme, meta)),
           ],
         ),
       ],
@@ -231,10 +214,7 @@ class Footer extends ConsumerWidget {
             const SizedBox(width: 12),
             ShaderMask(
               shaderCallback: (bounds) => LinearGradient(
-                colors: [
-                  theme.colorScheme.primary,
-                  theme.colorScheme.tertiary,
-                ],
+                colors: [theme.colorScheme.primary, theme.colorScheme.tertiary],
               ).createShader(bounds),
               child: Text(
                 'AM',
@@ -260,8 +240,7 @@ class Footer extends ConsumerWidget {
         Text(
           tagline,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color:
-                theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.85),
+            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.85),
             fontSize: 14,
             height: 1.5,
           ),
@@ -271,22 +250,15 @@ class Footer extends ConsumerWidget {
         MagneticButton(
           onTap: () => context.go('/contact'),
           child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 36,
-              vertical: 16,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  theme.colorScheme.primary,
-                  theme.colorScheme.tertiary,
-                ],
+                colors: [theme.colorScheme.primary, theme.colorScheme.tertiary],
               ),
               borderRadius: BorderRadius.circular(999),
               boxShadow: [
                 BoxShadow(
-                  color:
-                      theme.colorScheme.primary.withValues(alpha: 0.3),
+                  color: theme.colorScheme.primary.withValues(alpha: 0.3),
                   blurRadius: 24,
                   offset: const Offset(0, 8),
                 ),

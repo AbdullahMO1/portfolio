@@ -3,7 +3,11 @@ import 'package:flutter/animation.dart';
 
 /// Story configuration model for narrative sections and places
 class StoryConfig {
-  const StoryConfig({required this.chapters, required this.places, this.persianTheme = const PersianTheme()});
+  const StoryConfig({
+    required this.chapters,
+    required this.places,
+    this.persianTheme = const PersianTheme(),
+  });
 
   final List<StoryChapter> chapters;
   final List<StoryPlace> places;

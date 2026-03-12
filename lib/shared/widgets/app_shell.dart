@@ -75,7 +75,8 @@ class _AppShellState extends State<AppShell> {
   @override
   void didUpdateWidget(AppShell oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.placeProgress == null && widget.currentIndex != oldWidget.currentIndex) {
+    if (widget.placeProgress == null &&
+        widget.currentIndex != oldWidget.currentIndex) {
       _ownPlaceProgress.value = _placeForIndex(widget.currentIndex);
     }
   }
@@ -89,7 +90,8 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    final isSmallScreen = MediaQuery.sizeOf(context).width <= _kSmallScreenBreakpoint;
+    final isSmallScreen =
+        MediaQuery.sizeOf(context).width <= _kSmallScreenBreakpoint;
     final isDesktop = MediaQuery.sizeOf(context).width >= _kDesktopBreakpoint;
 
     final bodyContent = CustomCursorOverlay(
@@ -167,7 +169,9 @@ class _AppShellState extends State<AppShell> {
     );
 
     return Scaffold(
-      body: isDesktop ? Theme(data: themeOverrides, child: bodyContent) : bodyContent,
+      body: isDesktop
+          ? Theme(data: themeOverrides, child: bodyContent)
+          : bodyContent,
     );
   }
 }
@@ -212,18 +216,35 @@ class _AnimatedBlurHeader extends StatelessWidget {
                 ..rotateX(rotateX)
                 ..rotateY(rotateY),
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(999),
                   child: BackdropFilter(
                     filter: ui.ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
                         color: theme.colorScheme.surface.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(999),
-                        border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.15)),
-                        boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.1), blurRadius: 30)],
+                        border: Border.all(
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: 0.15,
+                          ),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: theme.colorScheme.primary.withValues(
+                              alpha: 0.1,
+                            ),
+                            blurRadius: 30,
+                          ),
+                        ],
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -240,10 +261,24 @@ class _AnimatedBlurHeader extends StatelessWidget {
                           if (!compact)
                             Row(
                               children: [
-                                NavLink(label: 'Skills', onTap: () => _navigateTo(context, '/skills')),
-                                NavLink(label: 'Masterpieces', onTap: () => _navigateTo(context, '/projects')),
-                                NavLink(label: 'Experience', onTap: () => _navigateTo(context, '/experience')),
-                                NavLink(label: 'About', onTap: () => _navigateTo(context, '/about')),
+                                NavLink(
+                                  label: 'Skills',
+                                  onTap: () => _navigateTo(context, '/skills'),
+                                ),
+                                NavLink(
+                                  label: 'Masterpieces',
+                                  onTap: () =>
+                                      _navigateTo(context, '/projects'),
+                                ),
+                                NavLink(
+                                  label: 'Experience',
+                                  onTap: () =>
+                                      _navigateTo(context, '/experience'),
+                                ),
+                                NavLink(
+                                  label: 'About',
+                                  onTap: () => _navigateTo(context, '/about'),
+                                ),
                                 const SizedBox(width: 12),
                                 const _AudioToggleButton(),
                                 const SizedBox(width: 12),
@@ -257,10 +292,15 @@ class _AnimatedBlurHeader extends StatelessWidget {
                                 const _AudioToggleButton(),
                                 const SizedBox(width: 4),
                                 PopupMenuButton<String>(
-                                  icon: Icon(Icons.menu, color: theme.colorScheme.primary),
+                                  icon: Icon(
+                                    Icons.menu,
+                                    color: theme.colorScheme.primary,
+                                  ),
                                   padding: EdgeInsets.zero,
                                   offset: const Offset(0, 48),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
                                   onSelected: (value) {
                                     switch (value) {
                                       case 'skills':
@@ -285,38 +325,51 @@ class _AnimatedBlurHeader extends StatelessWidget {
                                       value: 'skills',
                                       child: Text(
                                         'Skills',
-                                        style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                                        style: theme.textTheme.labelLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                       ),
                                     ),
                                     PopupMenuItem(
                                       value: 'masterpieces',
                                       child: Text(
                                         'Masterpieces',
-                                        style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                                        style: theme.textTheme.labelLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                       ),
                                     ),
                                     PopupMenuItem(
                                       value: 'experience',
                                       child: Text(
                                         'Experience',
-                                        style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                                        style: theme.textTheme.labelLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                       ),
                                     ),
                                     PopupMenuItem(
                                       value: 'about',
                                       child: Text(
                                         'About',
-                                        style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+                                        style: theme.textTheme.labelLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                       ),
                                     ),
                                     PopupMenuItem(
                                       value: 'hire',
                                       child: Text(
                                         'Hire Me',
-                                        style: theme.textTheme.labelLarge?.copyWith(
-                                          fontWeight: FontWeight.w700,
-                                          color: theme.colorScheme.primary,
-                                        ),
+                                        style: theme.textTheme.labelLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              color: theme.colorScheme.primary,
+                                            ),
                                       ),
                                     ),
                                   ],
@@ -332,7 +385,12 @@ class _AnimatedBlurHeader extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 2),
-              child: ArabesqueDecoration(color: theme.colorScheme.primary, width: 120, height: 8, opacity: 0.25),
+              child: ArabesqueDecoration(
+                color: theme.colorScheme.primary,
+                width: 120,
+                height: 8,
+                opacity: 0.25,
+              ),
             ),
           ],
         );
@@ -358,13 +416,21 @@ class _HeaderLogo extends StatelessWidget {
         Container(
           width: 32,
           height: 32,
-          decoration: BoxDecoration(color: theme.colorScheme.primary, shape: BoxShape.circle),
-          child: Icon(Icons.star_rounded, size: 18, color: theme.colorScheme.onPrimary),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primary,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.star_rounded,
+            size: 18,
+            color: theme.colorScheme.onPrimary,
+          ),
         ),
         const SizedBox(width: 12),
         ShaderMask(
-          shaderCallback: (bounds) =>
-              LinearGradient(colors: [theme.colorScheme.primary, theme.colorScheme.tertiary]).createShader(bounds),
+          shaderCallback: (bounds) => LinearGradient(
+            colors: [theme.colorScheme.primary, theme.colorScheme.tertiary],
+          ).createShader(bounds),
           child: Text(
             'AM',
             style: GoogleFonts.amiri(
@@ -387,13 +453,17 @@ class _AudioToggleButton extends StatefulWidget {
   State<_AudioToggleButton> createState() => _AudioToggleButtonState();
 }
 
-class _AudioToggleButtonState extends State<_AudioToggleButton> with SingleTickerProviderStateMixin {
+class _AudioToggleButtonState extends State<_AudioToggleButton>
+    with SingleTickerProviderStateMixin {
   late AnimationController _pulse;
 
   @override
   void initState() {
     super.initState();
-    _pulse = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
+    _pulse = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
     // Initial state
     if (!AudioService.instance.isMuted) _pulse.repeat(reverse: true);
 
@@ -450,12 +520,21 @@ class _AudioToggleButtonState extends State<_AudioToggleButton> with SingleTicke
                 ),
                 boxShadow: muted
                     ? null
-                    : [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: glow), blurRadius: 12)],
+                    : [
+                        BoxShadow(
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: glow,
+                          ),
+                          blurRadius: 12,
+                        ),
+                      ],
               ),
               child: Icon(
                 muted ? Icons.volume_off_rounded : Icons.volume_up_rounded,
                 size: 16,
-                color: muted ? theme.colorScheme.onSurface.withValues(alpha: 0.5) : theme.colorScheme.primary,
+                color: muted
+                    ? theme.colorScheme.onSurface.withValues(alpha: 0.5)
+                    : theme.colorScheme.primary,
               ),
             );
           },
@@ -476,7 +555,9 @@ class _HireMeButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [theme.colorScheme.primary, theme.colorScheme.tertiary]),
+          gradient: LinearGradient(
+            colors: [theme.colorScheme.primary, theme.colorScheme.tertiary],
+          ),
           borderRadius: BorderRadius.circular(999),
           boxShadow: [
             BoxShadow(
@@ -497,7 +578,11 @@ class _HireMeButton extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            Icon(Icons.arrow_forward_rounded, color: theme.colorScheme.onPrimary, size: 18),
+            Icon(
+              Icons.arrow_forward_rounded,
+              color: theme.colorScheme.onPrimary,
+              size: 18,
+            ),
           ],
         ),
       ),

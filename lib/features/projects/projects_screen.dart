@@ -28,20 +28,31 @@ class ProjectsScreen extends ConsumerWidget {
     final chapter = story.chapterBySectionKey('portfolio');
 
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 100 : 24, vertical: 80),
+      padding: EdgeInsets.symmetric(
+        horizontal: isDesktop ? 100 : 24,
+        vertical: 80,
+      ),
       child: Column(
         children: [
           ScrollReveal(
             child: Center(
               child: Column(
                 children: [
-                  Text(chapter?.title ?? 'That Which Was Wrought', style: AppTheme.storyTitleStyle(fontSize: 36)),
+                  Text(
+                    chapter?.title ?? 'That Which Was Wrought',
+                    style: AppTheme.storyTitleStyle(fontSize: 36),
+                  ),
                   const SizedBox(height: 12),
                   Container(
                     width: 60,
                     height: 3,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [theme.colorScheme.primary, theme.colorScheme.tertiary]),
+                      gradient: LinearGradient(
+                        colors: [
+                          theme.colorScheme.primary,
+                          theme.colorScheme.tertiary,
+                        ],
+                      ),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -49,7 +60,10 @@ class ProjectsScreen extends ConsumerWidget {
                     const SizedBox(height: 12),
                     Text(
                       chapter!.subtitle,
-                      style: AppTheme.narrativeStyle(fontSize: 16, color: theme.colorScheme.onSurfaceVariant),
+                      style: AppTheme.narrativeStyle(
+                        fontSize: 16,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -60,12 +74,18 @@ class ProjectsScreen extends ConsumerWidget {
           const SizedBox(height: 50),
           asyncResume.when(
             loading: () => const Center(
-              child: Padding(padding: EdgeInsets.all(48), child: CircularProgressIndicator()),
+              child: Padding(
+                padding: EdgeInsets.all(48),
+                child: CircularProgressIndicator(),
+              ),
             ),
             error: (err, _) => Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
-                child: Text('Failed to load projects: $err', style: theme.textTheme.bodyLarge),
+                child: Text(
+                  'Failed to load projects: $err',
+                  style: theme.textTheme.bodyLarge,
+                ),
               ),
             ),
             data: (resume) {
@@ -74,7 +94,10 @@ class ProjectsScreen extends ConsumerWidget {
                 return Center(
                   child: Padding(
                     padding: const EdgeInsets.all(24),
-                    child: Text('No projects yet.', style: theme.textTheme.bodyLarge),
+                    child: Text(
+                      'No projects yet.',
+                      style: theme.textTheme.bodyLarge,
+                    ),
                   ),
                 );
               }
@@ -156,7 +179,9 @@ class _Glass3DProjectCard extends StatelessWidget {
             clipBehavior: Clip.hardEdge,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
-              color: theme.colorScheme.surfaceContainerHigh.withValues(alpha: isHovered ? 0.4 : 0.2),
+              color: theme.colorScheme.surfaceContainerHigh.withValues(
+                alpha: isHovered ? 0.4 : 0.2,
+              ),
               border: Border.all(
                 color: isHovered
                     ? theme.colorScheme.primary.withValues(alpha: 0.4)
@@ -165,7 +190,11 @@ class _Glass3DProjectCard extends StatelessWidget {
               ),
               boxShadow: [
                 if (isHovered)
-                  BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.12), blurRadius: 40, spreadRadius: 2),
+                  BoxShadow(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.12),
+                    blurRadius: 40,
+                    spreadRadius: 2,
+                  ),
                 BoxShadow(
                   color: Colors.black.withValues(alpha: isHovered ? 0.3 : 0.15),
                   blurRadius: 20,
@@ -178,7 +207,9 @@ class _Glass3DProjectCard extends StatelessWidget {
               children: [
                 if (hasImage)
                   ClipRRect(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(23)),
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(23),
+                    ),
                     child: SizedBox(
                       height: 140,
                       width: double.infinity,
@@ -190,7 +221,13 @@ class _Glass3DProjectCard extends StatelessWidget {
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) => Container(
                               color: theme.colorScheme.surfaceContainerHighest,
-                              child: Icon(icon, color: theme.colorScheme.primary.withValues(alpha: 0.4), size: 40),
+                              child: Icon(
+                                icon,
+                                color: theme.colorScheme.primary.withValues(
+                                  alpha: 0.4,
+                                ),
+                                size: 40,
+                              ),
                             ),
                           ),
                           Container(
@@ -212,7 +249,12 @@ class _Glass3DProjectCard extends StatelessWidget {
                   ),
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(20, hasImage ? 14 : 28, 20, 20),
+                    padding: EdgeInsets.fromLTRB(
+                      20,
+                      hasImage ? 14 : 28,
+                      20,
+                      20,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -220,11 +262,21 @@ class _Glass3DProjectCard extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                              color: theme.colorScheme.primary.withValues(
+                                alpha: 0.1,
+                              ),
                               borderRadius: BorderRadius.circular(14),
-                              border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.2)),
+                              border: Border.all(
+                                color: theme.colorScheme.primary.withValues(
+                                  alpha: 0.2,
+                                ),
+                              ),
                             ),
-                            child: Icon(icon, color: theme.colorScheme.primary, size: 26),
+                            child: Icon(
+                              icon,
+                              color: theme.colorScheme.primary,
+                              size: 26,
+                            ),
                           ),
                           const SizedBox(height: 20),
                         ],
@@ -241,7 +293,9 @@ class _Glass3DProjectCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             description,
-                            style: theme.textTheme.bodySmall?.copyWith(height: 1.6),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              height: 1.6,
+                            ),
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -257,18 +311,27 @@ class _Glass3DProjectCard extends StatelessWidget {
                                 .take(5)
                                 .map(
                                   (t) => Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 5,
+                                    ),
                                     decoration: BoxDecoration(
-                                      color: theme.colorScheme.primary.withValues(alpha: 0.08),
+                                      color: theme.colorScheme.primary
+                                          .withValues(alpha: 0.08),
                                       borderRadius: BorderRadius.circular(6),
-                                      border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.15)),
+                                      border: Border.all(
+                                        color: theme.colorScheme.primary
+                                            .withValues(alpha: 0.15),
+                                      ),
                                     ),
                                     child: Text(
                                       t,
-                                      style: theme.textTheme.labelSmall?.copyWith(
-                                        color: theme.colorScheme.primary.withValues(alpha: 0.8),
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                      style: theme.textTheme.labelSmall
+                                          ?.copyWith(
+                                            color: theme.colorScheme.primary
+                                                .withValues(alpha: 0.8),
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                     ),
                                   ),
                                 )
@@ -284,8 +347,16 @@ class _Glass3DProjectCard extends StatelessWidget {
                               runSpacing: 10,
                               clipBehavior: Clip.hardEdge,
                               children: [
-                                if (googlePlayUrl != null) StoreButton(store: StoreType.googlePlay, url: googlePlayUrl!),
-                                if (appStoreUrl != null) StoreButton(store: StoreType.appStore, url: appStoreUrl!),
+                                if (googlePlayUrl != null)
+                                  StoreButton(
+                                    store: StoreType.googlePlay,
+                                    url: googlePlayUrl!,
+                                  ),
+                                if (appStoreUrl != null)
+                                  StoreButton(
+                                    store: StoreType.appStore,
+                                    url: appStoreUrl!,
+                                  ),
                               ],
                             ),
                           ),
