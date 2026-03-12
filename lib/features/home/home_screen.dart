@@ -54,7 +54,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final asyncResume = ref.watch(portfolioDataProvider);
     final resume = asyncResume.value;
     final name = resume?.meta.name ?? 'Abdullah Mohammed';
-    final tagline = resume?.meta.tagline ?? 'Senior Mobile & Flutter Engineer';
+    final tagline = resume?.meta.tagline ?? 'Senior Mobile Engineer & Team Lead';
     final story = ref.watch(storyConfigProvider);
     final heroChapter = story.chapterBySectionKey('hero');
 

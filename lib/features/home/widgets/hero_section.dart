@@ -394,7 +394,7 @@ class _HeroSectionState extends State<HeroSection>
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Scalable Fintech Systems',
+                            'Senior & Team Leading Mobile Engineer',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w700,
                               color: theme.colorScheme.onSurface,

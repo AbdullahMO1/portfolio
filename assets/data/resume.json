@@ -1,14 +1,14 @@
 {
   "meta": {
     "name": "Abdullah Mohammed",
-    "tagline": "Senior Mobile & Flutter Engineer",
+    "tagline": "Senior Mobile Engineer & Team Lead",
     "email": "abdullahaboelkhair1@gmail.com",
     "github": "https://github.com/AbdullahMO1",
     "linkedin": "https://www.linkedin.com/in/abdullah-mohammed-ali/",
     "location": "Cairo, Egypt",
     "avatarUrl": ""
   },
-  "about": "Senior Mobile & Flutter Engineer with 5+ years of experience building secure, high-performance applications at scale using Flutter, Dart, and modular architecture. Specialized in location-based services, real-time features, and optimized UI frameworks used by hundreds of thousands of users across MENA region. Strong contributor in software architecture, CI/CD automation, product delivery, and cross-functional collaboration. Skilled at transforming business requirements into efficient technical solutions while mentoring developers and improving engineering standards.",
+  "about": "Senior Mobile Engineer & Team Lead with 5+ years of experience leading mobile teams and building secure, high-performance applications at scale using Flutter, Dart, and modular architecture. Proven track record of mentoring developers, driving engineering standards, and delivering products used by hundreds of thousands of users across the MENA region. Specialized in team leadership, mobile architecture, real-time features, location-based services, and CI/CD automation. Passionate about transforming business requirements into scalable technical solutions while fostering a culture of code quality, collaboration, and continuous improvement.",
   "skills": [
     {
       "category": "Programming Languages",
@@ -128,11 +128,12 @@
   "experience": [
     {
       "company": "MENTECH (Previously Calvis)",
-      "role": "Senior Mobile Software Engineer",
+      "role": "Senior Mobile Engineer & Team Lead",
       "period": "Jan 2023 – Present",
       "location": "6th of October, Egypt",
       "highlights": [
-        "Leading design and development of scalable Flutter applications using clean modular architecture, ensuring maintainability and long-term product evolution",
+        "Leading a mobile engineering team — driving architecture decisions, sprint planning, code reviews, and delivery milestones across multiple products",
+        "Designing and developing scalable Flutter applications using clean modular architecture, ensuring maintainability and long-term product evolution",
         "Developed and optimized end-to-end mobile modules including navigation flow, secure authentication, deep integrations with REST/GraphQL APIs, caching layers, and offline-support capabilities",
         "Designed and maintained CI/CD pipelines utilizing GitLab CI, Fastlane, Firebase App Distribution, leading to a significant reduction in release cycles and build failures",
         "Conduct detailed performance profiling to enhance rendering speed, reduce app size, and eliminate runtime regressions",

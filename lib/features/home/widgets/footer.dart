@@ -19,7 +19,7 @@ class Footer extends ConsumerWidget {
     final resume = asyncResume.value;
     final name = resume?.meta.name ?? 'Abdullah Mohammed';
     final tagline =
-        resume?.meta.tagline ?? 'Senior Mobile & Flutter Engineer';
+        resume?.meta.tagline ?? 'Senior Mobile Engineer & Team Lead';
     final meta = resume?.meta;
 
     return Container(
