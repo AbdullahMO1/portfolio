@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portoflio/shared/widgets/magnetic_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:portoflio/shared/widgets/tilt_hover_card.dart';
 import 'package:portoflio/theme/app_theme.dart';
 
@@ -653,7 +654,14 @@ class _HeroSectionState extends State<HeroSection>
             ),
           ),
           MagneticButton(
-            onTap: () => context.go('/about'),
+            onTap: () async {
+              final uri = Uri.parse(
+                'https://drive.google.com/file/d/1P60t-1uPkw2bb6J-G8Y8POp6NM6A2X1M/view?usp=sharing',
+              );
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              }
+            },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
               decoration: BoxDecoration(
