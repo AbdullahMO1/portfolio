@@ -10,10 +10,15 @@ final storyConfigProvider = Provider<StoryConfig>((ref) {
         key: 'hero',
         title: 'The Desert Beginning',
         subtitle: 'Where the Persian Prince\'s journey starts',
-        storyLine: 'In the golden sands of time, every great story begins with a single step across the desert.',
+        storyLine:
+            'In the golden sands of time, every great story begins with a single step across the desert.',
         persianElement: 'prince',
         animationTriggers: [
-          AnimationTrigger(type: AnimationType.sunsetGlow, target: 'background', duration: Duration(seconds: 2)),
+          AnimationTrigger(
+            type: AnimationType.sunsetGlow,
+            target: 'background',
+            duration: Duration(seconds: 2),
+          ),
           AnimationTrigger(
             type: AnimationType.princeWalk,
             target: 'prince_character',
@@ -25,7 +30,8 @@ final storyConfigProvider = Provider<StoryConfig>((ref) {
         key: 'skills',
         title: 'The Prince\'s Craft',
         subtitle: 'Ancient wisdom forged in modern code',
-        storyLine: 'Like the master craftsmen of Persia, the Prince wields digital tools with precision and artistry.',
+        storyLine:
+            'Like the master craftsmen of Persia, the Prince wields digital tools with precision and artistry.',
         persianElement: 'craft',
         animationTriggers: [
           AnimationTrigger(
@@ -33,25 +39,37 @@ final storyConfigProvider = Provider<StoryConfig>((ref) {
             target: 'skills_carousel',
             duration: Duration(milliseconds: 1500),
           ),
-          AnimationTrigger(type: AnimationType.sandReveal, target: 'skill_items'),
+          AnimationTrigger(
+            type: AnimationType.sandReveal,
+            target: 'skill_items',
+          ),
         ],
       ),
       StoryChapter(
         key: 'portfolio',
         title: 'The Digital Caravans',
         subtitle: 'Projects that traverse the digital desert',
-        storyLine: 'Each creation is a caravan carrying treasures across the vast landscape of technology.',
+        storyLine:
+            'Each creation is a caravan carrying treasures across the vast landscape of technology.',
         persianElement: 'caravan',
         animationTriggers: [
-          AnimationTrigger(type: AnimationType.caravanMove, target: 'project_caravan', duration: Duration(seconds: 3)),
-          AnimationTrigger(type: AnimationType.oasisShimmer, target: 'project_oasis'),
+          AnimationTrigger(
+            type: AnimationType.caravanMove,
+            target: 'project_caravan',
+            duration: Duration(seconds: 3),
+          ),
+          AnimationTrigger(
+            type: AnimationType.oasisShimmer,
+            target: 'project_oasis',
+          ),
         ],
       ),
       StoryChapter(
         key: 'experience',
         title: 'The Oasis Journey',
         subtitle: 'Professional oases in the desert of career',
-        storyLine: 'Through vast deserts of challenges, the Prince discovered oases of opportunity and growth.',
+        storyLine:
+            'Through vast deserts of challenges, the Prince discovered oases of opportunity and growth.',
         persianElement: 'oasis',
         animationTriggers: [
           AnimationTrigger(
@@ -59,18 +77,29 @@ final storyConfigProvider = Provider<StoryConfig>((ref) {
             target: 'experience_oasis',
             duration: Duration(seconds: 2),
           ),
-          AnimationTrigger(type: AnimationType.starTwinkle, target: 'achievement_stars'),
+          AnimationTrigger(
+            type: AnimationType.starTwinkle,
+            target: 'achievement_stars',
+          ),
         ],
       ),
       StoryChapter(
         key: 'about',
         title: 'The Prince\'s Legacy',
         subtitle: 'The complete story behind the digital monarch',
-        storyLine: 'Beyond the code and algorithms lies the heart of a Prince dedicated to creating digital wonders.',
+        storyLine:
+            'Beyond the code and algorithms lies the heart of a Prince dedicated to creating digital wonders.',
         persianElement: 'palace',
         animationTriggers: [
-          AnimationTrigger(type: AnimationType.palaceRise, target: 'about_palace', duration: Duration(seconds: 2)),
-          AnimationTrigger(type: AnimationType.sunsetGlow, target: 'legacy_glow'),
+          AnimationTrigger(
+            type: AnimationType.palaceRise,
+            target: 'about_palace',
+            duration: Duration(seconds: 2),
+          ),
+          AnimationTrigger(
+            type: AnimationType.sunsetGlow,
+            target: 'legacy_glow',
+          ),
         ],
       ),
     ],
@@ -104,12 +133,6 @@ final storyConfigProvider = Provider<StoryConfig>((ref) {
         description: 'Legacy and future aspirations',
         position: 4.0,
         persianLandmark: 'legacy_palace',
-      ),
-      StoryPlace(
-        name: 'Horizon Beyond',
-        description: 'Where the journey continues',
-        position: 5.0,
-        persianLandmark: 'future_horizon',
       ),
     ],
   );

@@ -16,9 +16,9 @@ class ContactScreen extends ConsumerWidget {
   const ContactScreen({super.key});
 
   static const List<_SocialLink> _links = [
-    _SocialLink(icon: Icons.email_rounded, label: 'Email', url: 'mailto:your.email@example.com'),
-    _SocialLink(icon: Icons.code_rounded, label: 'GitHub', url: 'https://github.com/yourusername'),
-    _SocialLink(icon: Icons.work_rounded, label: 'LinkedIn', url: 'https://linkedin.com/in/yourusername'),
+    _SocialLink(icon: Icons.email_rounded, label: 'Email', url: 'mailto:abdullahaboelkhair1@gmail.com'),
+    _SocialLink(icon: Icons.code_rounded, label: 'GitHub', url: 'https://github.com/AbdullahMO1'),
+    _SocialLink(icon: Icons.work_rounded, label: 'LinkedIn', url: 'https://www.linkedin.com/in/abdullah-mohammed-ali/'),
   ];
 
   @override

@@ -31,11 +31,9 @@ class SkillsetSection extends ConsumerWidget {
       final i = e.key;
       final cat = e.value;
       return _SkillCardData(
-        icon: i < _categoryIcons.length
-            ? _categoryIcons[i]
-            : Icons.star_rounded,
+        icon: i < _categoryIcons.length ? _categoryIcons[i] : Icons.star_rounded,
         title: cat.category,
-        description: cat.items.join(', '),
+        description: cat.items.map((e) => e.name).join(', '),
       );
     }).toList();
     if (skills.isEmpty) {
@@ -50,25 +48,14 @@ class SkillsetSection extends ConsumerWidget {
           title: 'Performance',
           description: 'Optimization and lean widget trees.',
         ),
-        const _SkillCardData(
-          icon: Icons.palette_rounded,
-          title: 'UI/UX',
-          description: 'Pixel-perfect implementation.',
-        ),
-        const _SkillCardData(
-          icon: Icons.groups_rounded,
-          title: 'Leadership',
-          description: 'Mentoring and delivery.',
-        ),
+        const _SkillCardData(icon: Icons.palette_rounded, title: 'UI/UX', description: 'Pixel-perfect implementation.'),
+        const _SkillCardData(icon: Icons.groups_rounded, title: 'Leadership', description: 'Mentoring and delivery.'),
       ];
     }
 
     return Center(
       child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: isDesktop ? 72 : 20,
-          vertical: 40,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: isDesktop ? 72 : 20, vertical: 40),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,9 +79,7 @@ class SkillsetSection extends ConsumerWidget {
             const SizedBox(height: 48),
             LayoutBuilder(
               builder: (context, constraints) {
-                final crossAxisCount = isDesktop
-                    ? 4
-                    : (screenWidth >= 600 ? 2 : 1);
+                final crossAxisCount = isDesktop ? 4 : (screenWidth >= 600 ? 2 : 1);
                 return GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -102,7 +87,7 @@ class SkillsetSection extends ConsumerWidget {
                     crossAxisCount: crossAxisCount,
                     mainAxisSpacing: 24,
                     crossAxisSpacing: 24,
-                    childAspectRatio: isDesktop ? 0.9 : 1.0,
+                    childAspectRatio: isDesktop ? 0.9 : 1.7,
                   ),
                   itemCount: skills.length,
                   itemBuilder: (context, index) {
@@ -129,23 +114,14 @@ class SkillsetSection extends ConsumerWidget {
 }
 
 class _SkillCardData {
-  const _SkillCardData({
-    required this.icon,
-    required this.title,
-    required this.description,
-  });
+  const _SkillCardData({required this.icon, required this.title, required this.description});
   final IconData icon;
   final String title;
   final String description;
 }
 
 class _SkillCard extends StatelessWidget {
-  const _SkillCard({
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.theme,
-  });
+  const _SkillCard({required this.icon, required this.title, required this.description, required this.theme});
 
   final IconData icon;
   final String title;
@@ -166,9 +142,7 @@ class _SkillCard extends StatelessWidget {
           padding: const EdgeInsets.all(28),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            color: theme.colorScheme.surfaceContainerHigh.withValues(
-              alpha: isHovered ? 0.4 : 0.2,
-            ),
+            color: theme.colorScheme.surfaceContainerHigh.withValues(alpha: isHovered ? 0.4 : 0.2),
             border: Border.all(
               color: isHovered
                   ? theme.colorScheme.primary.withValues(alpha: 0.4)
@@ -177,11 +151,7 @@ class _SkillCard extends StatelessWidget {
             ),
             boxShadow: [
               if (isHovered)
-                BoxShadow(
-                  color: theme.colorScheme.primary.withValues(alpha: 0.12),
-                  blurRadius: 40,
-                  spreadRadius: 2,
-                ),
+                BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.12), blurRadius: 40, spreadRadius: 2),
               BoxShadow(
                 color: Colors.black.withValues(alpha: isHovered ? 0.3 : 0.15),
                 blurRadius: 20,
@@ -198,21 +168,11 @@ class _SkillCard extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: isHovered
-                      ? theme.colorScheme.primary
-                      : theme.colorScheme.primary.withValues(alpha: 0.1),
+                  color: isHovered ? theme.colorScheme.primary : theme.colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.2),
-                  ),
+                  border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.2)),
                 ),
-                child: Icon(
-                  icon,
-                  color: isHovered
-                      ? theme.colorScheme.onPrimary
-                      : theme.colorScheme.primary,
-                  size: 28,
-                ),
+                child: Icon(icon, color: isHovered ? theme.colorScheme.onPrimary : theme.colorScheme.primary, size: 28),
               ),
               const SizedBox(height: 20),
               Text(
@@ -227,10 +187,7 @@ class _SkillCard extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 description,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  height: 1.6,
-                ),
+                style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant, height: 1.6),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),

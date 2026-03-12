@@ -28,7 +28,7 @@ class ProjectDetailScreen extends ConsumerWidget {
     final isDesktop = screenWidth >= 1200;
     final asyncResume = ref.watch(portfolioDataProvider);
 
-    return asyncResume.when(
+    return AsyncValueExtensions(asyncResume).when(
       loading: () => const Center(
         child: Padding(padding: EdgeInsets.all(48), child: CircularProgressIndicator()),
       ),
@@ -80,26 +80,65 @@ class ProjectDetailScreen extends ConsumerWidget {
                 label: const Text('Back to Projects'),
               ),
               const SizedBox(height: 24),
-              Container(
-                width: double.infinity,
-                height: 300,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [theme.colorScheme.primaryContainer, theme.colorScheme.tertiaryContainer],
-                  ),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 300,
+                  child: Stack(
+                    fit: StackFit.expand,
                     children: [
-                      Icon(Icons.rocket_launch_rounded, size: 64, color: theme.colorScheme.onPrimaryContainer),
-                      const SizedBox(height: 16),
-                      Text(
-                        title,
-                        style: theme.textTheme.headlineMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer),
+                      if (project?.imageUrl != null && project!.imageUrl!.isNotEmpty)
+                        Image.network(
+                          project.imageUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [theme.colorScheme.primaryContainer, theme.colorScheme.tertiaryContainer],
+                              ),
+                            ),
+                            child: Center(
+                              child: Icon(Icons.rocket_launch_rounded, size: 64, color: theme.colorScheme.onPrimaryContainer),
+                            ),
+                          ),
+                        )
+                      else
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [theme.colorScheme.primaryContainer, theme.colorScheme.tertiaryContainer],
+                            ),
+                          ),
+                        ),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withValues(alpha: 0.7),
+                            ],
+                            stops: const [0.3, 1.0],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 24,
+                        bottom: 24,
+                        right: 24,
+                        child: Text(
+                          title,
+                          style: theme.textTheme.headlineMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
                     ],
                   ),

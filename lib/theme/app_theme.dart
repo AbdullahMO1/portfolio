@@ -18,6 +18,8 @@ class AppTheme {
   static const Color deepNavy = Color(
     0xFF0A1128,
   ); // Contrast for text in dark mode
+  static const Color parchment = Color(0xFFE8DCC8); // Warm parchment for body text
+  static const Color ivoryGold = Color(0xFFF0E6C8); // Light gold for secondary text
 
   /// Story title style — Amiri calligraphic serif.
   static TextStyle storyTitleStyle({
@@ -34,7 +36,7 @@ class AppTheme {
   /// Story subtitle / narrative style — Newsreader.
   static TextStyle narrativeStyle({
     double fontSize = 18,
-    Color color = Colors.black87,
+    Color color = ivoryGold,
   }) => GoogleFonts.newsreader(
     fontSize: fontSize,
     fontWeight: FontWeight.w400,
@@ -55,6 +57,7 @@ class AppTheme {
         tertiary: rosewater,
         surface: deepNavy,
         onSurface: saffronLight,
+        onSurfaceVariant: parchment,
         surfaceContainerHigh: Color(0xFF141D3B),
         outline: cardamon,
       ),
@@ -71,7 +74,7 @@ class AppTheme {
           headlineMedium: TextStyle(
             fontSize: 36,
             fontWeight: FontWeight.w800,
-            color: rosewater,
+            color: ivoryGold,
             letterSpacing: -0.5,
           ),
           titleLarge: TextStyle(
@@ -82,12 +85,17 @@ class AppTheme {
           bodyLarge: TextStyle(
             fontSize: 20,
             height: 1.6,
-            color: Color(0xFFD5D9E0),
+            color: parchment,
           ),
           bodyMedium: TextStyle(
             fontSize: 18,
             height: 1.5,
-            color: Color(0xFFD5D9E0),
+            color: parchment,
+          ),
+          bodySmall: TextStyle(
+            fontSize: 14,
+            height: 1.5,
+            color: ivoryGold,
           ),
           labelLarge: TextStyle(
             fontSize: 16,
@@ -142,6 +150,7 @@ class AppTheme {
         tertiary: pomegranate,
         surface: saffronLight,
         onSurface: deepNavy,
+        onSurfaceVariant: Color(0xFF3D2E1A),
         surfaceContainerHigh: Color(0xFFF5EFE0),
         outline: cardamon,
       ),

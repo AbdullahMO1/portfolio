@@ -75,6 +75,7 @@ flutter:
     - assets/audio/
 
   shaders:
+    - assets/shaders/sine_wave.frag
     - assets/shaders/hero_bg.frag
     - assets/shaders/desert_dunes.frag
     - assets/shaders/persian_caravan.frag

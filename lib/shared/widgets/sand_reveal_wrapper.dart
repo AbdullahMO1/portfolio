@@ -15,7 +15,7 @@ class SandRevealWrapper extends StatefulWidget {
     required this.child,
     this.delay = Duration.zero,
     this.direction = RevealDirection.fromBottom,
-    this.visibilityThreshold = 0.08,
+    this.visibilityThreshold = 0.02,
   });
 
   final Widget child;
@@ -43,12 +43,12 @@ class _SandRevealWrapperState extends State<SandRevealWrapper>
     super.initState();
     _visKey = UniqueKey().toString();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 500),
       vsync: this,
     );
     _animation = CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeOutCubic,
+      curve: Curves.easeOut,
     );
   }
 
@@ -78,13 +78,19 @@ class _SandRevealWrapperState extends State<SandRevealWrapper>
       onVisibilityChanged: _onVisibilityChanged,
       child: AnimatedBuilder(
         animation: _animation,
-        builder: (context, child) => ClipPath(
-          clipper: _WavySandClipper(
-            progress: _animation.value,
-            direction: widget.direction,
-          ),
-          child: child,
-        ),
+        builder: (context, child) {
+          final value = _animation.value;
+          return Opacity(
+            opacity: value.clamp(0.0, 1.0),
+            child: ClipPath(
+              clipper: _WavySandClipper(
+                progress: value,
+                direction: widget.direction,
+              ),
+              child: child,
+            ),
+          );
+        },
         child: widget.child,
       ),
     );

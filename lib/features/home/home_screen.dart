@@ -10,9 +10,8 @@ import 'package:portoflio/features/home/widgets/experience_teaser_section.dart';
 import 'package:portoflio/features/home/widgets/footer.dart';
 import 'package:portoflio/features/home/widgets/hero_section.dart';
 import 'package:portoflio/features/home/widgets/skillset_section.dart';
-import 'package:portoflio/shared/widgets/cinematic_video_background.dart';
-import 'package:portoflio/shared/widgets/place_overlay.dart';
 import 'package:portoflio/shared/widgets/sand_reveal_wrapper.dart';
+import 'package:portoflio/shared/widgets/shader_background.dart';
 import 'package:portoflio/theme/app_theme.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -23,31 +22,30 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  final PageController _pageController = PageController();
+  final ScrollController _scrollController = ScrollController();
   late final ValueNotifier<double> _placeProgress;
 
   @override
   void initState() {
     super.initState();
     _placeProgress = ref.read(homePlaceProgressProvider);
-    _pageController.addListener(_onScroll);
+    _scrollController.addListener(_onScroll);
   }
 
   void _onScroll() {
-    if (!_pageController.hasClients) return;
-    final page = _pageController.page ?? 0.0;
-    const maxPage = 5.0; // Hero, Skills, Portfolio, Experience, About, Footer
-    final progress = (page / maxPage).clamp(0.0, 1.0);
+    if (!_scrollController.hasClients) return;
+    final maxExtent = _scrollController.position.maxScrollExtent;
+    if (maxExtent <= 0) return;
+    final progress = (_scrollController.offset / maxExtent).clamp(0.0, 1.0);
 
-    // Smoothly map page to place progress (0 to 5.0)
-    _placeProgress.value = progress * 5.0;
+    _placeProgress.value = progress * 4.0;
     ref.read(homeScrollProgressProvider).value = progress;
   }
 
   @override
   void dispose() {
-    _pageController.removeListener(_onScroll);
-    _pageController.dispose();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -60,8 +58,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final story = ref.watch(storyConfigProvider);
     final heroChapter = story.chapterBySectionKey('hero');
 
+    final viewportHeight = MediaQuery.sizeOf(context).height;
+
     final sections = [
-      SizedBox.expand(
+      ConstrainedBox(
+        constraints: BoxConstraints(minHeight: viewportHeight),
         child: HeroSection(
           name: name,
           tagline: tagline,
@@ -69,36 +70,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           storyLine: heroChapter?.storyLine,
         ),
       ),
-      const SizedBox.expand(child: SandRevealWrapper(child: SkillsetSection())),
-      const SizedBox.expand(
-        child: SandRevealWrapper(child: CuratedPortfolioSection()),
-      ),
-      const SizedBox.expand(
-        child: SandRevealWrapper(child: ExperienceTeaserSection()),
-      ),
-      const SizedBox.expand(
-        child: SandRevealWrapper(child: AboutTeaserSection()),
-      ),
-      const SizedBox.expand(child: Footer()),
+      const SandRevealWrapper(child: SkillsetSection()),
+      const SandRevealWrapper(child: CuratedPortfolioSection()),
+      const SandRevealWrapper(child: ExperienceTeaserSection()),
+      const SandRevealWrapper(child: AboutTeaserSection()),
+      const Footer(),
     ];
 
     return Stack(
       children: [
         Positioned.fill(
-          child: CinematicVideoBackground(
-            opacity: 0.85,
+          child: ShaderBackground(
+            scrollController: _scrollController,
             placeProgress: _placeProgress,
+            scrollProgress: ref.read(homeScrollProgressProvider),
           ),
         ),
-        Positioned.fill(child: PlaceOverlay(placeProgress: _placeProgress)),
 
-        PageView(
-          controller: _pageController,
-          scrollDirection: Axis.vertical,
-          children: sections.map((s) => s).toList(),
+        CustomScrollView(
+          controller: _scrollController,
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverList(
+              delegate: SliverChildListDelegate(sections),
+            ),
+          ],
         ),
 
-        // Scroll Progress Indicator (road/path style)
         if (MediaQuery.sizeOf(context).width > 600)
           Positioned(
             right: 20,
@@ -107,7 +105,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Center(
               child: RepaintBoundary(
                 child: _StoryScrollIndicator(
-                  controller: _pageController,
+                  controller: _scrollController,
                   placeProgress: _placeProgress,
                   story: story,
                 ),
@@ -116,10 +114,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
 
         FloatingBackToTop(
-          onTap: () => _pageController.animateToPage(
+          onTap: () => _scrollController.animateTo(
             0,
-            duration: const Duration(milliseconds: 1000),
-            curve: Curves.easeInOutQuart,
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeInOutCubic,
           ),
         ),
       ],
@@ -155,7 +153,7 @@ class _StoryScrollIndicator extends StatelessWidget {
     required this.story,
   });
 
-  final PageController controller;
+  final ScrollController controller;
   final ValueNotifier<double> placeProgress;
   final StoryConfig story;
 
@@ -166,11 +164,12 @@ class _StoryScrollIndicator extends StatelessWidget {
       listenable: Listenable.merge([controller, placeProgress]),
       builder: (context, _) {
         double progress = 0;
-        if (controller.hasClients) {
-          final page = controller.page ?? 0.0;
-          const maxPage =
-              5.0; // Hero, Skills, Portfolio, Experience, About, Footer
-          progress = (page / maxPage).clamp(0.0, 1.0);
+        if (controller.hasClients &&
+            controller.position.hasContentDimensions) {
+          final maxExtent = controller.position.maxScrollExtent;
+          if (maxExtent > 0) {
+            progress = (controller.offset / maxExtent).clamp(0.0, 1.0);
+          }
         }
         if (progress.isNaN || progress.isInfinite) progress = 0;
 

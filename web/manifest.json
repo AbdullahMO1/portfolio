@@ -1,11 +1,11 @@
 {
-    "name": "portoflio",
-    "short_name": "portoflio",
+    "name": "Abdullah Mohammed — Portfolio",
+    "short_name": "AM Portfolio",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0A1128",
+    "theme_color": "#0A1128",
+    "description": "Senior Flutter Developer Portfolio — showcasing advanced Flutter engineering, 3D animations, custom shaders, and enterprise architecture.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

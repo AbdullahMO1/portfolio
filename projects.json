@@ -52,8 +52,8 @@
   },
   {
     "id": "3",
-    "title": "Al Auf – Corporate Ride-Hailing App",
-    "description": "Corporate ride-hailing application with trip management, live tracking, driver navigation, and service modules.",
+    "title": "Al Auf – B2B Employee Transportation",
+    "description": "A B2B employee transportation platform connecting factories and enterprises with fleet management for daily employee commutes. Features real-time GPS tracking, route optimization, and shift-based scheduling.",
     "tech": ["Flutter", "Dart", "Google Maps", "Real-time Tracking", "WebSockets", "CI/CD"],
     "github": "https://github.com/abdullahmohammed/al-auf",
     "demo": null,
@@ -63,9 +63,9 @@
     "liveDemoUrl": null,
     "responsibilities": [
       "Led mobile team as Senior Flutter Developer",
-      "Built trip management system",
+      "Built B2B fleet management for employee transportation across factories",
       "Implemented live tracking functionality",
-      "Created driver navigation features",
+      "Created shift-based scheduling and multi-stop route optimization",
       "Developed arrival detection system",
       "Built service modules and CI/CD",
       "Mentored junior developers",
@@ -73,7 +73,7 @@
     ],
     "hardestFeatures": [
       "Real-time location tracking and synchronization",
-      "Complex driver-passenger matching algorithm",
+      "Multi-stop route optimization for factory shift schedules",
       "Performance optimization for map rendering",
       "Team leadership and mentoring"
     ]

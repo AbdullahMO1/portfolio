@@ -8,6 +8,7 @@ import 'package:portoflio/core/providers/story_config_provider.dart';
 import 'package:portoflio/core/config/story_config.dart';
 import 'package:portoflio/shared/widgets/scroll_reveal.dart';
 import 'package:portoflio/shared/widgets/story_banner.dart';
+import 'package:portoflio/shared/widgets/magnetic_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Home CTA section; email and social links from resume (Gist/local).
@@ -87,35 +88,31 @@ class AboutTeaserSection extends ConsumerWidget {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 40),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 16,
+                          runSpacing: 16,
                           children: [
                             _StartProjectButton(theme: theme),
-                            if (email.isNotEmpty) ...[
-                              const SizedBox(width: 24),
+                            if (email.isNotEmpty)
                               _SocialIconButton(
                                 icon: Icons.alternate_email_rounded,
                                 onTap: () =>
                                     launchUrl(Uri.parse('mailto:$email')),
                                 theme: theme,
                               ),
-                            ],
-                            if (linkedin.isNotEmpty) ...[
-                              const SizedBox(width: 16),
+                            if (linkedin.isNotEmpty)
                               _SocialIconButton(
                                 icon: Icons.link_rounded,
                                 onTap: () => launchUrl(Uri.parse(linkedin)),
                                 theme: theme,
                               ),
-                            ],
-                            if (github.isNotEmpty) ...[
-                              const SizedBox(width: 16),
+                            if (github.isNotEmpty)
                               _SocialIconButton(
                                 icon: Icons.code_rounded,
                                 onTap: () => launchUrl(Uri.parse(github)),
                                 theme: theme,
                               ),
-                            ],
                           ],
                         ),
                       ],
@@ -137,7 +134,7 @@ class _StartProjectButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return MagneticButton(
       onTap: () => context.go('/contact'),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 20),
@@ -175,8 +172,10 @@ class _SocialIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return MagneticButton(
       onTap: onTap,
+      magneticStrength: 0.4,
+      scaleOnHover: 1.12,
       child: Container(
         width: 48,
         height: 48,

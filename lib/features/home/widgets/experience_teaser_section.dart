@@ -16,150 +16,224 @@ class ExperienceTeaserSection extends ConsumerWidget {
     final theme = Theme.of(context);
     final screenWidth = MediaQuery.sizeOf(context).width;
     final isDesktop = screenWidth >= 1200;
+    final isTablet = screenWidth >= 700 && screenWidth < 1200;
     final asyncResume = ref.watch(portfolioDataProvider);
     final story = ref.watch(storyConfigProvider);
     final chapter = story.chapterBySectionKey('experience');
     final experiences = asyncResume.value?.experience ?? [];
-    final featured = experiences.take(2).toList();
+    final featured = experiences.take(4).toList();
 
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: isDesktop ? 72 : 20,
-          vertical: 40,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ScrollReveal(
-              child: Center(
-                child: StoryBanner(
-                  chapter:
-                      chapter ??
-                      const StoryChapter(
-                        key: 'experience',
-                        title: 'The Oasis Journey',
-                        subtitle: 'Professional oases in the desert of career',
-                        storyLine:
-                            'Through vast deserts of challenges, the Prince discovered oases of opportunity and growth.',
-                        persianElement: 'oasis',
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: isDesktop ? 72 : 20,
+        vertical: isDesktop ? 40 : 24,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ScrollReveal(
+            child: StoryBanner(
+              chapter:
+                  chapter ??
+                  const StoryChapter(
+                    key: 'experience',
+                    title: 'The Oasis Journey',
+                    subtitle: 'Professional oases in the desert of career',
+                    storyLine:
+                        'Through vast deserts of challenges, the Prince discovered oases of opportunity and growth.',
+                    persianElement: 'oasis',
+                  ),
+              chapterIndex: 3,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          SizedBox(height: isDesktop ? 32 : 20),
+          if (featured.isEmpty)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  'No experience entries yet.',
+                  style: theme.textTheme.bodyLarge,
+                ),
+              ),
+            )
+          else
+            _StaggeredExperienceGrid(
+              featured: featured,
+              theme: theme,
+              isDesktop: isDesktop,
+              isTablet: isTablet,
+            ),
+          SizedBox(height: isDesktop ? 24 : 16),
+          ScrollReveal(
+            delay: const Duration(milliseconds: 300),
+            direction: RevealDirection.fromBottom,
+            child: GestureDetector(
+              onTap: () => context.go('/experience'),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'View Full Journey',
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w700,
                       ),
-                  chapterIndex: 3,
-                  textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(width: 8),
+                    Icon(
+                      Icons.arrow_forward_rounded,
+                      size: 18,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: 60),
-            if (featured.isEmpty)
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Text(
-                    'No experience entries yet.',
-                    style: theme.textTheme.bodyLarge,
-                  ),
-                ),
-              )
-            else
-              ...List.generate(featured.length, (index) {
-                final experience = featured[index];
-                return Padding(
-                  padding: EdgeInsets.only(
-                    bottom: index < featured.length - 1 ? 40 : 0,
-                  ),
-                  child: ScrollReveal(
-                    delay: Duration(milliseconds: index * 120),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StaggeredExperienceGrid extends StatelessWidget {
+  const _StaggeredExperienceGrid({
+    required this.featured,
+    required this.theme,
+    required this.isDesktop,
+    required this.isTablet,
+  });
+
+  final List<dynamic> featured;
+  final ThemeData theme;
+  final bool isDesktop;
+  final bool isTablet;
+
+  @override
+  Widget build(BuildContext context) {
+    final useGrid = isDesktop || isTablet;
+    final gap = isDesktop ? 20.0 : 14.0;
+
+    if (!useGrid) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (int i = 0; i < featured.length; i++) ...[
+            ScrollReveal(
+              delay: Duration(milliseconds: i * 100),
+              direction: RevealDirection.fromBottom,
+              child: _ExperienceCard(
+                experience: featured[i],
+                theme: theme,
+                compact: true,
+              ),
+            ),
+            if (i < featured.length - 1) SizedBox(height: gap),
+          ],
+        ],
+      );
+    }
+
+    final leftItems = <int>[];
+    final rightItems = <int>[];
+    for (int i = 0; i < featured.length; i++) {
+      if (i.isEven) {
+        leftItems.add(i);
+      } else {
+        rightItems.add(i);
+      }
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(top: isDesktop ? 40 : 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (int i = 0; i < leftItems.length; i++) ...[
+                  ScrollReveal(
+                    delay: Duration(milliseconds: leftItems[i] * 120),
                     direction: RevealDirection.fromBottom,
                     child: _ExperienceCard(
-                      company: experience.company,
-                      role: experience.role,
-                      period: experience.period,
-                      description: experience.highlights.isNotEmpty
-                          ? experience.highlights.first
-                          : '',
-                      technologies:
-                          const [], // ExperienceEntry doesn't have technologies field
+                      experience: featured[leftItems[i]],
                       theme: theme,
-                      isDesktop: isDesktop,
+                      compact: isTablet,
                     ),
                   ),
-                );
-              }),
-            const SizedBox(height: 40),
-            Center(
-              child: ScrollReveal(
-                delay: const Duration(milliseconds: 300),
-                direction: RevealDirection.fromBottom,
-                child: GestureDetector(
-                  onTap: () => context.go('/experience'),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
-                    ),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(999),
-                      border: Border.all(
-                        color: theme.colorScheme.primary.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'View Full Journey',
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            color: theme.colorScheme.primary,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Icon(
-                          Icons.arrow_forward_rounded,
-                          size: 18,
-                          color: theme.colorScheme.primary,
-                        ),
-                      ],
-                    ),
+                  if (i < leftItems.length - 1) SizedBox(height: gap),
+                ],
+              ],
+            ),
+          ),
+        ),
+        SizedBox(width: gap),
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (int i = 0; i < rightItems.length; i++) ...[
+                ScrollReveal(
+                  delay: Duration(milliseconds: rightItems[i] * 120),
+                  direction: RevealDirection.fromBottom,
+                  child: _ExperienceCard(
+                    experience: featured[rightItems[i]],
+                    theme: theme,
+                    compact: isTablet,
                   ),
                 ),
-              ),
-            ),
-          ],
+                if (i < rightItems.length - 1) SizedBox(height: gap),
+              ],
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
 
 class _ExperienceCard extends StatelessWidget {
   const _ExperienceCard({
-    required this.company,
-    required this.role,
-    required this.period,
-    required this.description,
-    required this.technologies,
+    required this.experience,
     required this.theme,
-    required this.isDesktop,
+    this.compact = false,
   });
 
-  final String company;
-  final String role;
-  final String period;
-  final String description;
-  final List<String> technologies;
+  final dynamic experience;
   final ThemeData theme;
-  final bool isDesktop;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
+    final role = experience.role as String;
+    final company = experience.company as String;
+    final period = experience.period as String;
+    final highlights = experience.highlights as List<String>;
+    final description = highlights.isNotEmpty ? highlights.first : '';
+    final padding = compact ? 16.0 : 24.0;
+
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(isDesktop ? 40 : 28),
+      padding: EdgeInsets.all(padding),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(20),
         color: theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.2),
         border: Border.all(
           color: theme.colorScheme.outline.withValues(alpha: 0.08),
@@ -167,46 +241,35 @@ class _ExperienceCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      role,
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: theme.colorScheme.onSurface,
-                        fontSize: isDesktop ? 32 : 24,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      company,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                        fontSize: isDesktop ? 20 : 16,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  role,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: theme.colorScheme.onSurface,
+                    fontSize: compact ? 15 : 18,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
+                  horizontal: 10,
+                  vertical: 5,
                 ),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primary.withValues(alpha: 0.1),
@@ -217,56 +280,37 @@ class _ExperienceCard extends StatelessWidget {
                 ),
                 child: Text(
                   period,
-                  style: theme.textTheme.labelMedium?.copyWith(
+                  style: theme.textTheme.labelSmall?.copyWith(
                     color: theme.colorScheme.primary,
                     fontWeight: FontWeight.w600,
+                    fontSize: compact ? 10 : 11,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 6),
           Text(
-            description,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-              height: 1.6,
+            company,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.primary,
+              fontWeight: FontWeight.w600,
+              fontSize: compact ? 13 : 14,
             ),
-            maxLines: 3,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          if (technologies.isNotEmpty) ...[
-            const SizedBox(height: 20),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: technologies
-                  .map(
-                    (tech) => Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.surfaceContainerHighest
-                            .withValues(alpha: 0.5),
-                        borderRadius: BorderRadius.circular(999),
-                        border: Border.all(
-                          color: theme.colorScheme.outline.withValues(
-                            alpha: 0.2,
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        tech,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  )
-                  .toList(),
+          if (description.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Text(
+              description,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                height: 1.5,
+                fontSize: compact ? 12 : 13,
+              ),
+              maxLines: compact ? 2 : 3,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ],

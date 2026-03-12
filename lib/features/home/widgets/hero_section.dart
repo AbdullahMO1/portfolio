@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' show min;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -49,34 +50,34 @@ class _HeroSectionState extends State<HeroSection>
   void initState() {
     super.initState();
     _nameController = AnimationController(
-      duration: const Duration(milliseconds: 550),
-      vsync: this,
-    );
-    _taglineController = AnimationController(
       duration: const Duration(milliseconds: 350),
       vsync: this,
     );
+    _taglineController = AnimationController(
+      duration: const Duration(milliseconds: 250),
+      vsync: this,
+    );
     _ctaController = AnimationController(
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
     _underlineController = AnimationController(
-      duration: const Duration(milliseconds: 650),
+      duration: const Duration(milliseconds: 400),
       vsync: this,
     );
 
     _nameController.forward();
     final tagline = widget.tagline;
-    Future.delayed(const Duration(milliseconds: 350), () {
+    Future.delayed(const Duration(milliseconds: 200), () {
       if (mounted) {
         _underlineController.forward();
         _startTypewriter(tagline);
       }
     });
-    Future.delayed(Duration(milliseconds: 950 + tagline.length * 30), () {
+    Future.delayed(Duration(milliseconds: 500 + tagline.length * 18), () {
       if (mounted) _taglineController.forward();
     });
-    Future.delayed(Duration(milliseconds: 1200 + tagline.length * 30), () {
+    Future.delayed(Duration(milliseconds: 650 + tagline.length * 18), () {
       if (mounted) _ctaController.forward();
     });
 
@@ -102,7 +103,7 @@ class _HeroSectionState extends State<HeroSection>
 
   void _startTypewriter(String fullTagline) {
     _typewriterTimer?.cancel();
-    _typewriterTimer = Timer.periodic(const Duration(milliseconds: 38), (
+    _typewriterTimer = Timer.periodic(const Duration(milliseconds: 22), (
       timer,
     ) {
       if (!mounted) {
@@ -137,44 +138,54 @@ class _HeroSectionState extends State<HeroSection>
     final size = MediaQuery.sizeOf(context);
     final isDesktop = size.width >= 1200;
 
-    return SizedBox(
-      height: size.height,
+    final double horizontalPadding;
+    if (size.width >= 1200) {
+      horizontalPadding = 72;
+    } else if (size.width >= 768) {
+      horizontalPadding = 40;
+    } else {
+      horizontalPadding = 20;
+    }
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(minHeight: size.height),
       child: Center(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: isDesktop ? 72 : 20),
-          child: SingleChildScrollView(
-            physics: const ClampingScrollPhysics(),
-            child: isDesktop
-                ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        flex: 7,
-                        child: _buildLeftColumn(theme, isDesktop),
-                      ),
-                      const SizedBox(width: 48),
-                      Expanded(flex: 5, child: _buildPortraitCard(theme)),
-                    ],
-                  )
-                : Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildPillTag(theme),
-                      const SizedBox(height: 24),
-                      _buildPortraitCard(theme),
-                      const SizedBox(height: 24),
-                      _buildLeftColumn(theme, isDesktop),
-                    ],
-                  ),
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: isDesktop ? 0 : 48,
           ),
+          child: isDesktop
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      flex: 7,
+                      child: _buildLeftColumn(theme, isDesktop),
+                    ),
+                    const SizedBox(width: 48),
+                    Expanded(flex: 5, child: _buildPortraitCard(theme)),
+                  ],
+                )
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildPillTag(theme),
+                    const SizedBox(height: 24),
+                    _buildPortraitCard(theme),
+                    const SizedBox(height: 24),
+                    _buildLeftColumn(theme, isDesktop),
+                  ],
+                ),
         ),
       ),
     );
   }
 
   Widget _buildPillTag(ThemeData theme) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
     return AnimatedBuilder(
       animation: _nameController,
       builder: (context, child) => Opacity(
@@ -209,12 +220,16 @@ class _HeroSectionState extends State<HeroSection>
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Text(
-                      'OPEN FOR GLOBAL COLLABORATIONS',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.5,
+                    Flexible(
+                      child: Text(
+                        'OPEN FOR GLOBAL COLLABORATIONS',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: screenWidth < 360 ? 0.5 : 1.5,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                     ),
                   ],
@@ -264,7 +279,10 @@ class _HeroSectionState extends State<HeroSection>
   }
 
   Widget _buildPortraitCard(ThemeData theme) {
-    const double size = 400;
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final double size = screenWidth < 768
+        ? min(300.0, screenWidth - 48)
+        : 400.0;
     return TiltHoverCard(
       tiltStrength: 0.14,
       followSpeed: 12.0,
@@ -448,36 +466,50 @@ class _HeroSectionState extends State<HeroSection>
   }
 
   List<Widget> _buildNameParts(ThemeData theme, bool isDesktop) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
     final parts = widget.name.trim().split(RegExp(r'\s+'));
     final first = parts.isNotEmpty ? parts.first : '';
     final rest = parts.length > 1 ? parts.sublist(1).join(' ') : '';
+    final double fontSize = isDesktop
+        ? 80
+        : screenWidth < 400
+            ? 36
+            : 48;
     return [
       if (first.isNotEmpty)
-        Text(
-          first,
-          style: theme.textTheme.displayLarge?.copyWith(
-            fontSize: isDesktop ? 80 : 48,
-            height: 1.0,
-          ),
-          textAlign: isDesktop ? TextAlign.start : TextAlign.center,
-        ),
-      if (rest.isNotEmpty)
-        ShaderMask(
-          shaderCallback: (bounds) => LinearGradient(
-            colors: [
-              theme.colorScheme.primary,
-              theme.colorScheme.tertiary,
-              theme.colorScheme.primary,
-            ],
-          ).createShader(bounds),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: isDesktop ? Alignment.centerLeft : Alignment.center,
           child: Text(
-            rest,
+            first,
             style: theme.textTheme.displayLarge?.copyWith(
-              fontSize: isDesktop ? 80 : 48,
+              fontSize: fontSize,
               height: 1.0,
-              color: Colors.white,
             ),
             textAlign: isDesktop ? TextAlign.start : TextAlign.center,
+          ),
+        ),
+      if (rest.isNotEmpty)
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: isDesktop ? Alignment.centerLeft : Alignment.center,
+          child: ShaderMask(
+            shaderCallback: (bounds) => LinearGradient(
+              colors: [
+                theme.colorScheme.primary,
+                theme.colorScheme.tertiary,
+                theme.colorScheme.primary,
+              ],
+            ).createShader(bounds),
+            child: Text(
+              rest,
+              style: theme.textTheme.displayLarge?.copyWith(
+                fontSize: fontSize,
+                height: 1.0,
+                color: Colors.white,
+              ),
+              textAlign: isDesktop ? TextAlign.start : TextAlign.center,
+            ),
           ),
         ),
     ];
@@ -546,9 +578,7 @@ class _HeroSectionState extends State<HeroSection>
                         widget.storyLine!,
                         style: AppTheme.narrativeStyle(
                           fontSize: isDesktop ? 16 : 14,
-                          color: theme.colorScheme.onSurfaceVariant.withValues(
-                            alpha: 0.8,
-                          ),
+                          color: theme.colorScheme.onSurfaceVariant,
                         ),
                         textAlign: TextAlign.start,
                       ),

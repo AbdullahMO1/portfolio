@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:portoflio/core/models/resume_model.dart';
@@ -9,12 +7,6 @@ import 'package:portoflio/core/config/story_config.dart';
 import 'package:portoflio/shared/widgets/scroll_reveal.dart';
 import 'package:portoflio/theme/app_theme.dart';
 
-/// Experience timeline with:
-/// - Animated connector that draws itself on scroll
-/// - Cards slide in from alternating left/right
-/// - Glassmorphism containers with gold accents
-/// - ScrollReveal stagger per entry
-/// - Data from resume (Gist/local)
 class ExperienceScreen extends ConsumerWidget {
   const ExperienceScreen({super.key});
 
@@ -23,6 +15,7 @@ class ExperienceScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final screenWidth = MediaQuery.sizeOf(context).width;
     final isDesktop = screenWidth >= 1200;
+    final isTablet = screenWidth >= 700 && screenWidth < 1200;
     final asyncResume = ref.watch(portfolioDataProvider);
     final story = ref.watch(storyConfigProvider);
     final chapter = story.chapterBySectionKey('experience');
@@ -34,7 +27,7 @@ class ExperienceScreen extends ConsumerWidget {
         vertical: 80,
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ScrollReveal(
             child: Center(
@@ -59,22 +52,12 @@ class ExperienceScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 50),
-          ...List.generate(experiences.length, (index) {
-            final exp = experiences[index];
-            return ScrollReveal(
-              delay: Duration(milliseconds: index * 150),
-              direction: index.isEven
-                  ? RevealDirection.fromLeft
-                  : RevealDirection.fromRight,
-              offset: 80,
-              child: _GlassTimelineEntry(
-                index: index,
-                isLast: index == experiences.length - 1,
-                entry: exp,
-                theme: theme,
-              ),
-            );
-          }),
+          _ExperienceGrid(
+            experiences: experiences,
+            theme: theme,
+            isDesktop: isDesktop,
+            isTablet: isTablet,
+          ),
         ],
       ),
     );
@@ -99,259 +82,264 @@ class _ExperienceDivider extends StatelessWidget {
   }
 }
 
-class _GlassTimelineEntry extends StatefulWidget {
-  const _GlassTimelineEntry({
-    required this.index,
-    required this.isLast,
-    required this.entry,
+class _ExperienceGrid extends StatelessWidget {
+  const _ExperienceGrid({
+    required this.experiences,
     required this.theme,
+    required this.isDesktop,
+    required this.isTablet,
   });
 
-  final int index;
-  final bool isLast;
-  final ExperienceEntry entry;
+  final List<ExperienceEntry> experiences;
   final ThemeData theme;
+  final bool isDesktop;
+  final bool isTablet;
 
   @override
-  State<_GlassTimelineEntry> createState() => _GlassTimelineEntryState();
+  Widget build(BuildContext context) {
+    final gap = isDesktop ? 20.0 : 14.0;
+    final useGrid = isDesktop || isTablet;
+
+    if (!useGrid) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (int i = 0; i < experiences.length; i++) ...[
+            ScrollReveal(
+              delay: Duration(milliseconds: i * 100),
+              direction: RevealDirection.fromBottom,
+              child: _ExperienceCard(
+                entry: experiences[i],
+                theme: theme,
+                compact: true,
+              ),
+            ),
+            if (i < experiences.length - 1) SizedBox(height: gap),
+          ],
+        ],
+      );
+    }
+
+    final leftItems = <int>[];
+    final rightItems = <int>[];
+    for (int i = 0; i < experiences.length; i++) {
+      if (i.isEven) {
+        leftItems.add(i);
+      } else {
+        rightItems.add(i);
+      }
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(top: isDesktop ? 40 : 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (int i = 0; i < leftItems.length; i++) ...[
+                  ScrollReveal(
+                    delay: Duration(milliseconds: leftItems[i] * 120),
+                    direction: RevealDirection.fromBottom,
+                    child: _ExperienceCard(
+                      entry: experiences[leftItems[i]],
+                      theme: theme,
+                      compact: isTablet,
+                    ),
+                  ),
+                  if (i < leftItems.length - 1) SizedBox(height: gap),
+                ],
+              ],
+            ),
+          ),
+        ),
+        SizedBox(width: gap),
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (int i = 0; i < rightItems.length; i++) ...[
+                ScrollReveal(
+                  delay: Duration(milliseconds: rightItems[i] * 120),
+                  direction: RevealDirection.fromBottom,
+                  child: _ExperienceCard(
+                    entry: experiences[rightItems[i]],
+                    theme: theme,
+                    compact: isTablet,
+                  ),
+                ),
+                if (i < rightItems.length - 1) SizedBox(height: gap),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }
 
-class _GlassTimelineEntryState extends State<_GlassTimelineEntry> {
+class _ExperienceCard extends StatefulWidget {
+  const _ExperienceCard({
+    required this.entry,
+    required this.theme,
+    this.compact = false,
+  });
+
+  final ExperienceEntry entry;
+  final ThemeData theme;
+  final bool compact;
+
+  @override
+  State<_ExperienceCard> createState() => _ExperienceCardState();
+}
+
+class _ExperienceCardState extends State<_ExperienceCard> {
   bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
     final entry = widget.entry;
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Timeline connector
-          SizedBox(
-            width: 40,
-            child: Column(
+    final padding = widget.compact ? 16.0 : 24.0;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        width: double.infinity,
+        padding: EdgeInsets.all(padding),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: widget.theme.colorScheme.surfaceContainerHigh.withValues(
+            alpha: _isHovered ? 0.4 : 0.2,
+          ),
+          border: Border.all(
+            color: _isHovered
+                ? widget.theme.colorScheme.primary.withValues(alpha: 0.3)
+                : widget.theme.colorScheme.outline.withValues(alpha: 0.08),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: _isHovered
+                  ? widget.theme.colorScheme.primary.withValues(alpha: 0.08)
+                  : Colors.black.withValues(alpha: 0.08),
+              blurRadius: _isHovered ? 30 : 16,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                // 8-pointed star (Islamic geometric motif)
-                CustomPaint(
-                  size: const Size(16, 16),
-                  painter: _EightPointedStarPainter(
-                    color: widget.theme.colorScheme.primary,
+                Expanded(
+                  child: Text(
+                    entry.role,
+                    style: widget.theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: widget.theme.colorScheme.onSurface,
+                      fontSize: widget.compact ? 15 : 18,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                if (!widget.isLast)
-                  Expanded(
-                    child: Container(
-                      width: 2,
-                      margin: const EdgeInsets.symmetric(vertical: 6),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            widget.theme.colorScheme.primary.withValues(
-                              alpha: 0.5,
-                            ),
-                            widget.theme.colorScheme.primary.withValues(
-                              alpha: 0.05,
-                            ),
-                          ],
-                        ),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: widget.theme.colorScheme.primary.withValues(
+                      alpha: 0.1,
+                    ),
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(
+                      color: widget.theme.colorScheme.primary.withValues(
+                        alpha: 0.3,
                       ),
                     ),
                   ),
+                  child: Text(
+                    entry.period,
+                    style: widget.theme.textTheme.labelSmall?.copyWith(
+                      color: widget.theme.colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                      fontSize: widget.compact ? 10 : 11,
+                    ),
+                  ),
+                ),
               ],
             ),
-          ),
-          const SizedBox(width: 20),
-          // Glassmorphism card
-          Expanded(
-            child: MouseRegion(
-              onEnter: (_) => setState(() => _isHovered = true),
-              onExit: (_) => setState(() => _isHovered = false),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.only(bottom: 36),
-                padding: const EdgeInsets.all(28),
-                decoration: BoxDecoration(
-                  color: widget.theme.colorScheme.surfaceContainerHigh
-                      .withValues(alpha: _isHovered ? 0.4 : 0.25),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: _isHovered
-                        ? widget.theme.colorScheme.primary.withValues(
-                            alpha: 0.3,
-                          )
-                        : widget.theme.colorScheme.outline.withValues(
-                            alpha: 0.08,
-                          ),
-                  ),
-                  boxShadow: _isHovered
-                      ? [
-                          BoxShadow(
-                            color: widget.theme.colorScheme.primary.withValues(
-                              alpha: 0.08,
-                            ),
-                            blurRadius: 30,
-                          ),
-                        ]
-                      : null,
+            const SizedBox(height: 6),
+            Text(
+              entry.company,
+              style: widget.theme.textTheme.bodyMedium?.copyWith(
+                color: widget.theme.colorScheme.primary,
+                fontWeight: FontWeight.w600,
+                fontSize: widget.compact ? 13 : 14,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            if (entry.location.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(
+                entry.location,
+                style: widget.theme.textTheme.bodySmall?.copyWith(
+                  color: widget.theme.colorScheme.onSurfaceVariant,
+                  fontSize: widget.compact ? 11 : 12,
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                entry.role,
-                                style: widget.theme.textTheme.titleMedium
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      color: widget.theme.colorScheme.onSurface,
-                                    ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                entry.company,
-                                style: widget.theme.textTheme.bodyLarge
-                                    ?.copyWith(
-                                      color: widget.theme.colorScheme.primary,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 7,
-                          ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+            if (entry.highlights.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              ...entry.highlights.map(
+                (h) => Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: Container(
+                          width: 5,
+                          height: 5,
                           decoration: BoxDecoration(
+                            shape: BoxShape.circle,
                             color: widget.theme.colorScheme.primary.withValues(
-                              alpha: 0.1,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: widget.theme.colorScheme.primary
-                                  .withValues(alpha: 0.2),
-                            ),
-                          ),
-                          child: Text(
-                            entry.period,
-                            style: widget.theme.textTheme.bodySmall?.copyWith(
-                              color: widget.theme.colorScheme.primary,
-                              fontWeight: FontWeight.w500,
+                              alpha: 0.6,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                    if (entry.location.isNotEmpty) ...[
-                      const SizedBox(height: 6),
-                      Text(
-                        '📍 ${entry.location}',
-                        style: widget.theme.textTheme.bodySmall?.copyWith(
-                          color: widget.theme.colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          h,
+                          style: widget.theme.textTheme.bodySmall?.copyWith(
+                            color: widget.theme.colorScheme.onSurfaceVariant,
+                            height: 1.5,
+                            fontSize: widget.compact ? 12 : 13,
+                          ),
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
-                    const SizedBox(height: 18),
-                    Flexible(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: entry.highlights
-                            .map(
-                              (h) => Padding(
-                                padding: const EdgeInsets.only(bottom: 8),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 6),
-                                      child: Container(
-                                        width: 6,
-                                        height: 6,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: widget
-                                              .theme
-                                              .colorScheme
-                                              .primary
-                                              .withValues(alpha: 0.6),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: Text(
-                                        h,
-                                        style:
-                                            widget.theme.textTheme.bodyMedium,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-        ],
+            ],
+          ],
+        ),
       ),
     );
   }
-}
-
-class _EightPointedStarPainter extends CustomPainter {
-  _EightPointedStarPainter({required this.color});
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
-    final cx = size.width / 2;
-    final cy = size.height / 2;
-    final outer = size.width / 2;
-    final inner = outer * 0.4;
-    final path = Path();
-    for (int i = 0; i < 8; i++) {
-      final angle = (i * 45 - 90) * math.pi / 180;
-      final nextAngle = ((i * 45 + 22.5) - 90) * math.pi / 180;
-      final ox = cx + outer * math.cos(angle);
-      final oy = cy + outer * math.sin(angle);
-      final ix = cx + inner * math.cos(nextAngle);
-      final iy = cy + inner * math.sin(nextAngle);
-      if (i == 0) {
-        path.moveTo(ox, oy);
-      } else {
-        path.lineTo(ox, oy);
-      }
-      path.lineTo(ix, iy);
-    }
-    path.close();
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

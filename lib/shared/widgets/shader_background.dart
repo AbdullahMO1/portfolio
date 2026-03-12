@@ -125,7 +125,7 @@ class _ShaderBackgroundState extends State<ShaderBackground>
   Future<void> _loadShader() async {
     try {
       final program = await ui.FragmentProgram.fromAsset(
-        'assets/shaders/hero_bg.frag',
+        'assets/shaders/sine_wave.frag',
       );
       if (mounted) {
         setState(() {

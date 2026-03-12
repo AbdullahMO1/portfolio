@@ -8,30 +8,36 @@ import 'package:portoflio/shared/widgets/scroll_reveal.dart';
 import 'package:portoflio/shared/widgets/story_banner.dart';
 import 'package:portoflio/shared/widgets/tilt_hover_card.dart';
 
-/// Home-only curated portfolio; featured projects from resume (Gist/local).
+/// Home-only curated portfolio displayed as a staggered masonry grid.
 class CuratedPortfolioSection extends ConsumerWidget {
   const CuratedPortfolioSection({super.key});
 
   static const String _placeholderImage =
       'https://placehold.co/800x500/1a1a2e/eab308?text=Project';
 
+  static const List<double> _heightPattern = [
+    340, 260, 280, 360, 240, 320, 300, 280,
+  ];
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final screenWidth = MediaQuery.sizeOf(context).width;
     final isDesktop = screenWidth >= 1200;
+    final isTablet = screenWidth >= 768;
     final asyncResume = ref.watch(portfolioDataProvider);
     final story = ref.watch(storyConfigProvider);
     final chapter = story.chapterBySectionKey('portfolio');
     final projects = asyncResume.value?.projects ?? [];
-    final featured = projects.take(2).toList();
+    final featured = projects.take(6).toList();
+
+    final columnCount = isDesktop ? 3 : (isTablet ? 2 : 1);
+    final horizontalPad = isDesktop ? 72.0 : 20.0;
+    final gap = isDesktop ? 20.0 : 14.0;
 
     return Center(
-      child: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          horizontal: isDesktop ? 72 : 20,
-          vertical: 40,
-        ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: horizontalPad, vertical: 40),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,36 +72,31 @@ class CuratedPortfolioSection extends ConsumerWidget {
                 ),
               )
             else
-              ...List.generate(featured.length, (index) {
-                final project = featured[index];
-                final number = '${(index + 1).toString().padLeft(2, '0')}';
-                final category = project.tech.isNotEmpty
-                    ? project.tech.first
-                    : 'Project';
-                final imageUrl = project.imageUrl ?? _placeholderImage;
-                final imageFirst = index == 1;
-                return Padding(
-                  padding: EdgeInsets.only(
-                    bottom: index < featured.length - 1 ? 40 : 0,
-                  ),
-                  child: ScrollReveal(
-                    delay: Duration(milliseconds: index * 120),
+              _StaggeredGrid(
+                columnCount: columnCount,
+                gap: gap,
+                children: List.generate(featured.length, (index) {
+                  final project = featured[index];
+                  final imageUrl = project.imageUrl ?? _placeholderImage;
+                  final height =
+                      _heightPattern[index % _heightPattern.length];
+
+                  return ScrollReveal(
+                    delay: Duration(milliseconds: index * 100),
                     direction: RevealDirection.fromBottom,
-                    child: _FeaturedProjectCard(
+                    child: _StaggeredProjectTile(
                       id: project.id,
-                      number: number,
-                      category: category,
                       title: project.title,
-                      description: project.description,
-                      tech: project.tech,
+                      category: project.tech.isNotEmpty
+                          ? project.tech.first
+                          : 'Project',
                       imageUrl: imageUrl,
-                      theme: theme,
-                      isDesktop: isDesktop,
-                      imageFirst: imageFirst,
+                      height: height,
+                      tech: project.tech.take(3).toList(),
                     ),
-                  ),
-                );
-              }),
+                  );
+                }),
+              ),
           ],
         ),
       ),
@@ -103,212 +104,265 @@ class CuratedPortfolioSection extends ConsumerWidget {
   }
 }
 
-class _FeaturedProjectCard extends StatelessWidget {
-  const _FeaturedProjectCard({
-    required this.id,
-    required this.number,
-    required this.category,
-    required this.title,
-    required this.description,
-    required this.tech,
-    required this.imageUrl,
-    required this.theme,
-    required this.isDesktop,
-    required this.imageFirst,
+class _StaggeredGrid extends StatelessWidget {
+  const _StaggeredGrid({
+    required this.columnCount,
+    required this.gap,
+    required this.children,
   });
 
-  final String id;
-  final String number;
-  final String category;
-  final String title;
-  final String description;
-  final List<String> tech;
-  final String imageUrl;
-  final ThemeData theme;
-  final bool isDesktop;
-  final bool imageFirst;
+  final int columnCount;
+  final double gap;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
+    final columns = List.generate(columnCount, (_) => <Widget>[]);
+
+    for (var i = 0; i < children.length; i++) {
+      columns[i % columnCount].add(children[i]);
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var col = 0; col < columns.length; col++) ...[
+          if (col > 0) SizedBox(width: gap),
+          Expanded(
+            child: Column(
+              children: [
+                for (var row = 0; row < columns[col].length; row++) ...[
+                  if (row > 0) SizedBox(height: gap),
+                  columns[col][row],
+                ],
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _StaggeredProjectTile extends StatelessWidget {
+  const _StaggeredProjectTile({
+    required this.id,
+    required this.title,
+    required this.category,
+    required this.imageUrl,
+    required this.height,
+    required this.tech,
+  });
+
+  final String id;
+  final String title;
+  final String category;
+  final String imageUrl;
+  final double height;
+  final List<String> tech;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return GestureDetector(
       onTap: () => context.go('/projects/$id'),
       child: TiltHoverCard(
         invertTilt: true,
-        tiltStrength: 0.06,
+        tiltStrength: 0.04,
         followSpeed: 14,
-        hoverLift: 4,
+        hoverLift: 6,
         builder: (context, isHovered) {
           return AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            curve: Curves.easeOutSine,
-            padding: EdgeInsets.all(isDesktop ? 40 : 28),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+            height: height,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(28),
-              color: theme.colorScheme.surfaceContainerHigh.withValues(
-                alpha: isHovered ? 0.4 : 0.2,
-              ),
+              borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: isHovered
-                    ? theme.colorScheme.primary.withValues(alpha: 0.4)
-                    : theme.colorScheme.outline.withValues(alpha: 0.08),
+                    ? theme.colorScheme.primary.withValues(alpha: 0.5)
+                    : theme.colorScheme.outline.withValues(alpha: 0.06),
                 width: 1.5,
               ),
               boxShadow: [
                 if (isHovered)
                   BoxShadow(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.12),
-                    blurRadius: 40,
-                    spreadRadius: 2,
+                    color: theme.colorScheme.primary.withValues(alpha: 0.15),
+                    blurRadius: 32,
+                    spreadRadius: 0,
                   ),
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: isHovered ? 0.3 : 0.15),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
+                  color:
+                      Colors.black.withValues(alpha: isHovered ? 0.35 : 0.18),
+                  blurRadius: 16,
+                  offset: const Offset(0, 8),
                 ),
               ],
             ),
-            child: isDesktop
-                ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if (imageFirst) _buildProjectImage(),
-                      if (imageFirst) const SizedBox(width: 64),
-                      Expanded(flex: 2, child: _buildProjectContent()),
-                      if (!imageFirst) const SizedBox(width: 64),
-                      if (!imageFirst) _buildProjectImage(),
-                    ],
-                  )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildProjectImage(isCompact: true),
-                      const SizedBox(height: 24),
-                      _buildProjectContent(),
-                    ],
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      color: theme.colorScheme.surfaceContainerHighest,
+                      child: Icon(
+                        Icons.image_not_supported_rounded,
+                        size: 40,
+                        color: theme.colorScheme.primary.withValues(alpha: 0.5),
+                      ),
+                    ),
                   ),
+
+                  // Gradient scrim
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withValues(
+                            alpha: isHovered ? 0.85 : 0.6,
+                          ),
+                        ],
+                        stops: [isHovered ? 0.2 : 0.35, 1.0],
+                      ),
+                    ),
+                  ),
+
+                  // Category badge
+                  Positioned(
+                    top: 14,
+                    left: 14,
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 250),
+                      opacity: isHovered ? 1.0 : 0.85,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primary
+                              .withValues(alpha: 0.85),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          category.toUpperCase(),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.onPrimary,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 1.0,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Bottom content
+                  Positioned(
+                    left: 16,
+                    right: 16,
+                    bottom: 16,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          title,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            height: 1.2,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        AnimatedCrossFade(
+                          duration: const Duration(milliseconds: 250),
+                          crossFadeState: isHovered
+                              ? CrossFadeState.showSecond
+                              : CrossFadeState.showFirst,
+                          firstChild: const SizedBox(height: 0, width: double.infinity),
+                          secondChild: Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Wrap(
+                                  spacing: 6,
+                                  runSpacing: 4,
+                                  children: tech
+                                      .map(
+                                        (t) => Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 3,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white
+                                                .withValues(alpha: 0.15),
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                            border: Border.all(
+                                              color: Colors.white
+                                                  .withValues(alpha: 0.2),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            t,
+                                            style: theme.textTheme.labelSmall
+                                                ?.copyWith(
+                                              color: Colors.white
+                                                  .withValues(alpha: 0.9),
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 10,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'View Project',
+                                      style: theme.textTheme.labelSmall
+                                          ?.copyWith(
+                                        color: theme.colorScheme.primary,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Icon(
+                                      Icons.arrow_forward_rounded,
+                                      size: 14,
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           );
         },
       ),
-    );
-  }
-
-  Widget _buildProjectImage({bool isCompact = false}) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(24),
-      child: Container(
-        width: isCompact ? double.infinity : 400,
-        height: isCompact ? 220 : 280,
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.4),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: theme.colorScheme.primary.withValues(alpha: 0.2),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: theme.colorScheme.primary.withValues(alpha: 0.1),
-              blurRadius: 40,
-              spreadRadius: 2,
-            ),
-          ],
-        ),
-        child: Image.network(
-          imageUrl,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => Container(
-            color: theme.colorScheme.surfaceContainerHighest,
-            child: Icon(
-              Icons.image_not_supported_rounded,
-              size: 48,
-              color: theme.colorScheme.primary,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProjectContent() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '$number / $category',
-          style: theme.textTheme.labelMedium?.copyWith(
-            color: theme.colorScheme.primary,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.5,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          title,
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: theme.colorScheme.onSurface,
-            fontSize: isDesktop ? 40 : 28,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: 16),
-        Text(
-          description,
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-            height: 1.6,
-          ),
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: 20),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: tech
-              .map(
-                (t) => Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(999),
-                    border: Border.all(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.2),
-                    ),
-                  ),
-                  child: Text(
-                    t,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.primary,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              )
-              .toList(),
-        ),
-        const SizedBox(height: 24),
-        Row(
-          children: [
-            Text(
-              'Case Study',
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(width: 6),
-            Icon(
-              Icons.north_east_rounded,
-              size: 18,
-              color: theme.colorScheme.primary,
-            ),
-          ],
-        ),
-      ],
     );
   }
 }

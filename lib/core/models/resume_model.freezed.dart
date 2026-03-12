@@ -625,7 +625,7 @@ as String,
 /// @nodoc
 mixin _$SkillCategory {
 
- String get category; List<String> get items;
+ String get category; List<SkillItem> get items;
 /// Create a copy of SkillCategory
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -658,7 +658,7 @@ abstract mixin class $SkillCategoryCopyWith<$Res>  {
   factory $SkillCategoryCopyWith(SkillCategory value, $Res Function(SkillCategory) _then) = _$SkillCategoryCopyWithImpl;
 @useResult
 $Res call({
- String category, List<String> items
+ String category, List<SkillItem> items
 });
 
 
@@ -679,7 +679,7 @@ class _$SkillCategoryCopyWithImpl<$Res>
   return _then(_self.copyWith(
 category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as String,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
-as List<String>,
+as List<SkillItem>,
   ));
 }
 
@@ -764,7 +764,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String category,  List<String> items)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String category,  List<SkillItem> items)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SkillCategory() when $default != null:
 return $default(_that.category,_that.items);case _:
@@ -785,7 +785,7 @@ return $default(_that.category,_that.items);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String category,  List<String> items)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String category,  List<SkillItem> items)  $default,) {final _that = this;
 switch (_that) {
 case _SkillCategory():
 return $default(_that.category,_that.items);case _:
@@ -805,7 +805,7 @@ return $default(_that.category,_that.items);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String category,  List<String> items)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String category,  List<SkillItem> items)?  $default,) {final _that = this;
 switch (_that) {
 case _SkillCategory() when $default != null:
 return $default(_that.category,_that.items);case _:
@@ -820,12 +820,12 @@ return $default(_that.category,_that.items);case _:
 @JsonSerializable()
 
 class _SkillCategory implements SkillCategory {
-  const _SkillCategory({required this.category, required final  List<String> items}): _items = items;
+  const _SkillCategory({required this.category, required final  List<SkillItem> items}): _items = items;
   factory _SkillCategory.fromJson(Map<String, dynamic> json) => _$SkillCategoryFromJson(json);
 
 @override final  String category;
- final  List<String> _items;
-@override List<String> get items {
+ final  List<SkillItem> _items;
+@override List<SkillItem> get items {
   if (_items is EqualUnmodifiableListView) return _items;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_items);
@@ -865,7 +865,7 @@ abstract mixin class _$SkillCategoryCopyWith<$Res> implements $SkillCategoryCopy
   factory _$SkillCategoryCopyWith(_SkillCategory value, $Res Function(_SkillCategory) _then) = __$SkillCategoryCopyWithImpl;
 @override @useResult
 $Res call({
- String category, List<String> items
+ String category, List<SkillItem> items
 });
 
 
@@ -886,7 +886,273 @@ class __$SkillCategoryCopyWithImpl<$Res>
   return _then(_SkillCategory(
 category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as String,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
-as List<String>,
+as List<SkillItem>,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$SkillItem {
+
+ String get name; int get proficiency;
+/// Create a copy of SkillItem
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SkillItemCopyWith<SkillItem> get copyWith => _$SkillItemCopyWithImpl<SkillItem>(this as SkillItem, _$identity);
+
+  /// Serializes this SkillItem to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkillItem&&(identical(other.name, name) || other.name == name)&&(identical(other.proficiency, proficiency) || other.proficiency == proficiency));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,name,proficiency);
+
+@override
+String toString() {
+  return 'SkillItem(name: $name, proficiency: $proficiency)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SkillItemCopyWith<$Res>  {
+  factory $SkillItemCopyWith(SkillItem value, $Res Function(SkillItem) _then) = _$SkillItemCopyWithImpl;
+@useResult
+$Res call({
+ String name, int proficiency
+});
+
+
+
+
+}
+/// @nodoc
+class _$SkillItemCopyWithImpl<$Res>
+    implements $SkillItemCopyWith<$Res> {
+  _$SkillItemCopyWithImpl(this._self, this._then);
+
+  final SkillItem _self;
+  final $Res Function(SkillItem) _then;
+
+/// Create a copy of SkillItem
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? proficiency = null,}) {
+  return _then(_self.copyWith(
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,proficiency: null == proficiency ? _self.proficiency : proficiency // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SkillItem].
+extension SkillItemPatterns on SkillItem {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SkillItem value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SkillItem() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SkillItem value)  $default,){
+final _that = this;
+switch (_that) {
+case _SkillItem():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SkillItem value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SkillItem() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  int proficiency)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SkillItem() when $default != null:
+return $default(_that.name,_that.proficiency);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  int proficiency)  $default,) {final _that = this;
+switch (_that) {
+case _SkillItem():
+return $default(_that.name,_that.proficiency);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  int proficiency)?  $default,) {final _that = this;
+switch (_that) {
+case _SkillItem() when $default != null:
+return $default(_that.name,_that.proficiency);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _SkillItem implements SkillItem {
+  const _SkillItem({required this.name, this.proficiency = 80});
+  factory _SkillItem.fromJson(Map<String, dynamic> json) => _$SkillItemFromJson(json);
+
+@override final  String name;
+@override@JsonKey() final  int proficiency;
+
+/// Create a copy of SkillItem
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SkillItemCopyWith<_SkillItem> get copyWith => __$SkillItemCopyWithImpl<_SkillItem>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SkillItemToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SkillItem&&(identical(other.name, name) || other.name == name)&&(identical(other.proficiency, proficiency) || other.proficiency == proficiency));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,name,proficiency);
+
+@override
+String toString() {
+  return 'SkillItem(name: $name, proficiency: $proficiency)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SkillItemCopyWith<$Res> implements $SkillItemCopyWith<$Res> {
+  factory _$SkillItemCopyWith(_SkillItem value, $Res Function(_SkillItem) _then) = __$SkillItemCopyWithImpl;
+@override @useResult
+$Res call({
+ String name, int proficiency
+});
+
+
+
+
+}
+/// @nodoc
+class __$SkillItemCopyWithImpl<$Res>
+    implements _$SkillItemCopyWith<$Res> {
+  __$SkillItemCopyWithImpl(this._self, this._then);
+
+  final _SkillItem _self;
+  final $Res Function(_SkillItem) _then;
+
+/// Create a copy of SkillItem
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? proficiency = null,}) {
+  return _then(_SkillItem(
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,proficiency: null == proficiency ? _self.proficiency : proficiency // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

@@ -64,11 +64,24 @@ Map<String, dynamic> _$MetaInfoToJson(_MetaInfo instance) => <String, dynamic>{
 _SkillCategory _$SkillCategoryFromJson(Map<String, dynamic> json) =>
     _SkillCategory(
       category: json['category'] as String,
-      items: (json['items'] as List<dynamic>).map((e) => e as String).toList(),
+      items: (json['items'] as List<dynamic>)
+          .map((e) => SkillItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$SkillCategoryToJson(_SkillCategory instance) =>
     <String, dynamic>{'category': instance.category, 'items': instance.items};
+
+_SkillItem _$SkillItemFromJson(Map<String, dynamic> json) => _SkillItem(
+  name: json['name'] as String,
+  proficiency: (json['proficiency'] as num?)?.toInt() ?? 80,
+);
+
+Map<String, dynamic> _$SkillItemToJson(_SkillItem instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'proficiency': instance.proficiency,
+    };
 
 _ExperienceEntry _$ExperienceEntryFromJson(Map<String, dynamic> json) =>
     _ExperienceEntry(

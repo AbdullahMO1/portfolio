@@ -28,31 +28,20 @@ class ProjectsScreen extends ConsumerWidget {
     final chapter = story.chapterBySectionKey('portfolio');
 
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(
-        horizontal: isDesktop ? 100 : 24,
-        vertical: 80,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 100 : 24, vertical: 80),
       child: Column(
         children: [
           ScrollReveal(
             child: Center(
               child: Column(
                 children: [
-                  Text(
-                    chapter?.title ?? 'That Which Was Wrought',
-                    style: AppTheme.storyTitleStyle(fontSize: 36),
-                  ),
+                  Text(chapter?.title ?? 'That Which Was Wrought', style: AppTheme.storyTitleStyle(fontSize: 36)),
                   const SizedBox(height: 12),
                   Container(
                     width: 60,
                     height: 3,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          theme.colorScheme.primary,
-                          theme.colorScheme.tertiary,
-                        ],
-                      ),
+                      gradient: LinearGradient(colors: [theme.colorScheme.primary, theme.colorScheme.tertiary]),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -60,10 +49,7 @@ class ProjectsScreen extends ConsumerWidget {
                     const SizedBox(height: 12),
                     Text(
                       chapter!.subtitle,
-                      style: AppTheme.narrativeStyle(
-                        fontSize: 16,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
+                      style: AppTheme.narrativeStyle(fontSize: 16, color: theme.colorScheme.onSurfaceVariant),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -74,18 +60,12 @@ class ProjectsScreen extends ConsumerWidget {
           const SizedBox(height: 50),
           asyncResume.when(
             loading: () => const Center(
-              child: Padding(
-                padding: EdgeInsets.all(48),
-                child: CircularProgressIndicator(),
-              ),
+              child: Padding(padding: EdgeInsets.all(48), child: CircularProgressIndicator()),
             ),
             error: (err, _) => Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
-                child: Text(
-                  'Failed to load projects: $err',
-                  style: theme.textTheme.bodyLarge,
-                ),
+                child: Text('Failed to load projects: $err', style: theme.textTheme.bodyLarge),
               ),
             ),
             data: (resume) {
@@ -94,10 +74,7 @@ class ProjectsScreen extends ConsumerWidget {
                 return Center(
                   child: Padding(
                     padding: const EdgeInsets.all(24),
-                    child: Text(
-                      'No projects yet.',
-                      style: theme.textTheme.bodyLarge,
-                    ),
+                    child: Text('No projects yet.', style: theme.textTheme.bodyLarge),
                   ),
                 );
               }
@@ -108,7 +85,7 @@ class ProjectsScreen extends ConsumerWidget {
                   crossAxisCount: crossAxisCount,
                   mainAxisSpacing: 24,
                   crossAxisSpacing: 24,
-                  childAspectRatio: isDesktop ? 0.95 : 1.1,
+                  childAspectRatio: isDesktop ? 0.75 : 1.6,
                 ),
                 itemCount: projects.length,
                 itemBuilder: (context, index) {
@@ -122,6 +99,7 @@ class ProjectsScreen extends ConsumerWidget {
                       description: project.description,
                       tech: project.tech,
                       icon: Icons.rocket_launch_rounded,
+                      imageUrl: project.imageUrl,
                       googlePlayUrl: project.googlePlayUrl,
                       appStoreUrl: project.appStoreUrl,
                       theme: theme,
@@ -144,6 +122,7 @@ class _Glass3DProjectCard extends StatelessWidget {
     required this.description,
     required this.tech,
     required this.icon,
+    this.imageUrl,
     this.googlePlayUrl,
     this.appStoreUrl,
     required this.theme,
@@ -154,12 +133,15 @@ class _Glass3DProjectCard extends StatelessWidget {
   final String description;
   final List<String> tech;
   final IconData icon;
+  final String? imageUrl;
   final String? googlePlayUrl;
   final String? appStoreUrl;
   final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
+    final hasImage = imageUrl != null && imageUrl!.isNotEmpty;
+
     return GestureDetector(
       onTap: () => context.go('/projects/$id'),
       child: TiltHoverCard(
@@ -171,12 +153,10 @@ class _Glass3DProjectCard extends StatelessWidget {
           return AnimatedContainer(
             duration: const Duration(milliseconds: 180),
             curve: Curves.easeOutSine,
-            padding: const EdgeInsets.all(28),
+            clipBehavior: Clip.hardEdge,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
-              color: theme.colorScheme.surfaceContainerHigh.withValues(
-                alpha: isHovered ? 0.4 : 0.2,
-              ),
+              color: theme.colorScheme.surfaceContainerHigh.withValues(alpha: isHovered ? 0.4 : 0.2),
               border: Border.all(
                 color: isHovered
                     ? theme.colorScheme.primary.withValues(alpha: 0.4)
@@ -185,11 +165,7 @@ class _Glass3DProjectCard extends StatelessWidget {
               ),
               boxShadow: [
                 if (isHovered)
-                  BoxShadow(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.12),
-                    blurRadius: 40,
-                    spreadRadius: 2,
-                  ),
+                  BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.12), blurRadius: 40, spreadRadius: 2),
                 BoxShadow(
                   color: Colors.black.withValues(alpha: isHovered ? 0.3 : 0.15),
                   blurRadius: 20,
@@ -200,90 +176,124 @@ class _Glass3DProjectCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.2),
+                if (hasImage)
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(23)),
+                    child: SizedBox(
+                      height: 140,
+                      width: double.infinity,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image.network(
+                            imageUrl!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              color: theme.colorScheme.surfaceContainerHighest,
+                              child: Icon(icon, color: theme.colorScheme.primary.withValues(alpha: 0.4), size: 40),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withValues(alpha: 0.5),
+                                ],
+                                stops: const [0.4, 1.0],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  child: Icon(icon, color: theme.colorScheme.primary, size: 26),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  title,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: theme.colorScheme.onSurface,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 10),
                 Expanded(
-                  child: Text(
-                    description,
-                    style: theme.textTheme.bodySmall?.copyWith(height: 1.6),
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(height: 14),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: tech
-                      .map(
-                        (t) => Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5,
-                          ),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.primary.withValues(
-                              alpha: 0.08,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(20, hasImage ? 14 : 28, 20, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (!hasImage) ...[
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.2)),
                             ),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(
-                              color: theme.colorScheme.primary.withValues(
-                                alpha: 0.15,
-                              ),
-                            ),
+                            child: Icon(icon, color: theme.colorScheme.primary, size: 26),
                           ),
+                          const SizedBox(height: 20),
+                        ],
+                        Text(
+                          title,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 10),
+                        Expanded(
                           child: Text(
-                            t,
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.primary.withValues(
-                                alpha: 0.8,
-                              ),
-                              fontWeight: FontWeight.w500,
-                            ),
+                            description,
+                            style: theme.textTheme.bodySmall?.copyWith(height: 1.6),
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                      )
-                      .toList(),
-                ),
-                if (googlePlayUrl != null || appStoreUrl != null) ...[
-                  const SizedBox(height: 14),
-                  Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: [
-                      if (googlePlayUrl != null)
-                        StoreButton(
-                          store: StoreType.googlePlay,
-                          url: googlePlayUrl!,
+                        const SizedBox(height: 14),
+                        Flexible(
+                          flex: 0,
+                          child: Wrap(
+                            spacing: 6,
+                            runSpacing: 6,
+                            clipBehavior: Clip.hardEdge,
+                            children: tech
+                                .take(5)
+                                .map(
+                                  (t) => Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                    decoration: BoxDecoration(
+                                      color: theme.colorScheme.primary.withValues(alpha: 0.08),
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.15)),
+                                    ),
+                                    child: Text(
+                                      t,
+                                      style: theme.textTheme.labelSmall?.copyWith(
+                                        color: theme.colorScheme.primary.withValues(alpha: 0.8),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
                         ),
-                      if (appStoreUrl != null)
-                        StoreButton(
-                          store: StoreType.appStore,
-                          url: appStoreUrl!,
-                        ),
-                    ],
+                        if (googlePlayUrl != null || appStoreUrl != null) ...[
+                          const SizedBox(height: 14),
+                          Flexible(
+                            flex: 0,
+                            child: Wrap(
+                              spacing: 10,
+                              runSpacing: 10,
+                              clipBehavior: Clip.hardEdge,
+                              children: [
+                                if (googlePlayUrl != null) StoreButton(store: StoreType.googlePlay, url: googlePlayUrl!),
+                                if (appStoreUrl != null) StoreButton(store: StoreType.appStore, url: appStoreUrl!),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
-                ],
+                ),
               ],
             ),
           );
