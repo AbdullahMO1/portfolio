@@ -24,11 +24,16 @@ class HeroPillTag extends StatelessWidget {
       duration: const Duration(milliseconds: 350),
       child:
           Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(999),
-                  border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.3)),
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -36,7 +41,10 @@ class HeroPillTag extends StatelessWidget {
                     Container(
                       width: 8,
                       height: 8,
-                      decoration: BoxDecoration(color: theme.colorScheme.primary, shape: BoxShape.circle),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary,
+                        shape: BoxShape.circle,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Flexible(
@@ -45,7 +53,10 @@ class HeroPillTag extends StatelessWidget {
                         style: theme.textTheme.labelSmall?.copyWith(
                           color: theme.colorScheme.primary,
                           fontWeight: FontWeight.w800,
-                          letterSpacing: screenWidth < shrinkLetterSpacingBelowWidth ? 0.5 : 1.5,
+                          letterSpacing:
+                              screenWidth < shrinkLetterSpacingBelowWidth
+                              ? 0.5
+                              : 1.5,
                         ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
@@ -55,7 +66,11 @@ class HeroPillTag extends StatelessWidget {
                 ),
               )
               .animate(onPlay: (c) => c.repeat())
-              .shimmer(duration: 2400.ms, delay: 1800.ms, color: theme.colorScheme.primary.withValues(alpha: 0.35)),
+              .shimmer(
+                duration: 2400.ms,
+                delay: 1800.ms,
+                color: theme.colorScheme.primary.withValues(alpha: 0.35),
+              ),
     );
   }
 }

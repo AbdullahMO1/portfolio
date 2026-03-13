@@ -41,14 +41,21 @@ class HeroPortraitCard extends StatelessWidget {
               height: size * 1.25,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.5), width: 2),
+                border: Border.all(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.5),
+                  width: 2,
+                ),
                 boxShadow: [
                   BoxShadow(
                     color: theme.colorScheme.primary.withValues(alpha: 0.15),
                     blurRadius: 24,
                     offset: const Offset(0, 8),
                   ),
-                  BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 16, offset: const Offset(0, 4)),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    blurRadius: 16,
+                    offset: const Offset(0, 4),
+                  ),
                 ],
               ),
               clipBehavior: Clip.antiAlias,
@@ -64,7 +71,11 @@ class HeroPortraitCard extends StatelessWidget {
                       alignment: const Alignment(0, -0.25),
                       errorBuilder: (context, error, stackTrace) => Container(
                         color: theme.colorScheme.surfaceContainerHighest,
-                        child: Icon(Icons.person_rounded, size: size * 0.4, color: theme.colorScheme.primary),
+                        child: Icon(
+                          Icons.person_rounded,
+                          size: size * 0.4,
+                          color: theme.colorScheme.primary,
+                        ),
                       ),
                     ),
                   ),
@@ -88,7 +99,12 @@ class HeroPortraitCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            _CurrentFocusCard(theme: theme, width: size * 0.88, title: currentFocusTitle, role: currentFocusRole),
+            _CurrentFocusCard(
+              theme: theme,
+              width: size * 0.88,
+              title: currentFocusTitle,
+              role: currentFocusRole,
+            ),
           ],
         ),
       ),
@@ -97,7 +113,12 @@ class HeroPortraitCard extends StatelessWidget {
 }
 
 class _CurrentFocusCard extends StatelessWidget {
-  const _CurrentFocusCard({required this.theme, required this.width, required this.title, required this.role});
+  const _CurrentFocusCard({
+    required this.theme,
+    required this.width,
+    required this.title,
+    required this.role,
+  });
 
   final ThemeData theme;
   final double width;
@@ -112,7 +133,9 @@ class _CurrentFocusCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surface.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.2)),
+        border: Border.all(
+          color: theme.colorScheme.primary.withValues(alpha: 0.2),
+        ),
         boxShadow: [
           BoxShadow(
             color: theme.colorScheme.primary.withValues(alpha: 0.1),
