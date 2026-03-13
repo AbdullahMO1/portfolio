@@ -212,10 +212,10 @@ class _StaggeredProjectTile extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(
+                  _buildProjectImage(
                     imageUrl,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) => Container(
+                    errorWidget: Container(
                       color: theme.colorScheme.surfaceContainerHighest,
                       child: Icon(
                         Icons.image_not_supported_rounded,
@@ -379,4 +379,15 @@ class _StaggeredProjectTile extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildProjectImage(
+  String url, {
+  required BoxFit fit,
+  required Widget errorWidget,
+}) {
+  if (url.startsWith('assets/')) {
+    return Image.asset(url, fit: fit, errorBuilder: (_, _, _) => errorWidget);
+  }
+  return Image.network(url, fit: fit, errorBuilder: (_, _, _) => errorWidget);
 }
