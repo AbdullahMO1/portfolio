@@ -38,10 +38,10 @@ class ExperienceTeaserSection extends ConsumerWidget {
                   chapter ??
                   const StoryChapter(
                     key: 'experience',
-                    title: 'The Oasis Journey',
-                    subtitle: 'Professional oases in the desert of career',
+                    title: 'Experience',
+                    subtitle: 'Where I\'ve grown, who I\'ve grown with',
                     storyLine:
-                        'Through vast deserts of challenges, the Prince discovered oases of opportunity and growth.',
+                        'The best lessons came from the teams, not the textbooks.',
                     persianElement: 'oasis',
                   ),
               chapterIndex: 3,
@@ -88,7 +88,7 @@ class ExperienceTeaserSection extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'View Full Journey',
+                      'See All Experience',
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: theme.colorScheme.primary,
                         fontWeight: FontWeight.w700,

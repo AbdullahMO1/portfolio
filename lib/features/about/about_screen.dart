@@ -47,7 +47,7 @@ class AboutScreen extends ConsumerWidget {
             children: [
               ScrollReveal(
                 child: _SectionTitle(
-                  title: chapter?.title ?? 'The Full Account',
+                  title: chapter?.title ?? 'About Me',
                   theme: theme,
                 ),
               ),

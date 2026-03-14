@@ -7,7 +7,7 @@ class HeroPillTag extends StatelessWidget {
     super.key,
     required this.theme,
     required this.nameAnimationValue,
-    this.label = 'OPEN FOR GLOBAL COLLABORATIONS',
+    this.label = 'OPEN TO NEW OPPORTUNITIES',
     this.shrinkLetterSpacingBelowWidth = 360,
   });
 

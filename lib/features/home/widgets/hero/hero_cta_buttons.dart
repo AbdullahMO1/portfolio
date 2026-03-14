@@ -64,7 +64,7 @@ class HeroCtaButtons extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'Explore My Work',
+            'See My Work',
             style: theme.textTheme.labelLarge?.copyWith(
               color: theme.colorScheme.onPrimary,
               fontWeight: FontWeight.w700,

@@ -300,32 +300,32 @@ class _MagicCarpetNavState extends ConsumerState<MagicCarpetNav>
       case 0:
         return Icons.home; // Desert Beginning
       case 1:
-        return Icons.construction; // Prince's Craft
+        return Icons.construction; // Skills
       case 2:
-        return Icons.workspaces_outline; // Digital Caravans
+        return Icons.workspaces_outline; // Projects
       case 3:
-        return Icons.water_drop; // Oasis Journey
+        return Icons.water_drop; // Experience
       case 4:
-        return Icons.account_balance; // Prince's Legacy
+        return Icons.account_balance; // About
       default:
-        return Icons.star; // Horizon Beyond
+        return Icons.star;
     }
   }
 
   String _getDestinationName(int index) {
     switch (index) {
       case 0:
-        return 'Desert Dawn';
+        return 'Home';
       case 1:
-        return 'Craftsmen\'s Bazaar';
+        return 'Skills';
       case 2:
-        return 'Caravan Crossroads';
+        return 'Projects';
       case 3:
-        return 'Oasis of Experience';
+        return 'Experience';
       case 4:
-        return 'The Royal Palace';
+        return 'About';
       default:
-        return 'Horizon Beyond';
+        return '';
     }
   }
 }

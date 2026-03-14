@@ -39,7 +39,7 @@ class ProjectsScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   Text(
-                    chapter?.title ?? 'That Which Was Wrought',
+                    chapter?.title ?? 'Projects',
                     style: AppTheme.storyTitleStyle(fontSize: 36),
                   ),
                   const SizedBox(height: 12),

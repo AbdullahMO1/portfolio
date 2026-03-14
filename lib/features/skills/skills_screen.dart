@@ -44,7 +44,7 @@ class SkillsScreen extends ConsumerWidget {
                     child: Column(
                       children: [
                         Text(
-                          chapter?.title ?? 'The Craft',
+                          chapter?.title ?? 'Skills',
                           style: AppTheme.storyTitleStyle(
                             fontSize: screenWidth < 400 ? 26 : 36,
                           ),

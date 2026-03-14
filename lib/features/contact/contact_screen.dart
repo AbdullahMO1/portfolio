@@ -54,7 +54,7 @@ class ContactScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   Text(
-                    chapter?.title ?? 'Continue the Tale',
+                    chapter?.title ?? 'Let\'s Talk',
                     style: AppTheme.storyTitleStyle(fontSize: 36),
                     textAlign: TextAlign.center,
                   ),
@@ -88,7 +88,7 @@ class ContactScreen extends ConsumerWidget {
               delay: const Duration(milliseconds: 200),
               child: Text(
                 chapter?.storyLine ??
-                    'Have a project in mind? I would love to hear about it.\nLet\'s create something extraordinary.',
+                    'Good things start with a conversation.\nIf you\'ve got an idea, I\'d love to hear it.',
                 style: GoogleFonts.amiri(
                   fontSize: 18,
                   fontStyle: FontStyle.italic,

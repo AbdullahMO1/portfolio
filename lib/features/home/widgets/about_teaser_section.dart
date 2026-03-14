@@ -77,11 +77,10 @@ class AboutTeaserSection extends ConsumerWidget {
                               chapter ??
                               const StoryChapter(
                                 key: 'about',
-                                title: 'The Royal Record',
-                                subtitle:
-                                    'The history and future of the Prince',
+                                title: 'About Me',
+                                subtitle: 'The short version',
                                 storyLine:
-                                    'The journey continues beyond the horizon, seeking new domains to conquer.',
+                                    'I care about the craft — clean code, honest work, and making things people actually enjoy using.',
                                 persianElement: 'record',
                               ),
                           chapterIndex: 4,

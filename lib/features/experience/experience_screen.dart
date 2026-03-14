@@ -34,7 +34,7 @@ class ExperienceScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   Text(
-                    chapter?.title ?? 'The Trials',
+                    chapter?.title ?? 'Experience',
                     style: AppTheme.storyTitleStyle(fontSize: 36),
                   ),
                   const SizedBox(height: 12),

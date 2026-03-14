@@ -3,15 +3,14 @@ import 'package:portoflio/core/config/story_config.dart';
 
 /// Provides story configuration for narrative sections and journey progress
 final storyConfigProvider = Provider<StoryConfig>((ref) {
-  // Persian Prince desert journey configuration
   return const StoryConfig(
     chapters: [
       StoryChapter(
         key: 'hero',
-        title: 'The Desert Beginning',
-        subtitle: 'Where the Persian Prince\'s journey starts',
+        title: 'From the Sands, a Builder',
+        subtitle: 'Where curiosity meets craft',
         storyLine:
-            'In the golden sands of time, every great story begins with a single step across the desert.',
+            'Some chase gold, others chase stars — I chase clean code and problems worth solving.',
         persianElement: 'prince',
         animationTriggers: [
           AnimationTrigger(
@@ -28,10 +27,10 @@ final storyConfigProvider = Provider<StoryConfig>((ref) {
       ),
       StoryChapter(
         key: 'skills',
-        title: 'The Prince\'s Craft',
-        subtitle: 'Ancient wisdom forged in modern code',
+        title: 'Skills',
+        subtitle: 'Sharp tools, steady hands',
         storyLine:
-            'Like the master craftsmen of Persia, the Prince wields digital tools with precision and artistry.',
+            'Knowing your tools is half the work. The other half is knowing when to put them down and think.',
         persianElement: 'craft',
         animationTriggers: [
           AnimationTrigger(
@@ -47,10 +46,10 @@ final storyConfigProvider = Provider<StoryConfig>((ref) {
       ),
       StoryChapter(
         key: 'portfolio',
-        title: 'The Digital Caravans',
-        subtitle: 'Projects that traverse the digital desert',
+        title: 'Projects',
+        subtitle: 'Built, shipped, and learned from',
         storyLine:
-            'Each creation is a caravan carrying treasures across the vast landscape of technology.',
+            'You don\'t really understand a problem until you\'ve shipped a solution for it.',
         persianElement: 'caravan',
         animationTriggers: [
           AnimationTrigger(
@@ -66,10 +65,9 @@ final storyConfigProvider = Provider<StoryConfig>((ref) {
       ),
       StoryChapter(
         key: 'experience',
-        title: 'The Oasis Journey',
-        subtitle: 'Professional oases in the desert of career',
-        storyLine:
-            'Through vast deserts of challenges, the Prince discovered oases of opportunity and growth.',
+        title: 'Experience',
+        subtitle: 'Where I\'ve grown, who I\'ve grown with',
+        storyLine: 'The best lessons came from the teams, not the textbooks.',
         persianElement: 'oasis',
         animationTriggers: [
           AnimationTrigger(
@@ -85,10 +83,10 @@ final storyConfigProvider = Provider<StoryConfig>((ref) {
       ),
       StoryChapter(
         key: 'about',
-        title: 'The Prince\'s Legacy',
-        subtitle: 'The complete story behind the digital monarch',
+        title: 'About Me',
+        subtitle: 'The short version',
         storyLine:
-            'Beyond the code and algorithms lies the heart of a Prince dedicated to creating digital wonders.',
+            'I care about the craft — clean code, honest work, and making things people actually enjoy using.',
         persianElement: 'palace',
         animationTriggers: [
           AnimationTrigger(
@@ -105,32 +103,32 @@ final storyConfigProvider = Provider<StoryConfig>((ref) {
     ],
     places: [
       StoryPlace(
-        name: 'Desert Dawn',
-        description: 'The journey begins at sunrise',
+        name: 'Home',
+        description: 'Start here',
         position: 0.0,
         persianLandmark: 'starting_oasis',
       ),
       StoryPlace(
-        name: 'Craftsmen\'s Bazaar',
-        description: 'Where skills are honed and mastered',
+        name: 'Skills',
+        description: 'What I work with',
         position: 1.0,
         persianLandmark: 'skills_market',
       ),
       StoryPlace(
-        name: 'Caravan Crossroads',
-        description: 'Projects embark on their digital journeys',
+        name: 'Projects',
+        description: 'What I\'ve built',
         position: 2.0,
         persianLandmark: 'project_crossroads',
       ),
       StoryPlace(
-        name: 'Oasis of Experience',
-        description: 'Professional growth and achievements',
+        name: 'Experience',
+        description: 'Where I\'ve been',
         position: 3.0,
         persianLandmark: 'experience_oasis',
       ),
       StoryPlace(
-        name: 'The Royal Palace',
-        description: 'Legacy and future aspirations',
+        name: 'About',
+        description: 'Who I am',
         position: 4.0,
         persianLandmark: 'legacy_palace',
       ),

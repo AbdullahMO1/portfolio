@@ -269,7 +269,7 @@ class _AnimatedBlurHeader extends StatelessWidget {
                                   onTap: () => _navigateTo(context, '/skills'),
                                 ),
                                 NavLink(
-                                  label: 'Masterpieces',
+                                  label: 'Projects',
                                   onTap: () =>
                                       _navigateTo(context, '/projects'),
                                 ),
@@ -337,7 +337,7 @@ class _AnimatedBlurHeader extends StatelessWidget {
                                     PopupMenuItem(
                                       value: 'masterpieces',
                                       child: Text(
-                                        'Masterpieces',
+                                        'Projects',
                                         style: theme.textTheme.labelLarge
                                             ?.copyWith(
                                               fontWeight: FontWeight.w700,

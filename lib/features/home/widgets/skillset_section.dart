@@ -79,10 +79,10 @@ class SkillsetSection extends ConsumerWidget {
                     chapter ??
                     const StoryChapter(
                       key: 'skills',
-                      title: "The Prince's Craft",
-                      subtitle: 'Ancient wisdom forged in modern code',
+                      title: 'Skills',
+                      subtitle: 'Sharp tools, steady hands',
                       storyLine:
-                          'Like the master craftsmen of Persia, the Prince wields digital tools with precision and artistry.',
+                          'Knowing your tools is half the work. The other half is knowing when to put them down and think.',
                       persianElement: 'craft',
                     ),
                 chapterIndex: 1,

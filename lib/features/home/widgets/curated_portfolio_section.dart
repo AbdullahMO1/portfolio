@@ -56,10 +56,10 @@ class CuratedPortfolioSection extends ConsumerWidget {
                       chapter ??
                       const StoryChapter(
                         key: 'portfolio',
-                        title: 'The Digital Caravans',
-                        subtitle: 'Projects that traverse the digital desert',
+                        title: 'Projects',
+                        subtitle: 'Built, shipped, and learned from',
                         storyLine:
-                            'Each creation is a caravan carrying treasures across the vast landscape of technology.',
+                            'You don\'t really understand a problem until you\'ve shipped a solution for it.',
                         persianElement: 'caravan',
                       ),
                   chapterIndex: 2,
